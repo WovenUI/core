@@ -4,7 +4,7 @@
 //
 // Checks:
 //   0. build.scss and index.scss compile with no warning.
-//   1. Every var(--nu-*) used in build.scss and index.scss output is defined in that output
+//   1. Every var(--wu-*) used in build.scss and index.scss output is defined in that output
 //      (a declaration or an @property registration).
 //   2. Every ruled token family exists in the light block.
 //   3. Every theme and role token exists in the dark block (and in the prefers-color-scheme fallback,
@@ -16,6 +16,8 @@ import {
     BASIC,
     BUILD_FILE,
     INDEX_FILE,
+    P,
+    PREFIX,
     ROLES,
     ROLE_STATES,
     roleToken,
@@ -39,8 +41,8 @@ const BAD_TOKEN_NAMES = [
     'secondary',
     'text-normal',
     'bg-bg-surface',
-    '--nu-brand',
-    'nu-brand',
+    `${P}brand`,
+    `${PREFIX}-brand`,
     '',
 ];
 
@@ -63,17 +65,23 @@ function check(label, fn) {
 function definedNames(css) {
     return new Set(
         [
-            ...css.matchAll(/(--nu-[a-zA-Z0-9_-]+)\s*:/g),
-            ...css.matchAll(/@property\s+(--nu-[a-zA-Z0-9_-]+)/g),
+            ...css.matchAll(
+                new RegExp(String.raw`(${P}[a-zA-Z0-9_-]+)\s*:`, 'g')
+            ),
+            ...css.matchAll(
+                new RegExp(String.raw`@property\s+(${P}[a-zA-Z0-9_-]+)`, 'g')
+            ),
         ].map((match) => match[1])
     );
 }
 
 function usedNames(css) {
     return new Set(
-        [...css.matchAll(/var\(\s*(--nu-[a-zA-Z0-9_-]+)/g)].map(
-            (match) => match[1]
-        )
+        [
+            ...css.matchAll(
+                new RegExp(String.raw`var\(\s*(${P}[a-zA-Z0-9_-]+)`, 'g')
+            ),
+        ].map((match) => match[1])
     );
 }
 
@@ -138,11 +146,11 @@ function run() {
         ['build.scss', build],
         ['index.scss', index],
     ]) {
-        check(`every var(--nu-*) used in ${label} output is defined`, () => {
+        check(`every var(${P}*) used in ${label} output is defined`, () => {
             const defined = definedNames(css);
             const used = usedNames(css);
             if (used.size === 0) {
-                fail(`${label}: no var(--nu-*) usage found`);
+                fail(`${label}: no var(${P}*) usage found`);
             }
             for (const name of used) {
                 if (!defined.has(name)) {
@@ -171,7 +179,7 @@ function run() {
     check('every ruled theme token family exists in light', () => {
         for (const name of expectedThemeTokens(light)) {
             if (!(name in light)) {
-                fail(`light: --nu-${name} is missing`);
+                fail(`light: ${P}${name} is missing`);
             }
         }
     });
@@ -179,13 +187,13 @@ function run() {
     check('every scale family exists in light', () => {
         for (const [prefix] of SCALE_FAMILIES) {
             if (!Object.keys(light).some((name) => inFamily(name, prefix))) {
-                fail(`light: no --nu-${prefix}-* tokens`);
+                fail(`light: no ${P}${prefix}-* tokens`);
             }
         }
         for (const size of ['sm', 'md', 'lg']) {
             for (const family of ['control-height', 'control-padding-inline']) {
                 if (!(`${family}-${size}` in light)) {
-                    fail(`light: --nu-${family}-${size} is missing`);
+                    fail(`light: ${P}${family}-${size} is missing`);
                 }
             }
         }
@@ -200,19 +208,19 @@ function run() {
                 BASIC.includes(name);
             for (const name of Object.keys(root)) {
                 if (!isFixed(name)) {
-                    fail(`:root block: --nu-${name} is not a fixed token`);
+                    fail(`:root block: ${P}${name} is not a fixed token`);
                 }
                 if (name in lightBlock) {
-                    fail(`--nu-${name} is in both :root and the light block`);
+                    fail(`${P}${name} is in both :root and the light block`);
                 }
             }
             for (const name of Object.keys(lightBlock)) {
                 if (isFixed(name)) {
-                    fail(`light block: --nu-${name} is a fixed token`);
+                    fail(`light block: ${P}${name} is a fixed token`);
                 }
             }
             if (!('font-family' in root)) {
-                fail(':root block: --nu-font-family is missing');
+                fail(`:root block: ${P}font-family is missing`);
             }
         }
     );
@@ -220,7 +228,7 @@ function run() {
     check('basic color tokens exist in light', () => {
         BASIC.forEach((name) => {
             if (!(name in light)) {
-                fail(`light: --nu-${name} is missing`);
+                fail(`light: ${P}${name} is missing`);
             }
         });
     });
@@ -235,7 +243,7 @@ function run() {
     check('every theme and role token in light also exists in dark', () => {
         for (const name of themeTokens) {
             if (!(name in dark)) {
-                fail(`dark: --nu-${name} is missing`);
+                fail(`dark: ${P}${name} is missing`);
             }
         }
     });
@@ -250,10 +258,10 @@ function run() {
                     BASIC.includes(name)
                 ) {
                     fail(
-                        `dark: --nu-${name} must not be redefined in dark (fixed across themes)`
+                        `dark: ${P}${name} must not be redefined in dark (fixed across themes)`
                     );
                 } else if (!(name in light)) {
-                    fail(`dark: --nu-${name} has no light value`);
+                    fail(`dark: ${P}${name} has no light value`);
                 }
             }
         }
@@ -268,7 +276,7 @@ function run() {
         for (const name of keys) {
             if (dark[name] !== fallback[name]) {
                 fail(
-                    `fallback --nu-${name} is ${fallback[name]}, dark is ${dark[name]}`
+                    `fallback ${P}${name} is ${fallback[name]}, dark is ${dark[name]}`
                 );
             }
         }
@@ -290,9 +298,9 @@ function run() {
             ['dark', dark],
         ]) {
             for (const [alias, target] of Object.entries(aliases)) {
-                if (block[alias] !== `var(--nu-${target})`) {
+                if (block[alias] !== `var(${P}${target})`) {
                     fail(
-                        `${themeName}: --nu-${alias} is ${block[alias]}, expected var(--nu-${target})`
+                        `${themeName}: ${P}${alias} is ${block[alias]}, expected var(${P}${target})`
                     );
                 }
             }
@@ -300,7 +308,7 @@ function run() {
     });
 
     check('token() accepts every emitted name', () => {
-        // Component variables (--nu-tooltip--Background) are re-declared in theme blocks but are not tokens
+        // Component variables (--wu-tooltip--Background) are re-declared in theme blocks but are not tokens
         const names = Object.keys(light).filter((name) => !name.includes('--'));
         const body = names
             .map((name, index) => `  t${index}: nu.token("${name}");`)
@@ -310,7 +318,7 @@ function run() {
         );
         names.forEach((name, index) => {
             const match = css.match(new RegExp(`\\bt${index}: ([^;]+);`));
-            if (!match || match[1] !== `var(--nu-${name})`) {
+            if (!match || match[1] !== `var(${P}${name})`) {
                 fail(`token("${name}") gave ${match ? match[1] : 'nothing'}`);
             }
         });
@@ -320,10 +328,8 @@ function run() {
             `@use "index" as nu;\n.t { a: nu.token(black); b: nu.token(white); c: nu.token(transparent); }\n`
         ).css;
         BASIC.forEach((name) => {
-            if (!basic.includes(`var(--nu-${name})`)) {
-                fail(
-                    `token(${name}) unquoted did not return var(--nu-${name})`
-                );
+            if (!basic.includes(`var(${P}${name})`)) {
+                fail(`token(${name}) unquoted did not return var(${P}${name})`);
             }
         });
     });
@@ -363,23 +369,26 @@ function run() {
         'shared configuration: the global stylesheet emits the configured brand',
         () => {
             const global = compileSource(
-                '@use "fixtures/shared-config/nuvo";\n@use "index";'
+                '@use "fixtures/shared-config/woven";\n@use "index";'
             ).css;
             const fixed = themeBlocks(global).root;
             if (fixed['brand-500'] !== '#4361ee') {
                 fail(
-                    `--nu-brand-500 is ${fixed['brand-500']}, expected #4361ee`
+                    `${P}brand-500 is ${fixed['brand-500']}, expected #4361ee`
                 );
             }
-            if ((global.match(/--nu-brand-500:/g) || []).length !== 1) {
-                fail('--nu-brand-500 must be declared once');
+            if (
+                (global.match(new RegExp(`${P}brand-500:`, 'g')) || [])
+                    .length !== 1
+            ) {
+                fail(`${P}brand-500 must be declared once`);
             }
             const component = compileSource(
-                '@use "fixtures/shared-config/nuvo" as *;\n.a { color: get-color(brand, 500); b: token(brand); }'
+                '@use "fixtures/shared-config/woven" as *;\n.a { color: get-color(brand, 500); b: token(brand); }'
             ).css;
             if (
                 component.trim() !==
-                '.a {\n  color: #4361ee;\n  b: var(--nu-brand);\n}'
+                `.a {\n  color: #4361ee;\n  b: var(${P}brand);\n}`
             ) {
                 fail(`component output: ${component}`);
             }
@@ -387,11 +396,16 @@ function run() {
     );
 
     const legacy = [
-        ...build.matchAll(/var\(\s*(--(?!nu-)[a-zA-Z0-9_-]+)/g),
+        ...build.matchAll(
+            new RegExp(
+                String.raw`var\(\s*(--(?!${PREFIX}-)[a-zA-Z0-9_-]+)`,
+                'g'
+            )
+        ),
     ].map((match) => match[1]);
     if (legacy.length > 0) {
         console.log(
-            `\ninfo  ${new Set(legacy).size} custom properties without the --nu- prefix are used in build output (not checked): ${[...new Set(legacy)].sort().join(', ')}`
+            `\ninfo  ${new Set(legacy).size} custom properties without the ${P} prefix are used in build output (not checked): ${[...new Set(legacy)].sort().join(', ')}`
         );
     }
 

@@ -2,7 +2,7 @@
 //
 // Usage: node test/mixins-map-sync.mjs
 //
-// The generator is build.js in the NuvoUI tools repository, checked out next to core (../tools/build.js). It writes
+// The generator is build.js in the WovenUI tools repository, checked out next to core (../tools/build.js). It writes
 // next to the styles it scans, so it runs on a temporary copy of src/styles and the repository files are never
 // overwritten. Exits with code 1 when either file differs; re-generate with `node ../tools/build.js`. Without the
 // tools checkout (a standalone clone or CI) the check is skipped with a notice and exits with code 0.
@@ -17,12 +17,12 @@ const FILES = ['mixins-map.scss', 'mixins-map.json'];
 
 if (!fs.existsSync(GENERATOR)) {
     console.log(
-        `skip  mixins-map: generator not found at ${GENERATOR} (check out the NuvoUI tools repository next to core to run this check)`
+        `skip  mixins-map: generator not found at ${GENERATOR} (check out the WovenUI tools repository next to core to run this check)`
     );
     process.exit(0);
 }
 
-const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'nuvoui-mixins-map-'));
+const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'wovenui-mixins-map-'));
 let failed = false;
 try {
     // Same layout as the workspace: the generator resolves ../core/src/styles from its own directory

@@ -1,4 +1,4 @@
-// Generates docs/TOKENS.md: every --nu-* custom property emitted by the default build, grouped by family.
+// Generates docs/TOKENS.md: every --wu-* custom property emitted by the default build, grouped by family.
 //
 // Usage: node scripts/token-reference.mjs           (or: npm run docs:tokens) writes docs/TOKENS.md
 //        node scripts/token-reference.mjs --check   exits with code 1 when docs/TOKENS.md is stale
@@ -6,7 +6,7 @@
 // Compiles src/styles/build.scss with the default configuration, reads the fixed :root block, the light block
 // (:root, [data-theme=light]) and the dark block ([data-theme=dark], [data-theme=inverse]), and writes one table per family
 // with the light value, the dark value (where the token is redefined in dark) and the tier.
-// A value that is a single var(--nu-*) reference is shown as the referenced token plus the color it
+// A value that is a single var(--wu-*) reference is shown as the referenced token plus the color it
 // resolves to. Re-run after any change to the theme, color or scale configuration.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -14,6 +14,7 @@ import {
     BASIC,
     BUILD_FILE,
     CORE_DIR,
+    P,
     ROLES,
     ROLE_STATES,
     roleToken,
@@ -31,9 +32,10 @@ import {
 
 const OUT_FILE = path.join(CORE_DIR, 'docs', 'TOKENS.md');
 
-const isRef = (value) => /^var\(\s*--nu-[a-zA-Z0-9_-]+\s*\)$/.test(value);
+const isRef = (value) =>
+    new RegExp(String.raw`^var\(\s*${P}[a-zA-Z0-9_-]+\s*\)$`).test(value);
 const refName = (value) =>
-    value.match(/^var\(\s*--nu-([a-zA-Z0-9_-]+)\s*\)$/)[1];
+    value.match(new RegExp(String.raw`^var\(\s*${P}([a-zA-Z0-9_-]+)\s*\)$`))[1];
 
 // Escapes a value for a Markdown table cell
 const cell = (text) => String(text).replace(/\|/g, '\\|');
@@ -44,7 +46,7 @@ function display(value, layers) {
     }
     if (isRef(value)) {
         const resolved = resolveToken(refName(value), layers);
-        return `\`--nu-${refName(value)}\` (\`${cell(resolved)}\`)`;
+        return `\`${P}${refName(value)}\` (\`${cell(resolved)}\`)`;
     }
     return `\`${cell(value)}\``;
 }
@@ -56,7 +58,7 @@ function table(names, light, dark, tierOf) {
         const darkValue = Object.prototype.hasOwnProperty.call(dark, name)
             ? dark[name]
             : undefined;
-        return `| \`--nu-${name}\` | ${display(light[name], lightLayers)} | ${display(darkValue, darkLayers)} | ${tierOf(name, darkValue)} |`;
+        return `| \`${P}${name}\` | ${display(light[name], lightLayers)} | ${display(darkValue, darkLayers)} | ${tierOf(name, darkValue)} |`;
     });
     return [
         '| Token | Light | Dark | Tier |',
@@ -79,7 +81,7 @@ const fixedTier = (label) => () => `${label} (fixed)`;
 function generate() {
     const { css } = compileFile(BUILD_FILE);
     const blocks = themeBlocks(css);
-    // Component variables (--nu-tooltip--Background) are re-declared in theme blocks but are not tokens
+    // Component variables (--wu-tooltip--Background) are re-declared in theme blocks but are not tokens
     const tokensOnly = (block) =>
         Object.fromEntries(
             Object.entries(block).filter(([name]) => !name.includes('--'))
@@ -179,7 +181,7 @@ function generate() {
     );
     add(
         'Error aliases',
-        '`error` is a second name for `danger`. Every `--nu-error-*` token references the matching `--nu-danger-*` token and cannot be set in a theme map.',
+        `\`error\` is a second name for \`danger\`. Every \`${P}error-*\` token references the matching \`${P}danger-*\` token and cannot be set in a theme map.`,
         pick([
             ...ROLE_STATES.map((state) => roleToken('error', state)),
             'text-error',
@@ -245,7 +247,7 @@ function generate() {
     }
     if (scaleSections.length) {
         sections.push(
-            `## Non-color scales\n\nEmitted from the configuration maps. Mixins and utility classes output these tokens for configured keys (\`p(4)\` gives \`padding: var(--nu-space-4)\`); custom values stay raw. Decimal keys use \`_\` in token names (\`--nu-space-0_5\`).\n\n${scaleSections.join('\n\n')}`
+            `## Non-color scales\n\nEmitted from the configuration maps. Mixins and utility classes output these tokens for configured keys (\`p(4)\` gives \`padding: var(${P}space-4)\`); custom values stay raw. Decimal keys use \`_\` in token names (\`${P}space-0_5\`).\n\n${scaleSections.join('\n\n')}`
         );
     }
 
@@ -257,7 +259,7 @@ function generate() {
     }
 
     const header = [
-        '# @nuvoui/core design tokens',
+        '# @wovenui/core design tokens',
         '',
         '<!-- Generated file. Do not edit by hand. -->',
         '',
@@ -274,7 +276,7 @@ function generate() {
         '',
         'The default values may still be tuned in a 2.x release (contrast and palette steps are under review). Read tokens through `token()` so a rename fails at compile time.',
         '',
-        'Read a token in SCSS with `token(name)`, which returns `var(--nu-name)` and raises an error for an unknown name.',
+        `Read a token in SCSS with \`token(name)\`, which returns \`var(${P}name)\` and raises an error for an unknown name.`,
     ].join('\n');
 
     return {

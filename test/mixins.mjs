@@ -14,7 +14,7 @@
 // Exits with code 1 on any failure.
 import fs from 'node:fs';
 import path from 'node:path';
-import { STYLES_DIR, compileError, compileSource } from './helpers.mjs';
+import { P, STYLES_DIR, compileError, compileSource } from './helpers.mjs';
 
 // Arguments per parameterized mixin, as SCSS source. Values use configured keys where one exists.
 const ARGS = {
@@ -175,19 +175,19 @@ const RAW_VALUES = [
     ['leading(calc(1em + 2px))', 'line-height: calc(1em + 2px)'],
     ['font(450)', 'font-weight: 450'],
     ['p(1.5rem)', 'padding: 1.5rem'],
-    ['p("4")', 'padding: var(--nu-space-4)'],
+    ['p("4")', `padding: var(${P}space-4)`],
     ['m(-2px)', 'margin: -2px'],
     ['width(50%)', 'width: 50%'],
     ['max-width(calc(100% - 2rem))', 'max-width: calc(100% - 2rem)'],
     ['top(-4px)', 'top: -4px'],
     ['gap(12px)', 'gap: 12px'],
-    ['translate-x(10px)', '--nu-translate-x: 10px'],
+    ['translate-x(10px)', `${P}translate-x: 10px`],
     ['rounded(6px)', 'border-radius: 6px'],
     ['border(2px)', 'border-width: 2px'],
     ['opacity(50%)', 'opacity: 50%'],
     ['opacity(calc(var(--o) * 1%))', 'opacity: calc(var(--o) * 1%)'],
-    ['scale(1.5)', '--nu-scale-x: 1.5'],
-    ['rotate(45deg)', '--nu-rotate: 45deg'],
+    ['scale(1.5)', `${P}scale-x: 1.5`],
+    ['rotate(45deg)', `${P}rotate: 45deg`],
     ['bg(#ff5733)', 'background-color: #ff5733'],
     ['origin(var(--x) top)', 'transform-origin: var(--x) top;'],
     ['origin("var(--x) top")', 'transform-origin: var(--x) top;'],
@@ -217,27 +217,27 @@ const RAW_VALUES = [
     ],
     ['text-color(light-dark(#fff, #000))', 'color: light-dark(#fff, #000)'],
     [
-        'border-color(color-mix(in oklch, var(--nu-brand) 40%, white))',
-        'border-color: color-mix(in oklch, var(--nu-brand) 40%, white)',
+        `border-color(color-mix(in oklch, var(${P}brand) 40%, white))`,
+        `border-color: color-mix(in oklch, var(${P}brand) 40%, white)`,
     ],
-    ['p(4)', 'padding: var(--nu-space-4)'],
-    ['rotate(45)', '--nu-rotate: 45deg'],
-    ['rotate(-90)', '--nu-rotate: -90deg'],
-    ['rotate(0)', '--nu-rotate: 0deg'],
-    ['skew-x(0)', '--nu-skew-x: 0deg'],
+    ['p(4)', `padding: var(${P}space-4)`],
+    ['rotate(45)', `${P}rotate: 45deg`],
+    ['rotate(-90)', `${P}rotate: -90deg`],
+    ['rotate(0)', `${P}rotate: 0deg`],
+    ['skew-x(0)', `${P}skew-x: 0deg`],
     ['shadow(none)', 'box-shadow: none'],
     ['truncate(2)', '-webkit-line-clamp: 2'],
     ['cols-custom(1fr 2fr)', 'grid-template-columns: 1fr 2fr'],
     ['aspect-ratio(16, 9)', 'aspect-ratio: 16 / 9'],
     ['aspect-ratio("16/9")', 'aspect-ratio: 16 / 9'],
     ['aspect-ratio(1.5)', 'aspect-ratio: 1.5'],
-    ['rounded(2xl)', 'border-radius: var(--nu-radius-2xl)'],
-    ['rounded-t(2xl)', 'border-top-left-radius: var(--nu-radius-2xl)'],
-    ['font-size(2xl)', 'font-size: var(--nu-font-size-2xl)'],
+    ['rounded(2xl)', `border-radius: var(${P}radius-2xl)`],
+    ['rounded-t(2xl)', `border-top-left-radius: var(${P}radius-2xl)`],
+    ['font-size(2xl)', `font-size: var(${P}font-size-2xl)`],
     ['delay(-100ms)', 'transition-delay: -100ms'],
     [
         'gradient(to right, brand, red 40%, surface)',
-        'background-image: linear-gradient(to right, var(--nu-brand), var(--nu-red-500) 40%, var(--nu-bg-surface))',
+        `background-image: linear-gradient(to right, var(${P}brand), var(${P}red-500) 40%, var(${P}bg-surface))`,
     ],
     ['cursor(pointer)', 'cursor: pointer'],
     [
@@ -806,7 +806,7 @@ const EXPECTED_OUTPUT = [
     [
         'backdrop-brightness(90) matches the "90" key',
         '@include apply(backdrop-brightness(90));',
-        ['--nu-backdrop-brightness: brightness(90%)'],
+        [`${P}backdrop-brightness: brightness(90%)`],
     ],
     [
         'media-only(2xl) accepts an unquoted 2xl',
@@ -867,8 +867,8 @@ const EXPECTED_OUTPUT = [
         'transition sets the default duration and easing tokens',
         '@include apply(transition);',
         [
-            'transition-duration: var(--nu-duration-200)',
-            'transition-timing-function: var(--nu-ease-in-out)',
+            `transition-duration: var(${P}duration-200)`,
+            `transition-timing-function: var(${P}ease-in-out)`,
         ],
     ],
     [
@@ -877,7 +877,7 @@ const EXPECTED_OUTPUT = [
         [
             'opacity: inherit',
             'opacity: revert-layer',
-            'opacity: var(--nu-opacity-50)',
+            `opacity: var(${P}opacity-50)`,
             'opacity: var(--x)',
             'filter: opacity(50%)',
             'line-height: 0.5',
@@ -886,22 +886,37 @@ const EXPECTED_OUTPUT = [
     [
         'border-top takes a color',
         '@include apply(border-top(1, solid, danger));',
-        ['border-top-color: var(--nu-danger)'],
+        [`border-top-color: var(${P}danger)`],
     ],
     [
-        'border-all writes the style through --nu-border-style',
+        `border-all writes the style through ${P}border-style`,
         '@include apply(border-all(1, dashed, strong));',
-        ['border-style: var(--nu-border-style)', '--nu-border-style: dashed'],
+        [`border-style: var(${P}border-style)`, `${P}border-style: dashed`],
     ],
     [
         'pill uses the full radius token',
         '@include apply(pill);',
-        ['border-radius: var(--nu-radius-full)'],
+        [`border-radius: var(${P}radius-full)`],
     ],
     [
         'space-y is logical',
         '@include apply(space-y(4));',
-        ['margin-block-start: var(--nu-space-4)'],
+        [`margin-block-start: var(${P}space-4)`],
+    ],
+    [
+        'hidden is an alias of hide',
+        '@include apply(hidden);',
+        ['display: none'],
+    ],
+    [
+        'hidden takes a breakpoint like hide',
+        '@include apply(hidden, show md, hidden lg);',
+        [
+            'display: none',
+            '@media (min-width: 768px)',
+            'display: revert',
+            '@media (min-width: 1024px)',
+        ],
     ],
     [
         'show reverts to the natural display',
@@ -918,8 +933,8 @@ const EXPECTED_OUTPUT = [
         '@include apply(transition-colors);',
         [
             'transition-property: color, background-color, border-color, text-decoration-color, fill, stroke',
-            'transition-duration: var(--nu-duration-200)',
-            'transition-timing-function: var(--nu-ease-in-out)',
+            `transition-duration: var(${P}duration-200)`,
+            `transition-timing-function: var(${P}ease-in-out)`,
         ],
     ],
     [
@@ -929,18 +944,18 @@ const EXPECTED_OUTPUT = [
             'transition-property: opacity',
             'transition-property: box-shadow',
             'transition-property: transform',
-            'transition-duration: var(--nu-duration-200)',
-            'transition-duration: var(--nu-duration-300)',
+            `transition-duration: var(${P}duration-200)`,
+            `transition-duration: var(${P}duration-300)`,
         ],
     ],
     [
         'opacity keys read $opacities and emit the token',
         '@include apply(opacity(50), opacity(33) hover); a: token(opacity-50); b: token(font-family);',
         [
-            'opacity: var(--nu-opacity-50)',
-            'opacity: var(--nu-opacity-33)',
-            'a: var(--nu-opacity-50)',
-            'b: var(--nu-font-family)',
+            `opacity: var(${P}opacity-50)`,
+            `opacity: var(${P}opacity-33)`,
+            `a: var(${P}opacity-50)`,
+            `b: var(${P}font-family)`,
         ],
     ],
     [
@@ -1002,28 +1017,28 @@ const EXPECTED_OUTPUT = [
         'logical utilities give inline-axis properties',
         '@include apply(ms(4), me(2), ps(4), pe(2), text-start, border-start(1)); } .b { @include apply(text-end, border-end(2), inset-start(4), inset-end(0));',
         [
-            'margin-inline-start: var(--nu-space-4);',
-            'margin-inline-end: var(--nu-space-2);',
-            'padding-inline-start: var(--nu-space-4);',
-            'padding-inline-end: var(--nu-space-2);',
+            `margin-inline-start: var(${P}space-4);`,
+            `margin-inline-end: var(${P}space-2);`,
+            `padding-inline-start: var(${P}space-4);`,
+            `padding-inline-end: var(${P}space-2);`,
             'text-align: start;',
-            'border-inline-start-width: var(--nu-border-width-1);',
+            `border-inline-start-width: var(${P}border-width-1);`,
             'text-align: end;',
-            'border-inline-end-width: var(--nu-border-width-2);',
-            'inset-inline-start: var(--nu-space-4);',
-            'inset-inline-end: var(--nu-space-0);',
+            `border-inline-end-width: var(${P}border-width-2);`,
+            `inset-inline-start: var(${P}space-4);`,
+            `inset-inline-end: var(${P}space-0);`,
         ],
     ],
     [
         'cache keys keep same-compile calls apart (font-size key and text, color shades)',
         '@include font-size(lg); } .b { @include font-size("lg"); } .c { @include font-size(sm); } .d { @include bg(red, 500); } .e { @include bg(red, "600"); } .f { @include bg(blue, 500); } .g { @include bg(#336699, 600); } .h { @include bg(#336699, 700); } .i { @include bg("#336699", 600);',
         [
-            '.t {\n  font-size: var(--nu-font-size-lg);',
-            '.b {\n  font-size: var(--nu-font-size-lg);',
-            '.c {\n  font-size: var(--nu-font-size-sm);',
-            '.d {\n  background-color: var(--nu-red-500);',
-            '.e {\n  background-color: var(--nu-red-600);',
-            '.f {\n  background-color: var(--nu-blue-500);',
+            `.t {\n  font-size: var(${P}font-size-lg);`,
+            `.b {\n  font-size: var(${P}font-size-lg);`,
+            `.c {\n  font-size: var(${P}font-size-sm);`,
+            `.d {\n  background-color: var(${P}red-500);`,
+            `.e {\n  background-color: var(${P}red-600);`,
+            `.f {\n  background-color: var(${P}blue-500);`,
             '.g {\n  background-color: #285a8b;',
             '.h {\n  background-color: #1d4c78;',
             '.i {\n  background-color: #285a8b;',
@@ -1033,7 +1048,7 @@ const EXPECTED_OUTPUT = [
         'quoted arguments read like unquoted ones (gradient, shadow-base, backdrop-filter, animation maps)',
         '@include gradient("to right", "brand", "red 40%"); } .b { @include shadow-base("0", "1px", "2px", "0", "red"); } .c { @include backdrop-filter("blur(4px)"); } .d { @include animate-bounce((vertical: "4px", duration: "2s"));',
         [
-            'background-image: linear-gradient(to right, var(--nu-brand), var(--nu-red-500) 40%);',
+            `background-image: linear-gradient(to right, var(${P}brand), var(${P}red-500) 40%);`,
             'box-shadow: 0 1px 2px 0 red;',
             'backdrop-filter: blur(4px);',
             'animation: anim-bounce-0-4px 2s ease-in-out infinite;',
@@ -1261,8 +1276,7 @@ function run() {
     );
 
     // A state and a breakpoint may follow the utility in either order, on all three apply() paths
-    const ORDER_EXPECTED =
-        '@media (min-width: 1024px) {\n  .t:hover {\n    box-shadow: var(--nu-shadow-md);\n  }\n}';
+    const ORDER_EXPECTED = `@media (min-width: 1024px) {\n  .t:hover {\n    box-shadow: var(${P}shadow-md);\n  }\n}`;
     const orderBefore = failures.length;
     for (const [label, use, prefix] of [
         ['as *', '@use "../src/styles/index" as *;', ''],
@@ -1293,20 +1307,20 @@ function run() {
     // Base items, then breakpoints smallest first; within each, states in LVHA order, whatever the written order
     const SORT_CASES = [
         [
-            '.t {\n  display: none;\n}\n.t:hover {\n  opacity: var(--nu-opacity-50);\n}\n' +
-                '@media (min-width: 640px) {\n  .t {\n    padding: var(--nu-space-2);\n  }\n}\n' +
+            `.t {\n  display: none;\n}\n.t:hover {\n  opacity: var(${P}opacity-50);\n}\n` +
+                `@media (min-width: 640px) {\n  .t {\n    padding: var(${P}space-2);\n  }\n}\n` +
                 '@media (min-width: 768px) {\n  .t {\n    display: flex;\n  }\n}\n' +
-                '@media (min-width: 1024px) {\n  .t {\n    padding: var(--nu-space-6);\n  }\n}',
+                `@media (min-width: 1024px) {\n  .t {\n    padding: var(${P}space-6);\n  }\n}`,
             [
                 'hide, opacity(50) hover, p(2) sm, flex md, p(6) lg',
                 'p(6) lg, flex md, hide, p(2) sm, opacity(50) hover',
             ],
         ],
         [
-            '.t:hover {\n  opacity: var(--nu-opacity-90);\n}\n.t:focus {\n  opacity: var(--nu-opacity-80);\n}\n' +
-                '.t:active {\n  opacity: var(--nu-opacity-70);\n}\n.t:disabled {\n  opacity: var(--nu-opacity-50);\n}\n' +
-                '@media (min-width: 768px) {\n  .t:hover {\n    opacity: var(--nu-opacity-60);\n  }\n}\n' +
-                '@media (min-width: 768px) {\n  .t:focus {\n    opacity: var(--nu-opacity-40);\n  }\n}',
+            `.t:hover {\n  opacity: var(${P}opacity-90);\n}\n.t:focus {\n  opacity: var(${P}opacity-80);\n}\n` +
+                `.t:active {\n  opacity: var(${P}opacity-70);\n}\n.t:disabled {\n  opacity: var(${P}opacity-50);\n}\n` +
+                `@media (min-width: 768px) {\n  .t:hover {\n    opacity: var(${P}opacity-60);\n  }\n}\n` +
+                `@media (min-width: 768px) {\n  .t:focus {\n    opacity: var(${P}opacity-40);\n  }\n}`,
             [
                 'opacity(90) hover, opacity(80) focus, opacity(70) active, opacity(50) disabled, opacity(60) hover md, opacity(40) focus md',
                 'opacity(40) focus md, opacity(50) disabled, opacity(60) hover md, opacity(70) active, opacity(80) focus, opacity(90) hover',
@@ -1410,9 +1424,9 @@ function run() {
             );
             const missing = [
                 '.t {\n  opacity: inherit;',
-                '.u {\n  opacity: var(--nu-opacity-50);',
-                '.v {\n  opacity: var(--nu-opacity-50);',
-                '.v:hover {\n  opacity: var(--nu-opacity-25);',
+                `.u {\n  opacity: var(${P}opacity-50);`,
+                `.v {\n  opacity: var(${P}opacity-50);`,
+                `.v:hover {\n  opacity: var(${P}opacity-25);`,
             ].filter((text) => !css.includes(text));
             if (warnings.length) {
                 failures.push(
@@ -1457,8 +1471,7 @@ function run() {
     }
 
     // A component compiled through the mixins entry outputs only its own rules, in all three load styles
-    const COMPONENT_EXPECTED =
-        '.card {\n  color: var(--nu-text-muted);\n  padding: var(--nu-space-4);\n  background-color: var(--nu-bg-surface);\n}\n.card:hover {\n  box-shadow: var(--nu-shadow-md);\n}\n@media (min-width: 768px) {\n  .card {\n    padding: var(--nu-space-6);\n  }\n}';
+    const COMPONENT_EXPECTED = `.card {\n  color: var(${P}text-muted);\n  padding: var(${P}space-4);\n  background-color: var(${P}bg-surface);\n}\n.card:hover {\n  box-shadow: var(${P}shadow-md);\n}\n@media (min-width: 768px) {\n  .card {\n    padding: var(${P}space-6);\n  }\n}`;
     for (const [label, use, prefix] of [
         ['as *', '@use "../src/styles/mixins" as *;', ''],
         ['namespaced', '@use "../src/styles/mixins" as nu;', 'nu.'],

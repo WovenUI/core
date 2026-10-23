@@ -9,6 +9,10 @@ export const STYLES_DIR = path.join(CORE_DIR, 'src', 'styles');
 export const BUILD_FILE = path.join(STYLES_DIR, 'build.scss');
 export const INDEX_FILE = path.join(STYLES_DIR, 'index.scss');
 
+// Custom property prefix, the value of $prefix in src/styles/config/_constants.scss; P is the lead of every name (--wu-)
+export const PREFIX = 'wu';
+export const P = `--${PREFIX}-`;
+
 // Fixed tokens (palette, basic colors, scales) live in a :root-only block; the light block holds theme tokens only
 export const ROOT_SELECTOR = ':root';
 export const LIGHT_SELECTOR = ':root, [data-theme=light]';
@@ -113,7 +117,7 @@ export function compileError(source) {
     }
 }
 
-// Parses flat rule blocks (no nested braces inside) into selector to { name: value } of --nu- declarations.
+// Parses flat rule blocks (no nested braces inside) into selector to { name: value } of --wu- declarations.
 // Blocks with the same selector are merged in source order.
 export function parseBlocks(css) {
     const blocks = new Map();
@@ -128,7 +132,9 @@ export function parseBlocks(css) {
         const decls = blocks.get(selector) || {};
         for (const decl of match[2].split(';')) {
             const declaration = decl.match(
-                /^\s*--nu-([a-zA-Z0-9_-]+)\s*:\s*([\s\S]*?)\s*$/
+                new RegExp(
+                    String.raw`^\s*${P}([a-zA-Z0-9_-]+)\s*:\s*([\s\S]*?)\s*$`
+                )
             );
             if (declaration) {
                 decls[declaration[1]] = declaration[2];
@@ -142,7 +148,7 @@ export function parseBlocks(css) {
 // light is what a light element resolves: the :root fixed tokens merged with the light block (lightBlock)
 export function themeBlocks(css) {
     const blocks = parseBlocks(css);
-    // Component variables (--nu-tooltip--Background) also sit on :root; they are not tokens
+    // Component variables (--wu-tooltip--Background) also sit on :root; they are not tokens
     const root = Object.fromEntries(
         Object.entries(blocks.get(ROOT_SELECTOR) || {}).filter(
             ([name]) => !name.includes('--')
@@ -170,7 +176,7 @@ export function themeBlocks(css) {
     };
 }
 
-// Resolves --nu-{name} through var() references. Layers are searched first to last at every step,
+// Resolves --wu-{name} through var() references. Layers are searched first to last at every step,
 // matching the cascade where a theme block overrides :root and inherits the rest.
 export function resolveToken(name, layers, seen = []) {
     if (seen.includes(name)) {
@@ -182,10 +188,12 @@ export function resolveToken(name, layers, seen = []) {
         Object.prototype.hasOwnProperty.call(candidate, name)
     );
     if (!layer) {
-        throw new Error(`--nu-${name} is not defined`);
+        throw new Error(`${P}${name} is not defined`);
     }
     const value = layer[name];
-    const ref = value.match(/^var\(\s*--nu-([a-zA-Z0-9_-]+)\s*\)$/);
+    const ref = value.match(
+        new RegExp(String.raw`^var\(\s*${P}([a-zA-Z0-9_-]+)\s*\)$`)
+    );
     return ref ? resolveToken(ref[1], layers, [...seen, name]) : value;
 }
 
@@ -424,7 +432,7 @@ function matchesComplex(selector, element) {
     );
 }
 
-// Rules carrying --nu- declarations whose selectors name :root or data-theme, in source order:
+// Rules carrying --wu- declarations whose selectors name :root or data-theme, in source order:
 // { selectors: [parsed complex selectors], media: null | 'dark' | 'light', decls }.
 // Other at-rules are skipped; a prefers-color-scheme media block is entered
 export function themeRules(css) {
@@ -490,7 +498,7 @@ export function elementChain(specs) {
     return parent;
 }
 
-// Computed value of --nu-{name} on an element: the declaration of the matching rule with the highest specificity,
+// Computed value of --wu-{name} on an element: the declaration of the matching rule with the highest specificity,
 // later rules winning ties, else the parent's value (custom properties inherit). scheme is 'dark' or 'light'
 export function cascadeValue(rules, element, name, scheme) {
     let best = null;

@@ -17,6 +17,7 @@ import {
     INVERSE_LIGHT_FALLBACK_SELECTOR,
     INVERSE_LIGHT_SELECTOR,
     LIGHT_SELECTOR,
+    P,
     cascadeValue,
     compileError,
     compileFile,
@@ -38,11 +39,11 @@ const HC_MAPS =
     '$high-contrast-light: ("text-muted": #000, "border-control": gray 900), $high-contrast-dark: ("text-muted": #fff, "brand": brand 300)';
 const HC_LIGHT = {
     'text-muted': '#000',
-    'border-control': 'var(--nu-gray-900)',
+    'border-control': `var(${P}gray-900)`,
 };
 const HC_DARK = {
     'text-muted': '#fff',
-    brand: 'var(--nu-brand-300)',
+    brand: `var(${P}brand-300)`,
 };
 const HC_KEYS = ['text-muted', 'border-control', 'brand'];
 const MEDIA_DARK = '@media (prefers-color-scheme: dark)';
@@ -93,15 +94,15 @@ function compileWith(entries, extra = '') {
 
 function expectToken(block, label, name, value) {
     if (!block || !(name in block)) {
-        fail(`${label}: --nu-${name} is missing`);
+        fail(`${label}: ${P}${name} is missing`);
     } else if (value !== undefined && block[name] !== value) {
-        fail(`${label}: --nu-${name} is ${block[name]}, expected ${value}`);
+        fail(`${label}: ${P}${name} is ${block[name]}, expected ${value}`);
     }
 }
 
 function expectNoToken(block, label, name) {
     if (block && name in block) {
-        fail(`${label}: --nu-${name} must not be emitted`);
+        fail(`${label}: ${P}${name} must not be emitted`);
     }
 }
 
@@ -166,12 +167,12 @@ const ERROR_CASES = [
     [
         'old {role}-default key (renamed to the bare role name in 2.0)',
         '$light-theme: ("brand-default": brand 800)',
-        "$light-theme: 'brand-default' was renamed to 'brand' in 2.0 (--nu-brand)",
+        `$light-theme: 'brand-default' was renamed to 'brand' in 2.0 (${P}brand)`,
     ],
     [
         'old {role}-default key for a custom role in $dark-theme',
         `$semantic-colors: (${ROLES}, "accent": #8b5cf6), $dark-theme: ("accent-default": accent 300)`,
-        "$dark-theme: 'accent-default' was renamed to 'accent' in 2.0 (--nu-accent)",
+        `$dark-theme: 'accent-default' was renamed to 'accent' in 2.0 (${P}accent)`,
     ],
     [
         'old {role}-default key in $high-contrast-light',
@@ -289,9 +290,9 @@ function run() {
             );
             const { light, dark } = themeBlocks(css);
             expectToken(light, 'light', 'accent-500');
-            expectToken(light, 'light', 'accent', 'var(--nu-accent-700)');
+            expectToken(light, 'light', 'accent', `var(${P}accent-700)`);
             expectToken(light, 'light', 'text-on-accent');
-            expectToken(dark, 'dark', 'accent', 'var(--nu-accent-400)');
+            expectToken(dark, 'dark', 'accent', `var(${P}accent-400)`);
             expectToken(dark, 'dark', 'text-on-accent');
             expectIncludes(css, '.bg-accent,', 'classes');
             expectIncludes(css, '.text-on-accent {', 'classes');
@@ -314,16 +315,14 @@ function run() {
                 expectNoToken(light, 'light', name);
                 expectNoToken(dark, 'dark', name);
             }
-            expectExcludes(css, '--nu-danger', 'output');
+            expectExcludes(css, `${P}danger`, 'output');
             expectExcludes(css, '.bg-error', 'classes');
             if (
-                !/:is\(\[aria-invalid=true\], :user-invalid\) \{\s*border-color: var\(--nu-border-control\);/.test(
-                    css
-                )
+                !new RegExp(
+                    String.raw`:is\(\[aria-invalid=true\], :user-invalid\) \{\s*border-color: var\(${P}border-control\);`
+                ).test(css)
             ) {
-                fail(
-                    'base: invalid inputs do not use var(--nu-border-control)'
-                );
+                fail(`base: invalid inputs do not use var(${P}border-control)`);
             }
         }
     );
@@ -337,7 +336,7 @@ function run() {
             );
             expectIncludes(
                 css,
-                '.t-space > * + * {\n  margin-inline-start: var(--nu-space-4);\n}',
+                `.t-space > * + * {\n  margin-inline-start: var(${P}space-4);\n}`,
                 'space-x(4)'
             );
             if (
@@ -353,10 +352,15 @@ function run() {
                 fail('.sticky: top or z-index is set outside :where()');
             }
             const registrations = [
-                ...css.matchAll(/@property (--nu-[\w-]+) \{([^}]*)\}/g),
+                ...css.matchAll(
+                    new RegExp(
+                        String.raw`@property (${P}[\w-]+) \{([^}]*)\}`,
+                        'g'
+                    )
+                ),
             ];
             if (registrations.length === 0) {
-                fail('@property: no --nu-* registrations found');
+                fail(`@property: no ${P}* registrations found`);
             }
             for (const [, name, body] of registrations) {
                 if (!/\binherits: false;/.test(body)) {
@@ -365,15 +369,15 @@ function run() {
             }
             expectIncludes(
                 css,
-                '.t-scale {\n  --nu-scale-x: 1.5;\n  --nu-scale-y: 1.5;',
+                `.t-scale {\n  ${P}scale-x: 1.5;\n  ${P}scale-y: 1.5;`,
                 'scale(150)'
             );
             if (
-                !/:is\(\[aria-invalid=true\], :user-invalid\) \{\s*border-color: var\(--nu-danger\);/.test(
-                    css
-                )
+                !new RegExp(
+                    String.raw`:is\(\[aria-invalid=true\], :user-invalid\) \{\s*border-color: var\(${P}danger\);`
+                ).test(css)
             ) {
-                fail('base: invalid inputs do not use var(--nu-danger)');
+                fail(`base: invalid inputs do not use var(${P}danger)`);
             }
             expectIncludes(
                 css,
@@ -392,7 +396,7 @@ function run() {
             );
             expectIncludes(
                 css,
-                '\n.hover-ready {\n  transition-property: all;\n}\n\n:where(.hover-ready) {\n  transition-duration: var(--nu-duration-200);',
+                `\n.hover-ready {\n  transition-property: all;\n}\n\n:where(.hover-ready) {\n  transition-duration: var(${P}duration-200);`,
                 '.hover-ready'
             );
             if (/\n\.hover-ready \{[^}]*transition-duration/.test(css)) {
@@ -418,7 +422,7 @@ function run() {
             }
             expectIncludes(
                 css,
-                '.t-map {\n  animation: anim-spin-normal 2s linear infinite;\n  padding: var(--nu-space-4);',
+                `.t-map {\n  animation: anim-spin-normal 2s linear infinite;\n  padding: var(${P}space-4);`,
                 'nu.apply(nu.animate-spin(map))'
             );
         }
@@ -515,9 +519,9 @@ function run() {
         );
         const { light, dark } = themeBlocks(css);
         expectToken(light, 'light', 'teal-500', '#14b8a6');
-        expectToken(light, 'light', 'teal-subtle', 'var(--nu-teal-50)');
+        expectToken(light, 'light', 'teal-subtle', `var(${P}teal-50)`);
         expectToken(light, 'light', 'text-teal');
-        expectToken(dark, 'dark', 'teal-subtle', 'var(--nu-teal-950)');
+        expectToken(dark, 'dark', 'teal-subtle', `var(${P}teal-950)`);
         expectNoToken(light, 'light', 'text-on-teal');
         expectIncludes(css, '.bg-teal,', 'classes');
         expectIncludes(css, '.text-teal,', 'classes');
@@ -535,8 +539,8 @@ function run() {
         if (quoted !== unquoted) {
             fail('unquoted keys changed the output');
         }
-        expectIncludes(unquoted, '--nu-red-700:', 'unquoted');
-        expectIncludes(unquoted, '--nu-teal-subtle:', 'unquoted');
+        expectIncludes(unquoted, `${P}red-700:`, 'unquoted');
+        expectIncludes(unquoted, `${P}teal-subtle:`, 'unquoted');
     });
 
     check(
@@ -547,16 +551,16 @@ function run() {
                 '.x { a: nu.token("bg-brand-soft"); }'
             );
             const { light, dark, fallback } = themeBlocks(css);
-            expectToken(light, 'light', 'bg-brand-soft', 'var(--nu-brand-100)');
-            expectToken(dark, 'dark', 'bg-brand-soft', 'var(--nu-brand-900)');
+            expectToken(light, 'light', 'bg-brand-soft', `var(${P}brand-100)`);
+            expectToken(dark, 'dark', 'bg-brand-soft', `var(${P}brand-900)`);
             expectToken(
                 fallback,
                 'fallback',
                 'bg-brand-soft',
-                'var(--nu-brand-900)'
+                `var(${P}brand-900)`
             );
             expectIncludes(css, '.bg-brand-soft,', 'classes');
-            expectIncludes(css, 'a: var(--nu-bg-brand-soft);', 'token()');
+            expectIncludes(css, `a: var(${P}bg-brand-soft);`, 'token()');
         }
     );
 
@@ -586,7 +590,7 @@ function run() {
                 '$feature-flags: ("theme": false)',
                 '@use "functions/tokens" as tokens;\n.x { a: tokens.has-token("brand"); }'
             );
-            expectExcludes(css, '--nu-brand:', 'output');
+            expectExcludes(css, `${P}brand:`, 'output');
             expectIncludes(css, 'a: false;', 'has-token("brand")');
             const message = compileError(
                 '@use "index" as nu with ($feature-flags: ("theme": false));\n.x { a: nu.token("brand"); }'
@@ -854,7 +858,7 @@ function run() {
                                 : values[name];
                             if (got !== expected) {
                                 fail(
-                                    `${where}: --nu-${name} is ${got}, expected ${expected}`
+                                    `${where}: ${P}${name} is ${got}, expected ${expected}`
                                 );
                             }
                         }
@@ -971,14 +975,14 @@ function run() {
                 'skew-y',
                 'gap',
             ]) {
-                expectIncludes(css, `@property --nu-${name} {`, 'flags off');
+                expectIncludes(css, `@property ${P}${name} {`, 'flags off');
             }
             expectIncludes(
                 css,
-                '--nu-translate-x: var(--nu-space-4)',
+                `${P}translate-x: var(${P}space-4)`,
                 'flags off'
             );
-            expectIncludes(css, '--nu-gap: var(--nu-space-4)', 'flags off');
+            expectIncludes(css, `${P}gap: var(${P}space-4)`, 'flags off');
         }
     );
 
@@ -1054,37 +1058,65 @@ function run() {
     );
 
     check(
-        'base flag: false drops the base layer, keeps the reset; base reads --nu-font-family',
+        `base flag: false drops the base layer, keeps the reset; base reads ${P}font-family`,
         () => {
             const on = compileWith('$generate-utility-classes: false');
             expectIncludes(on, '@layer base', 'default');
             expectIncludes(
                 on,
-                '  body {\n    background-color: var(--nu-bg-base);',
+                `  body {\n    background-color: var(${P}bg-base);`,
                 'default'
             );
+            expectIncludes(on, `font-family: var(${P}font-family);`, 'default');
             expectIncludes(
                 on,
-                'font-family: var(--nu-font-family);',
-                'default'
-            );
-            expectIncludes(
-                on,
-                '--nu-font-family: system-ui, -apple-system, "BlinkMacSystemFont", "Segoe UI"',
+                `${P}font-family: system-ui, -apple-system, "BlinkMacSystemFont", "Segoe UI"`,
                 'default'
             );
             const off = compileWith('$feature-flags: ("base": false)');
             expectExcludes(off, '@layer base', 'base false');
             expectExcludes(off, 'font-family: var(', 'base false');
             expectIncludes(off, '@layer reset', 'base false');
-            expectIncludes(off, '--nu-font-family:', 'base false');
+            expectIncludes(off, `${P}font-family:`, 'base false');
             const noTheme = compileWith('$feature-flags: ("theme": false)');
             expectIncludes(
                 noTheme,
                 'font-family: system-ui, -apple-system, "BlinkMacSystemFont"',
                 'theme false'
             );
-            expectExcludes(noTheme, '--nu-font-family', 'theme false');
+            expectExcludes(noTheme, `${P}font-family`, 'theme false');
+        }
+    );
+
+    check(
+        'utility classes: .hidden is an exact alias of .hide, with responsive forms and the same order',
+        () => {
+            const css = compileWith('$generate-utility-classes: true');
+            expectIncludes(css, '\n.hidden {\n  display: none;\n}', '.hidden');
+            expectExcludes(css, 'display: none !important', '.hidden');
+            expectIncludes(
+                css,
+                '.hidden\\@md {\n    display: none;\n  }',
+                '.hidden@md'
+            );
+            const order = (a, b, label) => {
+                const ia = css.indexOf(a);
+                const ib = css.indexOf(b);
+                if (ia === -1 || ib === -1 || ia > ib) {
+                    fail(`${label}: order wrong (${ia}, ${ib})`);
+                }
+            };
+            order('\n.hide {', '\n.hidden {', '.hidden after .hide');
+            order(
+                '.hide\\@md {',
+                '.hidden\\@md {',
+                '.hidden@md after .hide@md'
+            );
+            order(
+                '.hidden\\@md {',
+                '.show\\@md {',
+                '.show@md after .hidden@md'
+            );
         }
     );
 
@@ -1107,17 +1139,17 @@ function run() {
             expectExcludes(css, 'justify-content: stretch', '.stretch');
             expectIncludes(
                 css,
-                ':where(.transition, .transition-colors, .transition-opacity, .transition-shadow, .transition-transform) {\n  transition-duration: var(--nu-duration-200);\n  transition-timing-function: var(--nu-ease-in-out);',
+                `:where(.transition, .transition-colors, .transition-opacity, .transition-shadow, .transition-transform) {\n  transition-duration: var(${P}duration-200);\n  transition-timing-function: var(${P}ease-in-out);`,
                 'transition defaults'
             );
             expectIncludes(css, '.opacity-50,', 'opacity class set');
             expectIncludes(css, '.opacity-33,', 'opacity class set');
             expectIncludes(
                 css,
-                'opacity: var(--nu-opacity-50);',
+                `opacity: var(${P}opacity-50);`,
                 'opacity token'
             );
-            expectIncludes(css, '--nu-opacity-66: 0.66;', 'opacity token');
+            expectIncludes(css, `${P}opacity-66: 0.66;`, 'opacity token');
             expectIncludes(css, '[data-tooltip] {', 'tooltip trigger');
             expectExcludes(css, 'role~=tooltip', 'tooltip trigger');
         }
@@ -1131,17 +1163,17 @@ function run() {
             );
             expectIncludes(
                 css,
-                'background-color var(--nu-duration-300) var(--nu-ease-out)',
+                `background-color var(${P}duration-300) var(${P}ease-out)`,
                 'base button transition'
             );
             expectIncludes(
                 css,
-                'transition: border-color var(--nu-duration-300) var(--nu-ease-out);',
+                `transition: border-color var(${P}duration-300) var(${P}ease-out);`,
                 'base field transition'
             );
             expectExcludes(
                 css,
-                'var(--nu-duration-200) var(--nu-ease-in-out)',
+                `var(${P}duration-200) var(${P}ease-in-out)`,
                 'base defaults'
             );
         }
@@ -1153,7 +1185,7 @@ function run() {
             const css = compileWith(
                 '$generate-utility-classes: true, $opacities: (0: 0, 15: 0.15, 100: 1)'
             );
-            expectIncludes(css, '--nu-opacity-15: 0.15;', 'tokens');
+            expectIncludes(css, `${P}opacity-15: 0.15;`, 'tokens');
             expectIncludes(css, '.opacity-15,', 'classes');
             expectExcludes(css, '.opacity-50', 'classes');
             expectIncludes(css, '.w-50', 'percentage widths keep $percentages');
@@ -1186,13 +1218,13 @@ function run() {
                     block,
                     label,
                     'tooltip--Background',
-                    'var(--nu-text-regular)'
+                    `var(${P}text-regular)`
                 );
                 expectToken(
                     block,
                     label,
                     'tooltip--Color',
-                    'var(--nu-text-inverted)'
+                    `var(${P}text-inverted)`
                 );
             }
         }
@@ -1206,18 +1238,18 @@ function run() {
             );
             expectIncludes(
                 css,
-                '.p-4 {\n  padding: var(--nu-space-4);\n}',
+                `.p-4 {\n  padding: var(${P}space-4);\n}`,
                 'spacing class'
             );
             expectIncludes(
                 css,
-                '.backdrop-hue-rotate-90 {\n  --nu-backdrop-hue-rotate: hue-rotate(90deg);',
+                `.backdrop-hue-rotate-90 {\n  ${P}backdrop-hue-rotate: hue-rotate(90deg);`,
                 'backdrop hue class'
             );
             expectExcludes(css, '.backdrop-hue-90', 'backdrop hue class');
             expectIncludes(
                 css,
-                '-webkit-backdrop-filter: var(--nu-backdrop-blur)',
+                `-webkit-backdrop-filter: var(${P}backdrop-blur)`,
                 'backdrop -webkit- twin'
             );
             expectIncludes(
@@ -1335,7 +1367,7 @@ function run() {
                 keptTwin,
                 'explicit text-on',
                 'brand',
-                'var(--nu-brand-900)'
+                `var(${P}brand-900)`
             );
             expectToken(keptTwin, 'explicit text-on', 'text-on-brand', '#000');
         }
@@ -1377,7 +1409,7 @@ function run() {
             const fonts = compileWith('$font-family: "Inter, sans-serif"');
             expectIncludes(
                 fonts,
-                '--nu-font-family: Inter, sans-serif;',
+                `${P}font-family: Inter, sans-serif;`,
                 'quoted font list'
             );
             const fontsOff = compileWith(
@@ -1395,7 +1427,7 @@ function run() {
             );
             expectIncludes(
                 darkOff,
-                '--nu-my-accent: #f00;',
+                `${P}my-accent: #f00;`,
                 'dark off custom key'
             );
 
@@ -1404,7 +1436,7 @@ function run() {
             );
             expectIncludes(
                 explicit,
-                '.text-on-brand {\n  color: var(--nu-text-on-brand);',
+                `.text-on-brand {\n  color: var(${P}text-on-brand);`,
                 'explicit text-on class'
             );
             expectExcludes(
@@ -1418,7 +1450,7 @@ function run() {
             );
             expectIncludes(
                 custom,
-                '.text-on-accent,\n.hover\\:text-on-accent:hover,\n.group:hover .group-hover\\:text-on-accent {\n  color: var(--nu-text-on-accent);',
+                `.text-on-accent,\n.hover\\:text-on-accent:hover,\n.group:hover .group-hover\\:text-on-accent {\n  color: var(${P}text-on-accent);`,
                 'custom text-on key (not a role) classes'
             );
         }
@@ -1430,19 +1462,19 @@ function run() {
             for (const [body, expected] of [
                 [
                     '.x { @include nu.bg(brand); }',
-                    'bg(brand): color names give --nu-* tokens',
+                    `bg(brand): color names give ${P}* tokens`,
                 ],
                 [
                     '.x { @include nu.text-color(muted); }',
-                    'text-color(muted): color names give --nu-* tokens',
+                    `text-color(muted): color names give ${P}* tokens`,
                 ],
                 [
                     '.x { @include nu.border-color(red); }',
-                    'border-color(red): color names give --nu-* tokens',
+                    `border-color(red): color names give ${P}* tokens`,
                 ],
                 [
                     '.x { @include nu.bg(red, 600); }',
-                    'bg(red, 600): color names give --nu-* tokens',
+                    `bg(red, 600): color names give ${P}* tokens`,
                 ],
             ]) {
                 const message = compileError(
@@ -1475,7 +1507,7 @@ function run() {
                 '.grid:where(.inline) {\n  display: inline-grid;',
                 '.container:where(.flex) {\n  display: flex;',
                 '.container:where(.grid) {\n  display: grid;',
-                ':where(.absolute-center) {\n  --nu-translate-x: -50%;',
+                `:where(.absolute-center) {\n  ${P}translate-x: -50%;`,
             ]) {
                 expectIncludes(css, text, 'cascade');
             }
@@ -1516,7 +1548,7 @@ function run() {
             const css = compileWith('$generate-utility-classes: false');
             expectIncludes(
                 css,
-                'select:not([multiple], :where([size]:not([size="1"])))) {\n    height: var(--nu-control-height-md);',
+                `select:not([multiple], :where([size]:not([size="1"])))) {\n    height: var(${P}control-height-md);`,
                 'select height'
             );
             expectIncludes(
@@ -1631,7 +1663,7 @@ function run() {
             ).css;
             expectIncludes(
                 half,
-                '.a {\n  width: var(--nu-space-1-2);\n  padding: var(--nu-space-1-2);',
+                `.a {\n  width: var(${P}space-1-2);\n  padding: var(${P}space-1-2);`,
                 'fractional key'
             );
         }

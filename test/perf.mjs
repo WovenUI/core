@@ -19,7 +19,7 @@
 //   as * identical, as * varied, as * modifiers   `@use "mixins-map" as *` with apply(): items are real mixin calls.
 //                One item list in every rule; spacing keys, palette colors and shades cycled; the same items with
 //                state and breakpoint modifiers.
-//   namespaced keys    the varied items through `NuvoUI.apply()`, where items arrive as text and are parsed.
+//   namespaced keys    the varied items through `WovenUI.apply()`, where items arrive as text and are parsed.
 //   repeated as *, repeated namespaced    raw values drawn from small pools (lengths, percentages, hex colors, hex
 //                colors at a shade), so every value repeats across rules, as in a real stylesheet.
 //   large-app    the first LARGE_APP_RULES rules of test/fixtures/large-app.scss (namespaced, 10 items per call).
@@ -69,7 +69,7 @@ const REPEATED = (i) =>
     `p(${(i % 24) + 1}px), mt(${(i % 16) / 4 + 0.25}rem), max-width(${(i % 20) * 10 + 200}px), width(${(i % 12) * 5 + 40}%), bg(${REPEATED_HEX[i % 24]}), text-color(${REPEATED_HEX[(i * 5) % 24]}, ${[600, 700][i % 2]}), border-color(${REPEATED_HEX[(i * 7) % 24]})`;
 
 const AS_STAR = '@use "mixins-map" as *;';
-const NAMESPACED = '@use "mixins-map" as NuvoUI;';
+const NAMESPACED = '@use "mixins-map" as WovenUI;';
 
 // [name, use line, apply name, items of rule i]
 const GENERATED = [
@@ -88,9 +88,9 @@ const GENERATED = [
         (i) =>
             `p(${KEYS[i % 10]}) md, m(${KEYS[(i * 3) % 10]}) lg, bg(${COLORS[i % 6]}, ${SHADES[(i >> 1) % 10]}) hover, text-color(${COLORS[(i + 2) % 6]}) focus, border-color(${COLORS[(i + 4) % 6]}) hover md, flex md, rounded(md) hover, shadow(md) hover lg`,
     ],
-    ['namespaced keys', NAMESPACED, 'NuvoUI.apply', VARIED],
+    ['namespaced keys', NAMESPACED, 'WovenUI.apply', VARIED],
     ['repeated as *', AS_STAR, 'apply', REPEATED],
-    ['repeated namespaced', NAMESPACED, 'NuvoUI.apply', REPEATED],
+    ['repeated namespaced', NAMESPACED, 'WovenUI.apply', REPEATED],
 ];
 
 const LARGE_APP = path.join(TEST_DIR, 'fixtures', 'large-app.scss');
@@ -154,7 +154,9 @@ function extractBaseline() {
     if (archive === null) {
         return [null, `git archive ${BASELINE_COMMIT} failed`];
     }
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'nuvoui-perf-baseline-'));
+    const dir = fs.mkdtempSync(
+        path.join(os.tmpdir(), 'wovenui-perf-baseline-')
+    );
     const tar = spawnSync('tar', ['-x', '-C', dir], { input: archive });
     if (tar.error || tar.status !== 0) {
         fs.rmSync(dir, { recursive: true, force: true });
@@ -302,7 +304,7 @@ function uniqueSource(rules) {
     const lines = [NAMESPACED];
     for (let i = 1; i <= rules; i++) {
         lines.push(
-            `.u-${i} { @include NuvoUI.apply(p(${i}px), mt(${(i / 100).toFixed(2)}rem), max-width(${i + 7}px), ml(calc(${i}px + 1rem)), bg(${uniqueHex(i, 17)}), text-color(${uniqueHex(i, 91)}, 600), border-color(${uniqueHex(i, 53)}, 300)); }`
+            `.u-${i} { @include WovenUI.apply(p(${i}px), mt(${(i / 100).toFixed(2)}rem), max-width(${i + 7}px), ml(calc(${i}px + 1rem)), bg(${uniqueHex(i, 17)}), text-color(${uniqueHex(i, 91)}, 600), border-color(${uniqueHex(i, 53)}, 300)); }`
         );
     }
     return lines.join('\n');
@@ -386,7 +388,7 @@ function run() {
             );
         } else {
             console.log(
-                `perf: ${reason}; skipping the baseline checks (run from a git checkout of @nuvoui/core to include them)\n`
+                `perf: ${reason}; skipping the baseline checks (run from a git checkout of @wovenui/core to include them)\n`
             );
         }
         checkSelfRelative(problems);
