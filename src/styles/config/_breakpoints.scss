@@ -3,7 +3,14 @@
 //// Media query breakpoints for responsive design.
 ////
 
+@use "sass:list";
+@use "sass:map";
+@use "sass:math";
+@use "sass:meta";
+
 /// Breakpoints: name to minimum width, used by the @breakpoint modifiers, the media query mixins and the width classes.
+///
+/// The map is sorted by width after configuration, so responsive classes and apply() breakpoint items are emitted from the smallest width up whatever the key order; when the widths are not all numbers in compatible units (px and em mixed, calc(), var()), the configured order is kept.
 /// @type Map
 $breakpoints: (
     "xs": 480px,
@@ -13,3 +20,32 @@ $breakpoints: (
     "xl": 1280px,
     "2xl": 1536px,
 ) !default;
+
+// Map sorted by value, stable; the map unchanged when the values are not comparable numbers
+@function -sort-by-width($map) {
+    @if list.length($map) < 2 {
+        @return $map;
+    }
+    $first: list.nth(map.values($map), 1);
+    @each $value in map.values($map) {
+        @if meta.type-of($value) != "number" or not math.compatible($value, $first) {
+            @return $map;
+        }
+    }
+    $sorted: ();
+    @each $key, $value in $map {
+        $before: ();
+        $after: ();
+        @each $k, $v in $sorted {
+            @if $v > $value {
+                $after: map.set($after, $k, $v);
+            } @else {
+                $before: map.set($before, $k, $v);
+            }
+        }
+        $sorted: map.merge(map.set($before, $key, $value), $after);
+    }
+    @return $sorted;
+}
+
+$breakpoints: -sort-by-width($breakpoints);

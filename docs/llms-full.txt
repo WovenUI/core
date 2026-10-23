@@ -105,7 +105,7 @@ What the entry emits:
 | --- | --- |
 | `@layer reset, components` (reset, tooltips) | Always (tooltips follow the `tooltips` flag alone, independent of `$generate-utility-classes`) |
 | `@layer base` (base element styles, `.sr-only`) | `base` feature flag on (default), independent of `$generate-utility-classes` |
-| `@property` registrations (transform variables, `--wu-gap`) | Always, independent of feature flags |
+| `@property` registrations (transform variables, `--wu-gap`, transition group variables) | Always, independent of feature flags |
 | Tokens (`:root` fixed block, light block, dark block, inverse blocks, dark fallback, high-contrast twins when set) | `theme` feature flag on (default), independent of `$generate-utility-classes` |
 | Utility classes | `$generate-utility-classes: true` (default `false` in `index.scss`) and the feature flag on |
 
@@ -142,7 +142,7 @@ Each CSS module or component `<style>` block is a separate compile. Load `@woven
 }
 ```
 
-`@use "woven"` comes before `@use "@wovenui/core"`: both load the same configured modules, and configuring after `@wovenui/core` has loaded raises an error. `$generate-utility-classes: true` in the partial gives the classes in the global stylesheet only. The `@property` registrations come from the global stylesheet, so component mixins that read them (transforms, `gap()`, `fill()`) need it on the page.
+`@use "woven"` comes before `@use "@wovenui/core"`: both load the same configured modules, and configuring after `@wovenui/core` has loaded raises an error. `$generate-utility-classes: true` in the partial gives the classes in the global stylesheet only. The `@property` registrations come from the global stylesheet, so component mixins that read them (transforms, `gap()`, `fill()`, the transition property groups) need it on the page.
 
 Base layer (`base` flag): `body` sets `bg-base` and `text-regular`; buttons (`button`, `input` of type `submit`, `button`, `reset`) and fields (`input` without a type, text-like types, `textarea`, `select`) are styled from tokens with a `:focus-visible` ring. A `select` with `multiple` or a `size` other than 1 keeps its natural height; a single-line `select` (`size="1"` included) takes `--wu-control-height-md`. Invalid fields use `--wu-danger` (`--wu-border-control` when no `danger` role exists). Removing a key the base layer reads (`$spacings` 1, 2, 4, `$font-sizes` `sm`, `$control-heights` `md` and others) raises an error naming the map.
 
@@ -209,7 +209,7 @@ There are no delay tokens and no disabled text token (disabled text uses opacity
 
 - **Prefix**: `--wu-` then single hyphens only: `--wu-text-muted`, `--wu-brand-hover`.
 - **Component variables** always contain `__` or `--` after the component name: `--wu-btn--BackgroundColor`, `--wu-sidebar__link--Color`. They can never clash with core tokens. Core's tooltip uses this grammar: `--wu-tooltip--Background`, `--wu-tooltip--Color`, `--wu-tooltip--ZIndex`.
-- **Internal utility variables** also carry `--wu-` but are not tokens (`token()` rejects them): `--wu-border-style`, `--wu-gap`, `--wu-translate-x`, `--wu-scale-x`, `--wu-rotate`, `--wu-skew-x`, `--wu-backdrop-blur` and so on. The transform variables and `--wu-gap` are registered with `@property` (`inherits: false`), so they never leak into descendants, and they are read without `var()` fallbacks: an unset one takes its registered initial value. The registrations are emitted whenever the package loads, independent of feature flags, so the mixins work with the utility classes off.
+- **Internal utility variables** also carry `--wu-` but are not tokens (`token()` rejects them): `--wu-border-style`, `--wu-gap`, `--wu-translate-x`, `--wu-scale-x`, `--wu-rotate`, `--wu-skew-x`, `--wu-backdrop-blur`, `--wu-transition-colors`, `--wu-transition-opacity`, `--wu-transition-shadow`, `--wu-transition-transform` and so on. The transform variables and `--wu-gap` are registered with `@property` (`inherits: false`), so they never leak into descendants, and they are read without `var()` fallbacks: an unset one takes its registered initial value. The transition group variables are registered with `syntax: "*"` and `inherits: false` and read with the fallback `--wu-none`, a property name nothing animates. The registrations are emitted whenever the package loads, independent of feature flags, so the mixins work with the utility classes off.
 - **Classes stay short**: `text-muted`, `bg-danger`. Only the variables carry `--wu-`.
 - **Role state ladder**: `--wu-{role}` (the bare name is the resting fill: `--wu-brand`, `--wu-danger`, `--wu-error`), `-hover`, `-active`, plus `-subtle` (tinted background) and `-border` (soft edge). There is no `--wu-{role}-default`: `token(brand-default)` and a `"brand-default"` theme key raise a rename error pointing at `brand`.
 - **`text-{role}` vs `text-on-{role}`**:
@@ -373,7 +373,9 @@ hover:property-value@breakpoint
 group-hover:property-value
 ```
 
-Examples: `bg-brand`, `p-4@md`, `hover:bg-brand-subtle`, `text-muted`, `focus:border-brand`.
+Examples: `bg-brand`, `p-4@md`, `hover:bg-brand-subtle`, `hover:opacity-75@sm`, `text-muted`, `focus:border-brand`.
+
+Color classes (`bg-*`, `text-*`, `border-*` colors) have no breakpoint form, with or without a state prefix (`text-white@md` and `hover:text-white@md` do not exist); for a responsive color use `apply()`: `text-color(white) hover md`.
 
 State prefixes generated: `hover:` and `group-hover:` for colors (`bg`, `text`, `border`), border widths, width and height, opacity, transforms (translate, rotate, scale, origin), plus `hover:` for shadows; `active:` and `focus:` for border colors, opacity and shadows. Spacing, display and layout classes have no state prefix: use `apply()` with a state.
 
@@ -423,7 +425,7 @@ Never write `hover:` or a breakpoint before the utility inside `apply()`. Never 
 
 ### 4. Breakpoints
 
-`xs` 480px, `sm` 640px, `md` 768px, `lg` 1024px, `xl` 1280px, `2xl` 1536px. Mobile first: a breakpoint means "this width and up" (`min-width`).
+`xs` 480px, `sm` 640px, `md` 768px, `lg` 1024px, `xl` 1280px, `2xl` 1536px. Mobile first: a breakpoint means "this width and up" (`min-width`). Responsive classes and `apply()` breakpoint items are emitted in ascending width order whatever the order of the keys in `$breakpoints` (`("sm": 640px, "lg": 1024px, "tablet": 900px)` emits `sm`, `tablet`, `lg`), so a larger breakpoint always wins; when the widths are not all numbers in compatible units (`em` and `rem` mixed, `calc()`), the map order is kept.
 
 ```html
 <div class="flex col row@md">...</div>
@@ -622,6 +624,8 @@ Keywords: `w-auto`, `w-full`, `w-screen`, `w-min`, `w-max`, `w-fit`, `h-auto`, `
 ### Transitions
 
 - Property: `transition` (all, plus the default duration and easing tokens from `$transition-default-duration` (`200`) and `$transition-default-ease` (`in-out`); the `.transition` class keeps them in `:where()`), `transition-none`, `transition-colors`, `transition-opacity`, `transition-shadow`, `transition-transform` (the last four also set the default duration and easing, in `:where()` for the classes)
+- Property groups combine: `transition-colors`, `transition-opacity`, `transition-shadow` and `transition-transform` each set their own non-inheriting variable (`--wu-transition-colors` ...) and all write one `transition-property: var(--wu-transition-colors, --wu-none), ...` list of every group, so `class="transition-colors transition-transform"` and `apply(transition-colors, transition-transform)` transition both. The computed `transition-property` lists `--wu-none` for each unset group; it animates nothing. A child does not take its parent's groups.
+- Precedence: `.transition` and `.transition-none` come before the group classes, so a group class on the same element replaces them (`class="transition transition-colors"` transitions colors only). In `apply()` the last of `transition`, `transition-none` and a group mixin decides; group mixins combine with each other.
 - `duration($value)`: `$durations` key (`duration(200)` gives `var(--wu-duration-200)`) or a time (`427ms`)
 - `delay($value)`: `$delays` key (raw value, no token) or a time
 - `ease($name)`: `$timing-functions` key (`linear`, `in`, `out`, `in-out`), a CSS keyword, `cubic-bezier()`, `steps()`, `linear()` or `var()`. Shortcuts: `ease-linear`, `ease-in`, `ease-out`, `ease-in-out`

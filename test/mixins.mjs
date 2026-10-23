@@ -932,7 +932,8 @@ const EXPECTED_OUTPUT = [
         'transition-colors gets the default duration and easing',
         '@include apply(transition-colors);',
         [
-            'transition-property: color, background-color, border-color, text-decoration-color, fill, stroke',
+            `${P}transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke`,
+            `transition-property: var(${P}transition-colors, ${P}none), var(${P}transition-opacity, ${P}none), var(${P}transition-shadow, ${P}none), var(${P}transition-transform, ${P}none)`,
             `transition-duration: var(${P}duration-200)`,
             `transition-timing-function: var(${P}ease-in-out)`,
         ],
@@ -941,9 +942,9 @@ const EXPECTED_OUTPUT = [
         'transition-opacity, -shadow, -transform get the defaults and duration() overrides them',
         '@include apply(transition-opacity, transition-shadow, transition-transform, duration(300));',
         [
-            'transition-property: opacity',
-            'transition-property: box-shadow',
-            'transition-property: transform',
+            `${P}transition-opacity: opacity`,
+            `${P}transition-shadow: box-shadow`,
+            `${P}transition-transform: transform`,
             `transition-duration: var(${P}duration-200)`,
             `transition-duration: var(${P}duration-300)`,
         ],
@@ -1302,6 +1303,48 @@ function run() {
     }
     console.log(
         `${failures.length === orderBefore ? 'pass' : 'FAIL'}  state and breakpoint in either order give the same rule (as *, N.apply, nu.apply)`
+    );
+
+    // Transition property groups combine: each sets its own variable and writes the same combined list, so the last
+    // transition-property reads every group set on the element, on all three apply() paths
+    const GROUP_LIST = ['colors', 'opacity', 'shadow', 'transform']
+        .map((name) => `var(${P}transition-${name}, ${P}none)`)
+        .join(', ');
+    const combineBefore = failures.length;
+    for (const [label, use, prefix] of [
+        ['as *', '@use "../src/styles/index" as *;', ''],
+        ['N', '@use "mixins-map" as N;', 'N.'],
+        ['nu', '@use "../src/styles/index" as nu;', 'nu.'],
+    ]) {
+        try {
+            const { css, warnings } = compileSource(
+                `${use}\n.t {\n    @include ${prefix}apply(transition-colors, transition-transform);\n}\n`
+            );
+            const rule = css.slice(css.lastIndexOf('\n.t {') + 1);
+            const properties = [
+                ...rule.matchAll(/transition-property: ([^;]+);/g),
+            ].map((match) => match[1]);
+            const missing = [
+                `${P}transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;`,
+                `${P}transition-transform: transform;`,
+            ].filter((text) => !rule.includes(text));
+            if (warnings.length) {
+                failures.push(
+                    `apply(transition-colors, transition-transform) (${label}): warning: ${warnings[0].message.split('\n')[0]}`
+                );
+            } else if (missing.length || properties.at(-1) !== GROUP_LIST) {
+                failures.push(
+                    `apply(transition-colors, transition-transform) (${label}): the groups do not combine: ${rule.slice(0, 240)}`
+                );
+            }
+        } catch (error) {
+            failures.push(
+                `apply(transition-colors, transition-transform) (${label}): error: ${(error.sassMessage ?? error.message).split('\n')[0]}`
+            );
+        }
+    }
+    console.log(
+        `${failures.length === combineBefore ? 'pass' : 'FAIL'}  transition-colors and transition-transform combine in one apply() (as *, N.apply, nu.apply)`
     );
 
     // Base items, then breakpoints smallest first; within each, states in LVHA order, whatever the written order

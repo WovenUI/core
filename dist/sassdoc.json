@@ -160,10 +160,10 @@
     ]
   },
   {
-    "description": "Breakpoints: name to minimum width, used by the @breakpoint modifiers, the media query mixins and the width classes.\n",
+    "description": "Breakpoints: name to minimum width, used by the @breakpoint modifiers, the media query mixins and the width classes.\n\nThe map is sorted by width after configuration, so responsive classes and apply() breakpoint items are emitted from the smallest width up whatever the key order; when the widths are not all numbers in compatible units (px and em mixed, calc(), var()), the configured order is kept.\n",
     "commentRange": {
-      "start": 6,
-      "end": 7
+      "start": 11,
+      "end": 14
     },
     "context": {
       "type": "variable",
@@ -171,8 +171,8 @@
       "value": "(\n    \"xs\": 480px,\n    \"sm\": 640px,\n    \"md\": 768px,\n    \"lg\": 1024px,\n    \"xl\": 1280px,\n    \"2xl\": 1536px,\n)",
       "scope": "default",
       "line": {
-        "start": 8,
-        "end": 15
+        "start": 15,
+        "end": 22
       }
     },
     "type": "Map",
@@ -2039,8 +2039,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         }
       }
@@ -2137,8 +2137,8 @@
           "name": "delay",
           "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
           "line": {
-            "start": 288,
-            "end": 290
+            "start": 338,
+            "end": 340
           }
         }
       }
@@ -10588,14 +10588,14 @@
     ],
     "see": [
       {
-        "description": "Transitions every animatable property with the default duration and easing tokens ($transition-default-duration, 200; $transition-default-ease, in-out).\n\nInclude duration() or ease() after it to override a default.\n",
+        "description": "Transitions every animatable property with the default duration and easing tokens ($transition-default-duration, 200; $transition-default-ease, in-out).\n\nInclude duration() or ease() after it to override a default.\n\nThe transition class is replaced by a property group class (transition-colors, transition-opacity, transition-shadow, transition-transform) on the same element; in apply() the last of them decides.\n",
         "context": {
           "type": "mixin",
           "name": "transition",
           "code": "\n    transition-property: all;\n\n    @include -transition-defaults;\n",
           "line": {
-            "start": 56,
-            "end": 60
+            "start": 65,
+            "end": 69
           }
         },
         "group": [
@@ -23302,18 +23302,18 @@
     }
   },
   {
-    "description": "Disables transitions by setting transition-property to none.\n",
+    "description": "Disables transitions by setting transition-property to none.\n\nIn apply(), the last of transition-none, transition and a property group mixin decides; the transition-none class is replaced by a property group class on the same element.\n",
     "commentRange": {
-      "start": 28,
-      "end": 36
+      "start": 33,
+      "end": 43
     },
     "context": {
       "type": "mixin",
       "name": "transition-none",
       "code": "\n    transition-property: none;\n",
       "line": {
-        "start": 37,
-        "end": 39
+        "start": 44,
+        "end": 46
       }
     },
     "example": [
@@ -23336,8 +23336,8 @@
           "name": "duration",
           "code": "\n    transition-duration: -duration($time);\n",
           "line": {
-            "start": 168,
-            "end": 170
+            "start": 218,
+            "end": 220
           }
         },
         "group": [
@@ -23351,8 +23351,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -23366,8 +23366,8 @@
           "name": "delay",
           "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
           "line": {
-            "start": 288,
-            "end": 290
+            "start": 338,
+            "end": 340
           }
         },
         "group": [
@@ -23376,7 +23376,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -23388,18 +23388,18 @@
     }
   },
   {
-    "description": "Transitions every animatable property with the default duration and easing tokens ($transition-default-duration, 200; $transition-default-ease, in-out).\n\nInclude duration() or ease() after it to override a default.\n",
+    "description": "Transitions every animatable property with the default duration and easing tokens ($transition-default-duration, 200; $transition-default-ease, in-out).\n\nInclude duration() or ease() after it to override a default.\n\nThe transition class is replaced by a property group class (transition-colors, transition-opacity, transition-shadow, transition-transform) on the same element; in apply() the last of them decides.\n",
     "commentRange": {
-      "start": 41,
-      "end": 55
+      "start": 48,
+      "end": 64
     },
     "context": {
       "type": "mixin",
       "name": "transition",
       "code": "\n    transition-property: all;\n\n    @include -transition-defaults;\n",
       "line": {
-        "start": 56,
-        "end": 60
+        "start": 65,
+        "end": 69
       }
     },
     "output": "transition-property: all; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)",
@@ -23421,8 +23421,8 @@
           "name": "duration",
           "code": "\n    transition-duration: -duration($time);\n",
           "line": {
-            "start": 168,
-            "end": 170
+            "start": 218,
+            "end": 220
           }
         },
         "group": [
@@ -23436,8 +23436,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -23451,8 +23451,8 @@
           "name": "delay",
           "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
           "line": {
-            "start": 288,
-            "end": 290
+            "start": 338,
+            "end": 340
           }
         },
         "group": [
@@ -23461,7 +23461,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -23474,21 +23474,21 @@
     }
   },
   {
-    "description": "Transitions color properties (color, background-color, border-color, text-decoration-color, fill, stroke) with the default duration and easing tokens, like transition.\n",
+    "description": "Transitions color properties (color, background-color, border-color, text-decoration-color, fill, stroke) with the default duration and easing tokens, like transition.\n\nCombines with the other property groups (transition-opacity, transition-shadow, transition-transform) on the same element.\n",
     "commentRange": {
-      "start": 71,
-      "end": 79
+      "start": 109,
+      "end": 119
     },
     "context": {
       "type": "mixin",
       "name": "transition-colors",
-      "code": "\n    transition-property: $-color-properties;\n\n    @include -transition-defaults;\n",
+      "code": "\n    @include -group(colors);\n\n    @include -transition-defaults;\n",
       "line": {
-        "start": 80,
-        "end": 84
+        "start": 120,
+        "end": 124
       }
     },
-    "output": "transition-property: color, background-color, ...; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)",
+    "output": "--wu-transition-colors: color, background-color, ...; transition-property: var(--wu-transition-colors, --wu-none), ... for every group; default duration and easing",
     "example": [
       {
         "type": "scss",
@@ -23503,8 +23503,8 @@
           "name": "duration",
           "code": "\n    transition-duration: -duration($time);\n",
           "line": {
-            "start": 168,
-            "end": 170
+            "start": 218,
+            "end": 220
           }
         },
         "group": [
@@ -23518,8 +23518,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -23533,8 +23533,8 @@
           "name": "delay",
           "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
           "line": {
-            "start": 288,
-            "end": 290
+            "start": 338,
+            "end": 340
           }
         },
         "group": [
@@ -23543,7 +23543,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -23556,21 +23556,21 @@
     }
   },
   {
-    "description": "Transitions opacity only, with the default duration and easing tokens, like transition.\n",
+    "description": "Transitions opacity, with the default duration and easing tokens, like transition.\n\nCombines with the other property groups (transition-colors, transition-shadow, transition-transform) on the same element.\n",
     "commentRange": {
-      "start": 86,
-      "end": 94
+      "start": 126,
+      "end": 136
     },
     "context": {
       "type": "mixin",
       "name": "transition-opacity",
-      "code": "\n    transition-property: opacity;\n\n    @include -transition-defaults;\n",
+      "code": "\n    @include -group(opacity);\n\n    @include -transition-defaults;\n",
       "line": {
-        "start": 95,
-        "end": 99
+        "start": 137,
+        "end": 141
       }
     },
-    "output": "transition-property: opacity; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)",
+    "output": "--wu-transition-opacity: opacity; transition-property: var(--wu-transition-colors, --wu-none), ... for every group; default duration and easing",
     "example": [
       {
         "type": "scss",
@@ -23585,8 +23585,8 @@
           "name": "duration",
           "code": "\n    transition-duration: -duration($time);\n",
           "line": {
-            "start": 168,
-            "end": 170
+            "start": 218,
+            "end": 220
           }
         },
         "group": [
@@ -23600,8 +23600,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -23615,8 +23615,8 @@
           "name": "delay",
           "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
           "line": {
-            "start": 288,
-            "end": 290
+            "start": 338,
+            "end": 340
           }
         },
         "group": [
@@ -23625,7 +23625,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -23638,21 +23638,21 @@
     }
   },
   {
-    "description": "Transitions box-shadow only, with the default duration and easing tokens, like transition.\n",
+    "description": "Transitions box-shadow, with the default duration and easing tokens, like transition.\n\nCombines with the other property groups (transition-colors, transition-opacity, transition-transform) on the same element.\n",
     "commentRange": {
-      "start": 101,
-      "end": 109
+      "start": 143,
+      "end": 153
     },
     "context": {
       "type": "mixin",
       "name": "transition-shadow",
-      "code": "\n    transition-property: box-shadow;\n\n    @include -transition-defaults;\n",
+      "code": "\n    @include -group(shadow);\n\n    @include -transition-defaults;\n",
       "line": {
-        "start": 110,
-        "end": 114
+        "start": 154,
+        "end": 158
       }
     },
-    "output": "transition-property: box-shadow; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)",
+    "output": "--wu-transition-shadow: box-shadow; transition-property: var(--wu-transition-colors, --wu-none), ... for every group; default duration and easing",
     "example": [
       {
         "type": "scss",
@@ -23667,8 +23667,8 @@
           "name": "duration",
           "code": "\n    transition-duration: -duration($time);\n",
           "line": {
-            "start": 168,
-            "end": 170
+            "start": 218,
+            "end": 220
           }
         },
         "group": [
@@ -23682,8 +23682,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -23697,8 +23697,8 @@
           "name": "delay",
           "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
           "line": {
-            "start": 288,
-            "end": 290
+            "start": 338,
+            "end": 340
           }
         },
         "group": [
@@ -23707,7 +23707,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -23720,25 +23720,29 @@
     }
   },
   {
-    "description": "Transitions transform only, with the default duration and easing tokens, like transition.\n",
+    "description": "Transitions transform, with the default duration and easing tokens, like transition.\n\nCombines with the other property groups (transition-colors, transition-opacity, transition-shadow) on the same element.\n",
     "commentRange": {
-      "start": 116,
-      "end": 124
+      "start": 160,
+      "end": 174
     },
     "context": {
       "type": "mixin",
       "name": "transition-transform",
-      "code": "\n    transition-property: transform;\n\n    @include -transition-defaults;\n",
+      "code": "\n    @include -group(transform);\n\n    @include -transition-defaults;\n",
       "line": {
-        "start": 125,
-        "end": 129
+        "start": 175,
+        "end": 179
       }
     },
-    "output": "transition-property: transform; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)",
+    "output": "--wu-transition-transform: transform; transition-property: var(--wu-transition-colors, --wu-none), ... for every group; default duration and easing",
     "example": [
       {
         "type": "scss",
         "code": ".button {\n  @include apply(transition-transform, duration(150), ease(out));\n}"
+      },
+      {
+        "type": "scss",
+        "code": ".card {\n  @include apply(transition-colors, transition-transform); // both groups transition\n}"
       }
     ],
     "see": [
@@ -23749,8 +23753,8 @@
           "name": "duration",
           "code": "\n    transition-duration: -duration($time);\n",
           "line": {
-            "start": 168,
-            "end": 170
+            "start": 218,
+            "end": 220
           }
         },
         "group": [
@@ -23764,8 +23768,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -23779,8 +23783,8 @@
           "name": "delay",
           "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
           "line": {
-            "start": 288,
-            "end": 290
+            "start": 338,
+            "end": 340
           }
         },
         "group": [
@@ -23789,7 +23793,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -23804,16 +23808,16 @@
   {
     "description": "Sets transition-duration from a $durations key, emitted as var(--wu-duration-*), or a raw time.\n\nA unitless number that is not a key, a negative time, or a time in another unit raises an error.\n",
     "commentRange": {
-      "start": 153,
-      "end": 167
+      "start": 203,
+      "end": 217
     },
     "context": {
       "type": "mixin",
       "name": "duration",
       "code": "\n    transition-duration: -duration($time);\n",
       "line": {
-        "start": 168,
-        "end": 170
+        "start": 218,
+        "end": 220
       }
     },
     "parameter": [
@@ -23847,8 +23851,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -23862,8 +23866,8 @@
           "name": "delay",
           "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
           "line": {
-            "start": 288,
-            "end": 290
+            "start": 338,
+            "end": 340
           }
         },
         "group": [
@@ -23872,7 +23876,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -23887,16 +23891,16 @@
   {
     "description": "Sets transition-timing-function from a $timing-functions key, emitted as var(--wu-ease-*), or a raw timing function.\n\nKeys win over keywords, so ease(linear) gives var(--wu-ease-linear); any other value raises an error.\n",
     "commentRange": {
-      "start": 211,
-      "end": 228
+      "start": 261,
+      "end": 278
     },
     "context": {
       "type": "mixin",
       "name": "ease",
       "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
       "line": {
-        "start": 229,
-        "end": 236
+        "start": 279,
+        "end": 286
       }
     },
     "parameter": [
@@ -23930,8 +23934,8 @@
           "name": "ease-in",
           "code": "\n    @include ease(\"in\");\n",
           "line": {
-            "start": 254,
-            "end": 256
+            "start": 304,
+            "end": 306
           }
         },
         "group": [
@@ -23945,8 +23949,8 @@
           "name": "ease-out",
           "code": "\n    @include ease(\"out\");\n",
           "line": {
-            "start": 264,
-            "end": 266
+            "start": 314,
+            "end": 316
           }
         },
         "group": [
@@ -23960,8 +23964,8 @@
           "name": "ease-in-out",
           "code": "\n    @include ease(\"in-out\");\n",
           "line": {
-            "start": 274,
-            "end": 276
+            "start": 324,
+            "end": 326
           }
         },
         "group": [
@@ -23975,8 +23979,8 @@
           "name": "ease-linear",
           "code": "\n    @include ease(\"linear\");\n",
           "line": {
-            "start": 244,
-            "end": 246
+            "start": 294,
+            "end": 296
           }
         },
         "group": [
@@ -23990,8 +23994,8 @@
           "name": "duration",
           "code": "\n    transition-duration: -duration($time);\n",
           "line": {
-            "start": 168,
-            "end": 170
+            "start": 218,
+            "end": 220
           }
         },
         "group": [
@@ -24000,7 +24004,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -24024,8 +24028,8 @@
           "name": "ease-linear",
           "code": "\n    @include ease(\"linear\");\n",
           "line": {
-            "start": 244,
-            "end": 246
+            "start": 294,
+            "end": 296
           }
         }
       },
@@ -24036,8 +24040,8 @@
           "name": "ease-in",
           "code": "\n    @include ease(\"in\");\n",
           "line": {
-            "start": 254,
-            "end": 256
+            "start": 304,
+            "end": 306
           }
         }
       },
@@ -24048,8 +24052,8 @@
           "name": "ease-out",
           "code": "\n    @include ease(\"out\");\n",
           "line": {
-            "start": 264,
-            "end": 266
+            "start": 314,
+            "end": 316
           }
         }
       },
@@ -24060,8 +24064,8 @@
           "name": "ease-in-out",
           "code": "\n    @include ease(\"in-out\");\n",
           "line": {
-            "start": 274,
-            "end": 276
+            "start": 324,
+            "end": 326
           }
         }
       }
@@ -24070,16 +24074,16 @@
   {
     "description": "Sets transition-timing-function to the linear key, var(--wu-ease-linear).\n",
     "commentRange": {
-      "start": 238,
-      "end": 243
+      "start": 288,
+      "end": 293
     },
     "context": {
       "type": "mixin",
       "name": "ease-linear",
       "code": "\n    @include ease(\"linear\");\n",
       "line": {
-        "start": 244,
-        "end": 246
+        "start": 294,
+        "end": 296
       }
     },
     "example": [
@@ -24096,8 +24100,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -24106,7 +24110,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -24126,16 +24130,16 @@
   {
     "description": "Sets transition-timing-function to the in key, var(--wu-ease-in).\n",
     "commentRange": {
-      "start": 248,
-      "end": 253
+      "start": 298,
+      "end": 303
     },
     "context": {
       "type": "mixin",
       "name": "ease-in",
       "code": "\n    @include ease(\"in\");\n",
       "line": {
-        "start": 254,
-        "end": 256
+        "start": 304,
+        "end": 306
       }
     },
     "example": [
@@ -24152,8 +24156,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -24162,7 +24166,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -24182,16 +24186,16 @@
   {
     "description": "Sets transition-timing-function to the out key, var(--wu-ease-out).\n",
     "commentRange": {
-      "start": 258,
-      "end": 263
+      "start": 308,
+      "end": 313
     },
     "context": {
       "type": "mixin",
       "name": "ease-out",
       "code": "\n    @include ease(\"out\");\n",
       "line": {
-        "start": 264,
-        "end": 266
+        "start": 314,
+        "end": 316
       }
     },
     "example": [
@@ -24208,8 +24212,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -24218,7 +24222,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -24238,16 +24242,16 @@
   {
     "description": "Sets transition-timing-function to the in-out key, var(--wu-ease-in-out).\n",
     "commentRange": {
-      "start": 268,
-      "end": 273
+      "start": 318,
+      "end": 323
     },
     "context": {
       "type": "mixin",
       "name": "ease-in-out",
       "code": "\n    @include ease(\"in-out\");\n",
       "line": {
-        "start": 274,
-        "end": 276
+        "start": 324,
+        "end": 326
       }
     },
     "example": [
@@ -24264,8 +24268,8 @@
           "name": "ease",
           "code": "\n    $token: fn-css-vars.scale-var(\"ease\", config-transitions.$timing-functions, $name);\n    @if not $token {\n        $token: -timing-function($name);\n    }\n\n    transition-timing-function: $token;\n",
           "line": {
-            "start": 229,
-            "end": 236
+            "start": 279,
+            "end": 286
           }
         },
         "group": [
@@ -24274,7 +24278,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"
@@ -24294,16 +24298,16 @@
   {
     "description": "Sets transition-delay from a $delays key or a raw time; delays are not tokens, so a key gives its configured time.\n\nA unitless number that is not a key raises an error.\n",
     "commentRange": {
-      "start": 278,
-      "end": 287
+      "start": 328,
+      "end": 337
     },
     "context": {
       "type": "mixin",
       "name": "delay",
       "code": "\n    transition-delay: -time($time, config-transitions.$delays, \"delay\", $allow-negative: true);\n",
       "line": {
-        "start": 288,
-        "end": 290
+        "start": 338,
+        "end": 340
       }
     },
     "parameter": [
@@ -24333,8 +24337,8 @@
           "name": "duration",
           "code": "\n    transition-duration: -duration($time);\n",
           "line": {
-            "start": 168,
-            "end": 170
+            "start": 218,
+            "end": 220
           }
         },
         "group": [
@@ -24343,7 +24347,7 @@
       }
     ],
     "groupDescriptions": {
-      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix."
+      "transitions": "Transition utilities: property, duration, easing and delay.\n\nClasses:\n\n- transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order\n- transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition\n- duration-{time}: Set transition duration\n- ease-{type}: Set transition timing function\n- delay-{time}: Set transition delay\n\nResponsive: every class supports the @breakpoint suffix.\n\nThe property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class=\"transition-colors transition-transform\" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.\n\nPrecedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other."
     },
     "group": [
       "transitions"

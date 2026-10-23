@@ -4,6 +4,15 @@ All notable changes to `@wovenui/core` (formerly `@nuvoui/core`) are documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2026-10-23
+
+### Fixed
+
+- Breakpoint order: `$breakpoints` is sorted by width after configuration, so responsive classes (`.p-4@tablet`) and `apply()` breakpoint items are emitted from the smallest width up whatever the key order. Before, a key added after `2xl` (`"tablet": 900px`) came last in the CSS and overrode the larger breakpoints. When the widths are not all numbers in compatible units (`em` and `rem` mixed, `calc()`), the configured order is kept. The default breakpoints give the same CSS as before.
+- `docs/llms-full.txt`: the utility class format now states that color classes have no breakpoint form, with or without a state prefix, and points to `apply()` (`text-color(white) hover md`); it adds the `hover:opacity-75@sm` example and documents the breakpoint order.
+
+- Combining transition property classes and mixins: `class="transition-colors transition-transform"` and `apply(transition-colors, transition-transform)` transitioned only the last group, because each one set `transition-property` on its own. Each group (`colors`, `opacity`, `shadow`, `transform`) now sets its own internal variable, `--wu-transition-colors`, `--wu-transition-opacity`, `--wu-transition-shadow` or `--wu-transition-transform`, and every group class and mixin writes one combined `transition-property: var(--wu-transition-colors, --wu-none), ...` list, so any combination transitions every group it names. The variables are registered with `@property` (`syntax: "*"`, `inherits: false`) whenever the package loads, so a child does not take its parent's groups. A single group transitions the same properties as before; its computed `transition-property` now also lists `--wu-none`, a property name nothing animates, once for each unset group. `.transition` and `.transition-none` still come before the group classes, so a group class on the same element replaces them; in `apply()` the last of them decides.
+
 ## [2.2.0] - 2026-10-23
 
 NuvoUI is renamed WovenUI. See [From @nuvoui/core 2.x to @wovenui/core 2.2](docs/MIGRATION-v2.md#from-nuvouicore-2x-to-wovenuicore-22) for the upgrade steps.

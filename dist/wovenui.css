@@ -20666,6 +20666,22 @@
     transform-origin: top left;
   }
 }
+@property --wu-transition-colors {
+  syntax: "*";
+  inherits: false;
+}
+@property --wu-transition-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --wu-transition-shadow {
+  syntax: "*";
+  inherits: false;
+}
+@property --wu-transition-transform {
+  syntax: "*";
+  inherits: false;
+}
 .transition-none {
   transition-property: none;
 }
@@ -20680,19 +20696,26 @@
 }
 
 .transition-colors {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  --wu-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
 }
 
 .transition-opacity {
-  transition-property: opacity;
+  --wu-transition-opacity: opacity;
 }
 
 .transition-shadow {
-  transition-property: box-shadow;
+  --wu-transition-shadow: box-shadow;
 }
 
 .transition-transform {
-  transition-property: transform;
+  --wu-transition-transform: transform;
+}
+
+.transition-colors,
+.transition-opacity,
+.transition-shadow,
+.transition-transform {
+  transition-property: var(--wu-transition-colors, --wu-none), var(--wu-transition-opacity, --wu-none), var(--wu-transition-shadow, --wu-none), var(--wu-transition-transform, --wu-none);
 }
 
 .duration-0 {
@@ -20795,16 +20818,22 @@
     transition-property: none;
   }
   .transition-colors\@xs {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    --wu-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
   }
   .transition-opacity\@xs {
-    transition-property: opacity;
+    --wu-transition-opacity: opacity;
   }
   .transition-shadow\@xs {
-    transition-property: box-shadow;
+    --wu-transition-shadow: box-shadow;
   }
   .transition-transform\@xs {
-    transition-property: transform;
+    --wu-transition-transform: transform;
+  }
+  .transition-colors\@xs,
+  .transition-opacity\@xs,
+  .transition-shadow\@xs,
+  .transition-transform\@xs {
+    transition-property: var(--wu-transition-colors, --wu-none), var(--wu-transition-opacity, --wu-none), var(--wu-transition-shadow, --wu-none), var(--wu-transition-transform, --wu-none);
   }
   .duration-0\@xs {
     transition-duration: var(--wu-duration-0);
@@ -20885,16 +20914,22 @@
     transition-property: none;
   }
   .transition-colors\@sm {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    --wu-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
   }
   .transition-opacity\@sm {
-    transition-property: opacity;
+    --wu-transition-opacity: opacity;
   }
   .transition-shadow\@sm {
-    transition-property: box-shadow;
+    --wu-transition-shadow: box-shadow;
   }
   .transition-transform\@sm {
-    transition-property: transform;
+    --wu-transition-transform: transform;
+  }
+  .transition-colors\@sm,
+  .transition-opacity\@sm,
+  .transition-shadow\@sm,
+  .transition-transform\@sm {
+    transition-property: var(--wu-transition-colors, --wu-none), var(--wu-transition-opacity, --wu-none), var(--wu-transition-shadow, --wu-none), var(--wu-transition-transform, --wu-none);
   }
   .duration-0\@sm {
     transition-duration: var(--wu-duration-0);
@@ -20975,16 +21010,22 @@
     transition-property: none;
   }
   .transition-colors\@md {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    --wu-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
   }
   .transition-opacity\@md {
-    transition-property: opacity;
+    --wu-transition-opacity: opacity;
   }
   .transition-shadow\@md {
-    transition-property: box-shadow;
+    --wu-transition-shadow: box-shadow;
   }
   .transition-transform\@md {
-    transition-property: transform;
+    --wu-transition-transform: transform;
+  }
+  .transition-colors\@md,
+  .transition-opacity\@md,
+  .transition-shadow\@md,
+  .transition-transform\@md {
+    transition-property: var(--wu-transition-colors, --wu-none), var(--wu-transition-opacity, --wu-none), var(--wu-transition-shadow, --wu-none), var(--wu-transition-transform, --wu-none);
   }
   .duration-0\@md {
     transition-duration: var(--wu-duration-0);
@@ -21065,16 +21106,22 @@
     transition-property: none;
   }
   .transition-colors\@lg {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    --wu-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
   }
   .transition-opacity\@lg {
-    transition-property: opacity;
+    --wu-transition-opacity: opacity;
   }
   .transition-shadow\@lg {
-    transition-property: box-shadow;
+    --wu-transition-shadow: box-shadow;
   }
   .transition-transform\@lg {
-    transition-property: transform;
+    --wu-transition-transform: transform;
+  }
+  .transition-colors\@lg,
+  .transition-opacity\@lg,
+  .transition-shadow\@lg,
+  .transition-transform\@lg {
+    transition-property: var(--wu-transition-colors, --wu-none), var(--wu-transition-opacity, --wu-none), var(--wu-transition-shadow, --wu-none), var(--wu-transition-transform, --wu-none);
   }
   .duration-0\@lg {
     transition-duration: var(--wu-duration-0);
@@ -21155,16 +21202,22 @@
     transition-property: none;
   }
   .transition-colors\@xl {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    --wu-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
   }
   .transition-opacity\@xl {
-    transition-property: opacity;
+    --wu-transition-opacity: opacity;
   }
   .transition-shadow\@xl {
-    transition-property: box-shadow;
+    --wu-transition-shadow: box-shadow;
   }
   .transition-transform\@xl {
-    transition-property: transform;
+    --wu-transition-transform: transform;
+  }
+  .transition-colors\@xl,
+  .transition-opacity\@xl,
+  .transition-shadow\@xl,
+  .transition-transform\@xl {
+    transition-property: var(--wu-transition-colors, --wu-none), var(--wu-transition-opacity, --wu-none), var(--wu-transition-shadow, --wu-none), var(--wu-transition-transform, --wu-none);
   }
   .duration-0\@xl {
     transition-duration: var(--wu-duration-0);
@@ -21245,16 +21298,22 @@
     transition-property: none;
   }
   .transition-colors\@2xl {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    --wu-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
   }
   .transition-opacity\@2xl {
-    transition-property: opacity;
+    --wu-transition-opacity: opacity;
   }
   .transition-shadow\@2xl {
-    transition-property: box-shadow;
+    --wu-transition-shadow: box-shadow;
   }
   .transition-transform\@2xl {
-    transition-property: transform;
+    --wu-transition-transform: transform;
+  }
+  .transition-colors\@2xl,
+  .transition-opacity\@2xl,
+  .transition-shadow\@2xl,
+  .transition-transform\@2xl {
+    transition-property: var(--wu-transition-colors, --wu-none), var(--wu-transition-opacity, --wu-none), var(--wu-transition-shadow, --wu-none), var(--wu-transition-transform, --wu-none);
   }
   .duration-0\@2xl {
     transition-duration: var(--wu-duration-0);

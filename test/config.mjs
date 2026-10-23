@@ -328,6 +328,48 @@ function run() {
     );
 
     check(
+        'breakpoints emit from the smallest width up whatever the map order',
+        () => {
+            const css = compileWith(
+                '$generate-utility-classes: true, $breakpoints: ("sm": 640px, "lg": 1024px, "tablet": 900px)',
+                '.t-bp { @include nu.apply(p(8) lg, p(4) tablet, p(2) sm); }'
+            );
+            const sm = css.indexOf('.p-4\\@sm {');
+            const tablet = css.indexOf('.p-4\\@tablet {');
+            const lg = css.indexOf('.p-4\\@lg {');
+            if (!(sm > -1 && sm < tablet && tablet < lg)) {
+                fail(
+                    `classes: .p-4@sm ${sm}, .p-4@tablet ${tablet}, .p-4@lg ${lg} are not in ascending order`
+                );
+            }
+            const at = (width) =>
+                css.indexOf(`@media (min-width: ${width}) {\n  .t-bp {`);
+            if (!(
+                at('640px') > -1 &&
+                at('640px') < at('900px') &&
+                at('900px') < at('1024px')
+            )) {
+                fail(
+                    'apply(): breakpoint items are not in ascending width order'
+                );
+            }
+        }
+    );
+
+    check(
+        'the default breakpoints in another key order give the default output',
+        () => {
+            const plain = compileWith('$generate-utility-classes: true');
+            const shuffled = compileWith(
+                '$generate-utility-classes: true, $breakpoints: ("2xl": 1536px, "md": 768px, "xs": 480px, "xl": 1280px, "sm": 640px, "lg": 1024px)'
+            );
+            if (plain !== shuffled) {
+                fail('reordered default breakpoints changed the output');
+            }
+        }
+    );
+
+    check(
         'ruled behaviors: space-x is logical, .sticky defaults in :where(), @property inherits: false, scale(150) is a key, invalid inputs use danger, container-only(md) ends at 1023.98px',
         () => {
             const css = compileWith(
@@ -958,10 +1000,10 @@ function run() {
     );
 
     check(
-        '@property registrations do not depend on feature flags, so transform, gap and fill() mixins work with their classes off',
+        '@property registrations do not depend on feature flags, so transform, gap, fill() and transition group mixins work with their classes off',
         () => {
             const css = compileWith(
-                '$generate-utility-classes: false, $feature-flags: ("transforms": false, "position": false, "spacing": false, "flex": false)',
+                '$generate-utility-classes: false, $feature-flags: ("transforms": false, "position": false, "spacing": false, "flex": false, "transitions": false)',
                 '.t { @include nu.apply(translate-x(4), rotate(45deg), gap(4)); }\n.c { @include nu.apply(fill(6)); }'
             );
             for (const name of [
@@ -974,6 +1016,10 @@ function run() {
                 'skew-x',
                 'skew-y',
                 'gap',
+                'transition-colors',
+                'transition-opacity',
+                'transition-shadow',
+                'transition-transform',
             ]) {
                 expectIncludes(css, `@property ${P}${name} {`, 'flags off');
             }
@@ -1152,6 +1198,90 @@ function run() {
             expectIncludes(css, `${P}opacity-66: 0.66;`, 'opacity token');
             expectIncludes(css, '[data-tooltip] {', 'tooltip trigger');
             expectExcludes(css, 'role~=tooltip', 'tooltip trigger');
+        }
+    );
+
+    check(
+        'transition property classes combine, a single class keeps its own properties, and group variables do not inherit',
+        () => {
+            const css = compileWith('$generate-utility-classes: true');
+            // Top-level rules in source order: [selectors, declarations]
+            const rules = [
+                ...css.matchAll(/(?:^|\n)([^\s@{}][^{}]*)\{([^{}]*)\}/g),
+            ].map((match) => [
+                match[1].split(',').map((selector) => selector.trim()),
+                match[2],
+            ]);
+            // Declared value of a property on an element with these classes (equal specificity: the last rule wins)
+            const declared = (classes, property) => {
+                let value;
+                for (const [selectors, body] of rules) {
+                    if (
+                        !selectors.some((selector) =>
+                            classes.includes(selector)
+                        )
+                    ) {
+                        continue;
+                    }
+                    const found = new RegExp(
+                        String.raw`(?:^|;|\n)\s*${property}: ([^;]+);`
+                    ).exec(body);
+                    if (found) {
+                        value = found[1];
+                    }
+                }
+                return value;
+            };
+            // Computed transition-property names after var() substitution, without the unused fallback
+            const effective = (classes) =>
+                (declared(classes, 'transition-property') ?? '')
+                    .replace(
+                        new RegExp(
+                            String.raw`var\((${P}[\w-]+), ([^)]+)\)`,
+                            'g'
+                        ),
+                        (all, name, fallback) =>
+                            declared(classes, name) ?? fallback
+                    )
+                    .split(',')
+                    .map((name) => name.trim())
+                    .filter((name) => name && name !== `${P}none`)
+                    .join(', ');
+            const colors =
+                'color, background-color, border-color, text-decoration-color, fill, stroke';
+            for (const [classes, expected] of [
+                [['.transition-colors'], colors],
+                [['.transition-transform'], 'transform'],
+                [['.transition-opacity'], 'opacity'],
+                [['.transition-shadow'], 'box-shadow'],
+                [
+                    ['.transition-colors', '.transition-transform'],
+                    `${colors}, transform`,
+                ],
+                [
+                    ['.transition-opacity', '.transition-shadow'],
+                    'opacity, box-shadow',
+                ],
+                [['.transition'], 'all'],
+                [['.transition-none'], 'none'],
+            ]) {
+                const got = effective(classes);
+                if (got !== expected) {
+                    fail(
+                        `class="${classes.map((name) => name.slice(1)).join(' ')}": transition-property resolves to "${got}", expected "${expected}"`
+                    );
+                }
+            }
+            for (const name of ['colors', 'opacity', 'shadow', 'transform']) {
+                const registration = new RegExp(
+                    String.raw`@property ${P}transition-${name} \{\n  syntax: "\*";\n  inherits: false;\n\}`
+                );
+                if (!registration.test(css)) {
+                    fail(
+                        `@property ${P}transition-${name}: not registered with syntax "*" and inherits: false`
+                    );
+                }
+            }
         }
     );
 

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for AI coding tools working on this repository (`@wovenui/core`, version 2.2.0).
+Guidance for AI coding tools working on this repository (`@wovenui/core`, version 2.2.1).
 
 ## 1. What this repo is
 

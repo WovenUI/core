@@ -12,6 +12,10 @@
 ////
 //// Responsive: every class supports the @breakpoint suffix.
 ////
+//// The property groups combine: transition-colors, transition-opacity, transition-shadow and transition-transform each set a non-inheriting --wu-transition-{group} variable and all write one transition-property list of every group, so class="transition-colors transition-transform" transitions both. An unset group falls back to --wu-none, a name nothing animates, so the computed transition-property lists it in place of each unset group.
+////
+//// Precedence: .transition (all) and .transition-none come before the group classes, so a group class on the same element replaces them; in apply() the last of transition, transition-none and a group mixin decides, and group mixins combine with each other.
+////
 
 @use "sass:list";
 @use "sass:map";
@@ -20,12 +24,15 @@
 @use "sass:string";
 @use "../config/feature-flags" as config-flags;
 @use "../config/breakpoints" as config-breakpoint;
+@use "../config/constants" as config-constants;
 @use "../config/transitions" as config-transitions;
 @use "../functions/feature-flags" as fn-flags;
 @use "../functions/css-vars" as fn-css-vars;
 @use "../functions/math" as fn-math;
 
 /// Disables transitions by setting transition-property to none.
+///
+/// In apply(), the last of transition-none, transition and a property group mixin decides; the transition-none class is replaced by a property group class on the same element.
 /// @example scss
 ///   .no-motion {
 ///     @include transition-none;
@@ -41,6 +48,8 @@
 /// Transitions every animatable property with the default duration and easing tokens ($transition-default-duration, 200; $transition-default-ease, in-out).
 ///
 /// Include duration() or ease() after it to override a default.
+///
+/// The transition class is replaced by a property group class (transition-colors, transition-opacity, transition-shadow, transition-transform) on the same element; in apply() the last of them decides.
 /// @output transition-property: all; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
 /// @example scss
 ///   .card {
@@ -65,11 +74,42 @@
     transition-timing-function: fn-css-vars.scale-var("ease", config-transitions.$timing-functions, config-transitions.$transition-default-ease);
 }
 
-// Properties of transition-colors and .transition-colors
-$-color-properties: color, background-color, border-color, text-decoration-color, fill, stroke;
+// Property groups: each sets its own --wu-transition-{group} variable, and every group writes the combined list below
+$-groups: (
+    colors: (
+        color,
+        background-color,
+        border-color,
+        text-decoration-color,
+        fill,
+        stroke,
+    ),
+    opacity: opacity,
+    shadow: box-shadow,
+    transform: transform,
+);
+
+// Fallback of an unset group variable: a custom property name that nothing animates
+$-unused: --#{config-constants.$prefix}-none;
+
+// transition-property of every group class and mixin: var(--wu-transition-{group}, --wu-none) per group
+$-group-list: ();
+
+@each $name in map.keys($-groups) {
+    $-group-list: list.append($-group-list, string.unquote("var(--#{config-constants.$prefix}-transition-#{$name}, #{$-unused})"), $separator: comma);
+}
+
+// Sets the variable of one group and the combined transition-property
+@mixin -group($name) {
+    --#{config-constants.$prefix}-transition-#{$name}: #{map.get($-groups, $name)};
+
+    transition-property: $-group-list;
+}
 
 /// Transitions color properties (color, background-color, border-color, text-decoration-color, fill, stroke) with the default duration and easing tokens, like transition.
-/// @output transition-property: color, background-color, ...; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+///
+/// Combines with the other property groups (transition-opacity, transition-shadow, transition-transform) on the same element.
+/// @output --wu-transition-colors: color, background-color, ...; transition-property: var(--wu-transition-colors, --wu-none), ... for every group; default duration and easing
 /// @example scss
 ///   .button {
 ///     @include apply(transition-colors, duration(150), ease(out));
@@ -78,13 +118,15 @@ $-color-properties: color, background-color, border-color, text-decoration-color
 /// @see {mixin} ease
 /// @see {mixin} delay
 @mixin transition-colors {
-    transition-property: $-color-properties;
+    @include -group(colors);
 
     @include -transition-defaults;
 }
 
-/// Transitions opacity only, with the default duration and easing tokens, like transition.
-/// @output transition-property: opacity; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// Transitions opacity, with the default duration and easing tokens, like transition.
+///
+/// Combines with the other property groups (transition-colors, transition-shadow, transition-transform) on the same element.
+/// @output --wu-transition-opacity: opacity; transition-property: var(--wu-transition-colors, --wu-none), ... for every group; default duration and easing
 /// @example scss
 ///   .button {
 ///     @include apply(transition-opacity, duration(150), ease(out));
@@ -93,13 +135,15 @@ $-color-properties: color, background-color, border-color, text-decoration-color
 /// @see {mixin} ease
 /// @see {mixin} delay
 @mixin transition-opacity {
-    transition-property: opacity;
+    @include -group(opacity);
 
     @include -transition-defaults;
 }
 
-/// Transitions box-shadow only, with the default duration and easing tokens, like transition.
-/// @output transition-property: box-shadow; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// Transitions box-shadow, with the default duration and easing tokens, like transition.
+///
+/// Combines with the other property groups (transition-colors, transition-opacity, transition-transform) on the same element.
+/// @output --wu-transition-shadow: box-shadow; transition-property: var(--wu-transition-colors, --wu-none), ... for every group; default duration and easing
 /// @example scss
 ///   .button {
 ///     @include apply(transition-shadow, duration(150), ease(out));
@@ -108,22 +152,28 @@ $-color-properties: color, background-color, border-color, text-decoration-color
 /// @see {mixin} ease
 /// @see {mixin} delay
 @mixin transition-shadow {
-    transition-property: box-shadow;
+    @include -group(shadow);
 
     @include -transition-defaults;
 }
 
-/// Transitions transform only, with the default duration and easing tokens, like transition.
-/// @output transition-property: transform; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// Transitions transform, with the default duration and easing tokens, like transition.
+///
+/// Combines with the other property groups (transition-colors, transition-opacity, transition-shadow) on the same element.
+/// @output --wu-transition-transform: transform; transition-property: var(--wu-transition-colors, --wu-none), ... for every group; default duration and easing
 /// @example scss
 ///   .button {
 ///     @include apply(transition-transform, duration(150), ease(out));
+///   }
+/// @example scss
+///   .card {
+///     @include apply(transition-colors, transition-transform); // both groups transition
 ///   }
 /// @see {mixin} duration
 /// @see {mixin} ease
 /// @see {mixin} delay
 @mixin transition-transform {
-    transition-property: transform;
+    @include -group(transform);
 
     @include -transition-defaults;
 }
@@ -291,6 +341,16 @@ $-timing-keywords: (linear, ease, ease-in, ease-out, ease-in-out, step-start, st
 
 // CSS output of this module; index.scss includes it, the mixins entry does not
 @mixin -emit {
+    // Group variables are registered so they do not inherit (a child of a .transition-colors element does not transition
+    // colors through its own group class). Registered by every index.scss compile, independent of feature flags, because
+    // the mixins need them too
+    @each $name in map.keys($-groups) {
+        @property --#{config-constants.$prefix}-transition-#{$name} {
+            syntax: "*";
+            inherits: false;
+        }
+    }
+
     @if fn-flags.feature-enabled("transitions") {
         // Property-specific transitions
         #{config-flags.$parent-selector} .transition-none {
@@ -305,20 +365,17 @@ $-timing-keywords: (linear, ease, ease-in, ease-out, ease-in-out, step-start, st
             @include -transition-defaults;
         }
 
-        #{config-flags.$parent-selector} .transition-colors {
-            transition-property: $-color-properties;
+        // Each group class sets its variable; all of them write the combined list, so group classes combine
+        @each $name, $properties in $-groups {
+            #{config-flags.$parent-selector} .transition-#{$name} {
+                --#{config-constants.$prefix}-transition-#{$name}: #{$properties};
+            }
         }
-
-        #{config-flags.$parent-selector} .transition-opacity {
-            transition-property: opacity;
-        }
-
-        #{config-flags.$parent-selector} .transition-shadow {
-            transition-property: box-shadow;
-        }
-
+        #{config-flags.$parent-selector} .transition-colors,
+        #{config-flags.$parent-selector} .transition-opacity,
+        #{config-flags.$parent-selector} .transition-shadow,
         #{config-flags.$parent-selector} .transition-transform {
-            transition-property: transform;
+            transition-property: $-group-list;
         }
 
         @each $name, $value in config-transitions.$durations {
@@ -354,17 +411,16 @@ $-timing-keywords: (linear, ease, ease-in, ease-out, ease-in-out, step-start, st
                 #{config-flags.$parent-selector} .transition-none\@#{$breakpoint} {
                     @include transition-none;
                 }
-                #{config-flags.$parent-selector} .transition-colors\@#{$breakpoint} {
-                    transition-property: $-color-properties;
+                @each $name, $properties in $-groups {
+                    #{config-flags.$parent-selector} .transition-#{$name}\@#{$breakpoint} {
+                        --#{config-constants.$prefix}-transition-#{$name}: #{$properties};
+                    }
                 }
-                #{config-flags.$parent-selector} .transition-opacity\@#{$breakpoint} {
-                    transition-property: opacity;
-                }
-                #{config-flags.$parent-selector} .transition-shadow\@#{$breakpoint} {
-                    transition-property: box-shadow;
-                }
+                #{config-flags.$parent-selector} .transition-colors\@#{$breakpoint},
+                #{config-flags.$parent-selector} .transition-opacity\@#{$breakpoint},
+                #{config-flags.$parent-selector} .transition-shadow\@#{$breakpoint},
                 #{config-flags.$parent-selector} .transition-transform\@#{$breakpoint} {
-                    transition-property: transform;
+                    transition-property: $-group-list;
                 }
 
                 // Duration responsive variants

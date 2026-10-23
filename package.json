@@ -1,6 +1,6 @@
 {
   "name": "@wovenui/core",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Human-readable, utility-first SCSS framework and design-system foundation: design tokens, light, dark, inverse and high-contrast themes, readable utility classes and apply() mixins. No JavaScript.",
   "author": {
     "name": "AALA IT Solutions",
