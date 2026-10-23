@@ -1,8 +1,13 @@
-// _theme.scss - CSS variables and utility classes
+////
+//// @group themes
+//// CSS variables and utility classes for the theme tokens.
+////
+
 @use "sass:map";
 @use "sass:meta";
 @use "sass:string";
 @use "sass:list";
+@use "../config/constants" as config-constants;
 @use "../config/colors" as config-color;
 @use "../config/feature-flags" as config-flags;
 @use "../config/theme-validation" as config-theme;
@@ -46,11 +51,11 @@ $-class-tokens: ();
     }
 }
 
-// CSS value of a token: scale references become var(--nu-{name}-{stop})
+// CSS value of a token: scale references become var(--wu-{name}-{stop})
 @function -token-value($value, $token) {
     $value: config-theme.theme-value($value);
     @if config-theme.is-scale-ref($value) {
-        @return var(--nu-#{-check-scale-ref($value, $token)}-#{list.nth($value, 2)});
+        @return var(--#{config-constants.$prefix}-#{-check-scale-ref($value, $token)}-#{list.nth($value, 2)});
     }
     @return $value;
 }
@@ -73,7 +78,7 @@ $-class-tokens: ();
 // base theme for high contrast); $setting names the map a consumer sets to fix an uncomputable text color
 @mixin -theme-tokens($tokens, $context, $setting) {
     @each $token, $value in $tokens {
-        --nu-#{$token}: #{-token-value($value, $token)};
+        --#{config-constants.$prefix}-#{$token}: #{-token-value($value, $token)};
     }
 
     $roles: fn-tokens.text-on-roles($tokens);
@@ -82,28 +87,28 @@ $-class-tokens: ();
         @each $role in $roles {
             $fill: -token-color(map.get($tokens, $role), $role);
 
-            --nu-text-on-#{$role}: #{fn-contrast.theme-text-on($fill, $text-colors, "text-on-#{$role}", $setting)};
+            --#{config-constants.$prefix}-text-on-#{$role}: #{fn-contrast.theme-text-on($fill, $text-colors, "text-on-#{$role}", $setting)};
         }
     }
 
     @each $alias, $target in fn-tokens.error-aliases() {
-        --nu-#{$alias}: var(--nu-#{$target});
+        --#{config-constants.$prefix}-#{$alias}: var(--#{config-constants.$prefix}-#{$target});
     }
 
     @each $variable, $token in fn-tokens.tooltip-color-variables() {
-        --nu-#{$variable}: var(--nu-#{$token});
+        --#{config-constants.$prefix}-#{$variable}: var(--#{config-constants.$prefix}-#{$token});
     }
 }
 
-// @mixin dark-theme
-// @description Emits the dark theme token custom properties (--nu-*), including computed text-on-{role} and the error aliases of danger.
-// @output --nu-* theme token declarations with the dark values (built-in defaults merged with $dark-theme)
-// @example
-// .dark-preview {
-//   @include dark-theme;
-// }
-// @note The theme already emits these under [data-theme="dark"] and the prefers-color-scheme fallback; use this for a custom scope.
-// @see dark-mode
+/// Emits the dark theme token custom properties (--wu-*), including computed text-on-{role} and the error aliases of danger.
+///
+/// The theme already emits these under [data-theme="dark"] and the prefers-color-scheme fallback; use this for a custom scope.
+/// @output --wu-* theme token declarations with the dark values (built-in defaults merged with $dark-theme)
+/// @example scss
+///   .dark-preview {
+///     @include dark-theme;
+///   }
+/// @see {mixin} dark-mode
 @mixin dark-theme {
     @include -theme-tokens(config-theme.$dark-tokens, config-theme.$dark-tokens, "$dark-theme");
 }
@@ -111,7 +116,7 @@ $-class-tokens: ();
 // Non-color scales
 @mixin -scale-tokens {
     @each $token, $value in fn-tokens.scale-tokens() {
-        --nu-#{$token}: #{$value};
+        --#{config-constants.$prefix}-#{$token}: #{$value};
     }
 }
 
@@ -211,10 +216,10 @@ $-high-contrast-dark-context: map.merge(config-theme.$dark-tokens, config-theme.
                 // re-declared by a light section
                 :root {
                     @each $token, $value in fn-tokens.palette-tokens() {
-                        --nu-#{$token}: #{$value};
+                        --#{config-constants.$prefix}-#{$token}: #{$value};
                     }
                     @each $token, $value in fn-tokens.basic-tokens() {
-                        --nu-#{$token}: #{$value};
+                        --#{config-constants.$prefix}-#{$token}: #{$value};
                     }
                     @include -scale-tokens;
                 }
@@ -268,50 +273,50 @@ $-high-contrast-dark-context: map.merge(config-theme.$dark-tokens, config-theme.
             $is-role: map.has-key(config-color.$semantic-colors, $color-name);
 
             @each $shade, $value in $scale {
-                @include -color-class("text-#{$color-name}-#{$shade}", color, var(--nu-#{$color-name}-#{$shade}));
-                @include -color-class("bg-#{$color-name}-#{$shade}", background-color, var(--nu-#{$color-name}-#{$shade}));
-                @include -color-class("border-#{$color-name}-#{$shade}", border-color, var(--nu-#{$color-name}-#{$shade}), true);
+                @include -color-class("text-#{$color-name}-#{$shade}", color, var(--#{config-constants.$prefix}-#{$color-name}-#{$shade}));
+                @include -color-class("bg-#{$color-name}-#{$shade}", background-color, var(--#{config-constants.$prefix}-#{$color-name}-#{$shade}));
+                @include -color-class("border-#{$color-name}-#{$shade}", border-color, var(--#{config-constants.$prefix}-#{$color-name}-#{$shade}), true);
             }
 
             // Base classes: roles use their flipping default fill, hues the fixed 500 shade
-            $fill: var(--nu-#{$color-name}-500);
+            $fill: var(--#{config-constants.$prefix}-#{$color-name}-500);
             @if $is-role {
-                $fill: var(--nu-#{$color-name});
+                $fill: var(--#{config-constants.$prefix}-#{$color-name});
             }
 
-            @include -color-class("text-#{$color-name}", color, var(--nu-text-#{$color-name}));
+            @include -color-class("text-#{$color-name}", color, var(--#{config-constants.$prefix}-text-#{$color-name}));
             @include -color-class("bg-#{$color-name}", background-color, $fill);
             @include -color-class("border-#{$color-name}", border-color, $fill, true);
-            @include -color-class("bg-#{$color-name}-subtle", background-color, var(--nu-#{$color-name}-subtle));
+            @include -color-class("bg-#{$color-name}-subtle", background-color, var(--#{config-constants.$prefix}-#{$color-name}-subtle));
 
             @if $is-role {
                 #{config-flags.$parent-selector} .text-on-#{$color-name} {
-                    color: var(--nu-text-on-#{$color-name});
+                    color: var(--#{config-constants.$prefix}-text-on-#{$color-name});
                 }
             }
         }
 
         // Error aliases of danger
         @if map.has-key(fn-tokens.error-aliases(), "text-on-error") {
-            @include -color-class("text-error", color, var(--nu-text-error));
-            @include -color-class("bg-error", background-color, var(--nu-error));
-            @include -color-class("border-error", border-color, var(--nu-error), true);
-            @include -color-class("bg-error-subtle", background-color, var(--nu-error-subtle));
+            @include -color-class("text-error", color, var(--#{config-constants.$prefix}-text-error));
+            @include -color-class("bg-error", background-color, var(--#{config-constants.$prefix}-error));
+            @include -color-class("border-error", border-color, var(--#{config-constants.$prefix}-error), true);
+            @include -color-class("bg-error-subtle", background-color, var(--#{config-constants.$prefix}-error-subtle));
 
             #{config-flags.$parent-selector} .text-on-error {
-                color: var(--nu-text-on-error);
+                color: var(--#{config-constants.$prefix}-text-on-error);
             }
         }
 
         @each $color-name, $color-val in fn-tokens.basic-tokens() {
-            @include -color-class("text-#{$color-name}", color, var(--nu-#{$color-name}));
-            @include -color-class("bg-#{$color-name}", background-color, var(--nu-#{$color-name}));
-            @include -color-class("border-#{$color-name}", border-color, var(--nu-#{$color-name}), true);
+            @include -color-class("text-#{$color-name}", color, var(--#{config-constants.$prefix}-#{$color-name}));
+            @include -color-class("bg-#{$color-name}", background-color, var(--#{config-constants.$prefix}-#{$color-name}));
+            @include -color-class("border-#{$color-name}", border-color, var(--#{config-constants.$prefix}-#{$color-name}), true);
         }
 
         // Theme token classes: .bg-surface, .text-muted, .border-regular etc.; border classes add active: and focus:
         @each $token, $property in $-class-tokens {
-            @include -color-class($token, $property, var(--nu-#{$token}), $property == border-color);
+            @include -color-class($token, $property, var(--#{config-constants.$prefix}-#{$token}), $property == border-color);
         }
     }
 }

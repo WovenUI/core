@@ -1,8 +1,14 @@
-// Configuration: Borders
-// Border widths and radii
+////
+//// @group config
+//// Border widths and radii.
+////
 
+/// Border width scale: keys are widths in px, emitted as --wu-border-width-{key} tokens.
+/// @type List
 $border-widths: (0, 1, 2, 4, 8) !default;
 
+/// Border radius scale: key to radius, emitted as --wu-radius-{key} tokens.
+/// @type Map
 $border-radii: (
     "xs": 0.25rem,
     "sm": 0.375rem,

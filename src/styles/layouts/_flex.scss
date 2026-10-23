@@ -1,549 +1,576 @@
-// Section: Layout
-// Module: Flex | Flex Inline
-// Note: Gap utilities are defined in _spacing.scss
-
-// @component Flex
-// @description Flexbox layout system for creating flexible page layouts
-
-// @example
-// <div class="flex row between x-center">
-//   <div class="fill-6">Left column (6 of 12 columns)</div>
-//   <div class="fill-6">Right column (6 of 12 columns)</div>
-// </div>
-
-// <div class="flex col@md row@lg">
-//   <!-- Changes direction based on breakpoint -->
-// </div>
-
-// @classes
-// Base:
-// - flex: Creates a flex container
-
-// Direction:
-// - row: Sets flex-direction to row
-// - col: Sets flex-direction to column
-// - row-reverse: Reverses row direction
-// - col-reverse: Reverses column direction
-
-// Wrapping:
-// - wrap/nowrap/wrap-reverse: Controls flex-wrap
-
-// Alignment:
-// - start/end/center/between/around/evenly: Controls justify-content
-// - stretch: Direct children share the main axis equally (flex: 1 1 0%)
-// - x-start/x-end/x-center/x-stretch/x-baseline: Controls align-items
-// - x-content-{start|end|center|between|around|evenly|stretch}: Controls align-content
-
-// Child elements (direct children of .flex):
-// - fill-{1-12}: Takes that many of the 12 columns, minus the gap
-// - fill-auto/fill-full: Grows and shrinks from its content size, or takes the full row
-// - grow/no-grow: Allows or prevents growing
-// - shrink/no-shrink/shrink-twice: Controls shrink behavior
-// - self-{auto|start|end|center|stretch|baseline}: Controls align-self
-// - order-{1-12}, order-first, order-last, order-none: Controls order
-
-// @responsive
-// All classes support responsive variants using @breakpoint suffix:
-// - row@md: Row direction on medium screens and up
-// - between@lg: Space-between on large screens
-
-// @see grid
+////
+//// @group flex
+//// Flexbox layout system for creating flexible page layouts.
+////
+//// Gap utilities are defined in _spacing.scss.
+////
+//// ```html
+//// <div class="flex row between x-center">
+////   <div class="fill-6">Left column (6 of 12 columns)</div>
+////   <div class="fill-6">Right column (6 of 12 columns)</div>
+//// </div>
+////
+//// <div class="flex col@md row@lg">
+////   <!-- Changes direction based on breakpoint -->
+//// </div>
+//// ```
+////
+//// Classes, base:
+////
+//// - flex: Creates a flex container
+////
+//// Direction:
+////
+//// - row: Sets flex-direction to row
+//// - col: Sets flex-direction to column
+//// - row-reverse: Reverses row direction
+//// - col-reverse: Reverses column direction
+////
+//// Wrapping:
+////
+//// - wrap/nowrap/wrap-reverse: Controls flex-wrap
+////
+//// Alignment:
+////
+//// - start/end/center/between/around/evenly: Controls justify-content
+//// - stretch: Direct children share the main axis equally (flex: 1 1 0%)
+//// - x-start/x-end/x-center/x-stretch/x-baseline: Controls align-items
+//// - x-content-{start|end|center|between|around|evenly|stretch}: Controls align-content
+////
+//// Child elements (direct children of .flex):
+////
+//// - fill-{1-12}: Takes that many of the 12 columns, minus the gap
+//// - fill-auto/fill-full: Grows and shrinks from its content size, or takes the full row
+//// - grow/no-grow: Allows or prevents growing
+//// - shrink/no-shrink/shrink-twice: Controls shrink behavior
+//// - self-{auto|start|end|center|stretch|baseline}: Controls align-self
+//// - order-{1-12}, order-first, order-last, order-none: Controls order
+////
+//// Responsive: all classes support responsive variants using the @breakpoint suffix:
+////
+//// - row@md: Row direction on medium screens and up
+//// - between@lg: Space-between on large screens
+////
+//// See also the grid layout (layouts/_grid.scss).
+////
 
 @use "sass:list";
 @use "sass:math";
 @use "sass:meta";
+@use "../config/constants" as config-constants;
 @use "../config/feature-flags" as config-flags;
 @use "../config/layouts" as config-layout;
 @use "../config/breakpoints" as config-breakpoint;
 @use "../functions/feature-flags" as fn-flags;
 @use "../functions/math" as fn-math;
 
-// @mixin row
-// @description Sets flex-direction to row; applies to a flex container.
-// @example
-// .toolbar {
-//   @include apply(flex, row);
-// }
-// @see col, row-reverse
+/// Sets flex-direction to row; applies to a flex container.
+/// @example scss
+///   .toolbar {
+///     @include apply(flex, row);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction flex-direction on MDN
+/// @see {mixin} col
+/// @see {mixin} row-reverse
 @mixin row {
     flex-direction: row;
 }
 
-// @mixin row-reverse
-// @description Sets flex-direction to row-reverse; applies to a flex container.
-// @example
-// .toolbar {
-//   @include flex;
-//   @include row-reverse;
-// }
-// @see row
+/// Sets flex-direction to row-reverse; applies to a flex container.
+/// @example scss
+///   .toolbar {
+///     @include flex;
+///     @include row-reverse;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction flex-direction on MDN
+/// @see {mixin} row
 @mixin row-reverse {
     flex-direction: row-reverse;
 }
 
-// @mixin col
-// @description Sets flex-direction to column; applies to a flex container.
-// @example
-// .stack {
-//   @include apply(flex, col, gap(4));
-// }
-// @see row, col-reverse
+/// Sets flex-direction to column; applies to a flex container.
+/// @example scss
+///   .stack {
+///     @include apply(flex, col, gap(4));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction flex-direction on MDN
+/// @see {mixin} row
+/// @see {mixin} col-reverse
 @mixin col {
     flex-direction: column;
 }
 
-// @mixin col-reverse
-// @description Sets flex-direction to column-reverse; applies to a flex container.
-// @example
-// .chat-log {
-//   @include flex;
-//   @include col-reverse;
-// }
-// @see col
+/// Sets flex-direction to column-reverse; applies to a flex container.
+/// @example scss
+///   .chat-log {
+///     @include flex;
+///     @include col-reverse;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction flex-direction on MDN
+/// @see {mixin} col
 @mixin col-reverse {
     flex-direction: column-reverse;
 }
 
-// @mixin wrap
-// @description Sets flex-wrap to wrap so items move onto new lines; applies to a flex container.
-// @example
-// .tag-list {
-//   @include apply(flex, wrap, gap(2));
-// }
-// @see nowrap, wrap-reverse
+/// Sets flex-wrap to wrap so items move onto new lines; applies to a flex container.
+/// @example scss
+///   .tag-list {
+///     @include apply(flex, wrap, gap(2));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap flex-wrap on MDN
+/// @see {mixin} nowrap
+/// @see {mixin} wrap-reverse
 @mixin wrap {
     flex-wrap: wrap;
 }
 
-// @mixin nowrap
-// @description Sets flex-wrap to nowrap so items stay on one line; applies to a flex container.
-// @example
-// .tabs {
-//   @include flex;
-//   @include nowrap;
-// }
-// @see wrap
+/// Sets flex-wrap to nowrap so items stay on one line; applies to a flex container.
+/// @example scss
+///   .tabs {
+///     @include flex;
+///     @include nowrap;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap flex-wrap on MDN
+/// @see {mixin} wrap
 @mixin nowrap {
     flex-wrap: nowrap;
 }
 
-// @mixin wrap-reverse
-// @description Sets flex-wrap to wrap-reverse so new lines stack in reverse order; applies to a flex container.
-// @example
-// .tag-list {
-//   @include flex;
-//   @include wrap-reverse;
-// }
-// @see wrap
+/// Sets flex-wrap to wrap-reverse so new lines stack in reverse order; applies to a flex container.
+/// @example scss
+///   .tag-list {
+///     @include flex;
+///     @include wrap-reverse;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap flex-wrap on MDN
+/// @see {mixin} wrap
 @mixin wrap-reverse {
     flex-wrap: wrap-reverse;
 }
 
-// @mixin start
-// @description Sets justify-content to flex-start, packing items at the start of the main axis.
-// @example
-// .toolbar {
-//   @include apply(flex, start);
-// }
-// @see end, center, between
+/// Sets justify-content to flex-start, packing items at the start of the main axis.
+/// @example scss
+///   .toolbar {
+///     @include apply(flex, start);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content justify-content on MDN
+/// @see {mixin} end
+/// @see {mixin} center
+/// @see {mixin} between
 @mixin start {
     justify-content: flex-start;
 }
 
-// @mixin end
-// @description Sets justify-content to flex-end, packing items at the end of the main axis.
-// @example
-// .actions {
-//   @include apply(flex, end, gap(2));
-// }
-// @see start, center
+/// Sets justify-content to flex-end, packing items at the end of the main axis.
+/// @example scss
+///   .actions {
+///     @include apply(flex, end, gap(2));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content justify-content on MDN
+/// @see {mixin} start
+/// @see {mixin} center
 @mixin end {
     justify-content: flex-end;
 }
 
-// @mixin center
-// @description Sets justify-content to center, centring items on the main axis.
-// @example
-// .hero {
-//   @include apply(flex, center, x-center);
-// }
-// @see x-center
+/// Sets justify-content to center, centering items on the main axis.
+/// @example scss
+///   .hero {
+///     @include apply(flex, center, x-center);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content justify-content on MDN
+/// @see {mixin} x-center
 @mixin center {
     justify-content: center;
 }
 
-// @mixin stretch
-// @description Makes the direct children of a flex container share the main axis equally (each child gets flex: 1 1 0%). Takes no argument; when one child must be wider, give it a fill-{n} or no-grow class.
-// @output & > * { flex: 1 1 0% }
-// @example
-// .tabs {
-//   @include apply(flex, stretch);
-// }
-// .segmented {
-//   @include flex;
-//   @include stretch; // .segmented > * { flex: 1 1 0% }
-// }
-// @see grow, x-stretch
+/// Makes the direct children of a flex container share the main axis equally (each child gets flex: 1 1 0%).
+///
+/// Takes no argument; when one child must be wider, give it a fill-{n} or no-grow class.
+/// @output & > * { flex: 1 1 0% }
+/// @example scss
+///   .tabs {
+///     @include apply(flex, stretch);
+///   }
+///   .segmented {
+///     @include flex;
+///     @include stretch; // .segmented > * { flex: 1 1 0% }
+///   }
+/// @see {mixin} grow
+/// @see {mixin} x-stretch
 @mixin stretch {
     & > * {
         flex: 1 1 0%;
     }
 }
 
-// @mixin between
-// @description Sets justify-content to space-between, spreading items with the free space between them.
-// @example
-// .header {
-//   @include apply(flex, between, x-center);
-// }
-// @see around, evenly
+/// Sets justify-content to space-between, spreading items with the free space between them.
+/// @example scss
+///   .header {
+///     @include apply(flex, between, x-center);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content justify-content on MDN
+/// @see {mixin} around
+/// @see {mixin} evenly
 @mixin between {
     justify-content: space-between;
 }
 
-// @mixin around
-// @description Sets justify-content to space-around, giving each item equal space on both sides.
-// @example
-// .nav {
-//   @include flex;
-//   @include around;
-// }
-// @see between, evenly
+/// Sets justify-content to space-around, giving each item equal space on both sides.
+/// @example scss
+///   .nav {
+///     @include flex;
+///     @include around;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content justify-content on MDN
+/// @see {mixin} between
+/// @see {mixin} evenly
 @mixin around {
     justify-content: space-around;
 }
 
-// @mixin evenly
-// @description Sets justify-content to space-evenly, making every gap between and around items equal.
-// @example
-// .stats {
-//   @include flex;
-//   @include evenly;
-// }
-// @see between, around
+/// Sets justify-content to space-evenly, making every gap between and around items equal.
+/// @example scss
+///   .stats {
+///     @include flex;
+///     @include evenly;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content justify-content on MDN
+/// @see {mixin} between
+/// @see {mixin} around
 @mixin evenly {
     justify-content: space-evenly;
 }
 
 // Cross Axis Alignment Mixins
 
-// @mixin x-start
-// @description Sets align-items to flex-start, aligning items to the start of the cross axis.
-// @example
-// .media {
-//   @include apply(flex, x-start, gap(4));
-// }
-// @see x-end, x-center
+/// Sets align-items to flex-start, aligning items to the start of the cross axis.
+/// @example scss
+///   .media {
+///     @include apply(flex, x-start, gap(4));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-items align-items on MDN
+/// @see {mixin} x-end
+/// @see {mixin} x-center
 @mixin x-start {
     align-items: flex-start;
 }
 
-// @mixin x-end
-// @description Sets align-items to flex-end, aligning items to the end of the cross axis.
-// @example
-// .bars {
-//   @include flex;
-//   @include x-end;
-// }
-// @see x-start
+/// Sets align-items to flex-end, aligning items to the end of the cross axis.
+/// @example scss
+///   .bars {
+///     @include flex;
+///     @include x-end;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-items align-items on MDN
+/// @see {mixin} x-start
 @mixin x-end {
     align-items: flex-end;
 }
 
-// @mixin x-center
-// @description Sets align-items to center, centring items on the cross axis.
-// @example
-// .header {
-//   @include apply(flex, between, x-center);
-// }
-// @see center
+/// Sets align-items to center, centering items on the cross axis.
+/// @example scss
+///   .header {
+///     @include apply(flex, between, x-center);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-items align-items on MDN
+/// @see {mixin} center
 @mixin x-center {
     align-items: center;
 }
 
-// @mixin x-stretch
-// @description Sets align-items to stretch, stretching items to fill the cross axis.
-// @example
-// .columns {
-//   @include flex;
-//   @include x-stretch;
-// }
-// @see x-start
+/// Sets align-items to stretch, stretching items to fill the cross axis.
+/// @example scss
+///   .columns {
+///     @include flex;
+///     @include x-stretch;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-items align-items on MDN
+/// @see {mixin} x-start
 @mixin x-stretch {
     align-items: stretch;
 }
 
-// @mixin x-baseline
-// @description Sets align-items to baseline, aligning items along their text baseline.
-// @example
-// .price-row {
-//   @include apply(flex, x-baseline, gap(2));
-// }
-// @see x-center
+/// Sets align-items to baseline, aligning items along their text baseline.
+/// @example scss
+///   .price-row {
+///     @include apply(flex, x-baseline, gap(2));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-items align-items on MDN
+/// @see {mixin} x-center
 @mixin x-baseline {
     align-items: baseline;
 }
 
 // Cross Axis Content Mixins
 
-// @mixin x-content-start
-// @description Sets align-content to flex-start, packing wrapped lines at the start of the cross axis.
-// @example
-// .tag-list {
-//   @include apply(flex, wrap, x-content-start);
-// }
-// @see x-content-end
+/// Sets align-content to flex-start, packing wrapped lines at the start of the cross axis.
+/// @example scss
+///   .tag-list {
+///     @include apply(flex, wrap, x-content-start);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-content align-content on MDN
+/// @see {mixin} x-content-end
 @mixin x-content-start {
     align-content: flex-start;
 }
 
-// @mixin x-content-end
-// @description Sets align-content to flex-end, packing wrapped lines at the end of the cross axis.
-// @example
-// .tag-list {
-//   @include apply(flex, wrap, x-content-end);
-// }
-// @see x-content-start
+/// Sets align-content to flex-end, packing wrapped lines at the end of the cross axis.
+/// @example scss
+///   .tag-list {
+///     @include apply(flex, wrap, x-content-end);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-content align-content on MDN
+/// @see {mixin} x-content-start
 @mixin x-content-end {
     align-content: flex-end;
 }
 
-// @mixin x-content-center
-// @description Sets align-content to center, centring wrapped lines on the cross axis.
-// @example
-// .gallery {
-//   @include apply(flex, wrap, x-content-center);
-// }
-// @see x-center
+/// Sets align-content to center, centering wrapped lines on the cross axis.
+/// @example scss
+///   .gallery {
+///     @include apply(flex, wrap, x-content-center);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-content align-content on MDN
+/// @see {mixin} x-center
 @mixin x-content-center {
     align-content: center;
 }
 
-// @mixin x-content-between
-// @description Sets align-content to space-between, spreading wrapped lines with the free space between them.
-// @example
-// .gallery {
-//   @include apply(flex, wrap, x-content-between);
-// }
-// @see x-content-around, x-content-evenly
+/// Sets align-content to space-between, spreading wrapped lines with the free space between them.
+/// @example scss
+///   .gallery {
+///     @include apply(flex, wrap, x-content-between);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-content align-content on MDN
+/// @see {mixin} x-content-around
+/// @see {mixin} x-content-evenly
 @mixin x-content-between {
     align-content: space-between;
 }
 
-// @mixin x-content-around
-// @description Sets align-content to space-around, giving each wrapped line equal space on both sides.
-// @example
-// .gallery {
-//   @include apply(flex, wrap, x-content-around);
-// }
-// @see x-content-between
+/// Sets align-content to space-around, giving each wrapped line equal space on both sides.
+/// @example scss
+///   .gallery {
+///     @include apply(flex, wrap, x-content-around);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-content align-content on MDN
+/// @see {mixin} x-content-between
 @mixin x-content-around {
     align-content: space-around;
 }
 
-// @mixin x-content-evenly
-// @description Sets align-content to space-evenly, making every gap between and around wrapped lines equal.
-// @example
-// .gallery {
-//   @include apply(flex, wrap, x-content-evenly);
-// }
-// @see x-content-between
+/// Sets align-content to space-evenly, making every gap between and around wrapped lines equal.
+/// @example scss
+///   .gallery {
+///     @include apply(flex, wrap, x-content-evenly);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-content align-content on MDN
+/// @see {mixin} x-content-between
 @mixin x-content-evenly {
     align-content: space-evenly;
 }
 
-// @mixin x-content-stretch
-// @description Sets align-content to stretch, stretching wrapped lines to fill the cross axis.
-// @example
-// .gallery {
-//   @include apply(flex, wrap, x-content-stretch);
-// }
-// @see x-stretch
+/// Sets align-content to stretch, stretching wrapped lines to fill the cross axis.
+/// @example scss
+///   .gallery {
+///     @include apply(flex, wrap, x-content-stretch);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-content align-content on MDN
+/// @see {mixin} x-stretch
 @mixin x-content-stretch {
     align-content: stretch;
 }
 
 // Self Alignment Mixins
 
-// @mixin self-auto
-// @description Sets align-self to auto, so the item follows the container's align-items.
-// @example
-// .item {
-//   @include self-auto;
-// }
-// @see self-start, self-center
+/// Sets align-self to auto, so the item follows the container's align-items.
+/// @example scss
+///   .item {
+///     @include self-auto;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-self align-self on MDN
+/// @see {mixin} self-start
+/// @see {mixin} self-center
 @mixin self-auto {
     align-self: auto;
 }
 
-// @mixin self-start
-// @description Sets align-self to flex-start, aligning this item to the start of the cross axis.
-// @example
-// .badge {
-//   @include self-start;
-// }
-// @see self-end
+/// Sets align-self to flex-start, aligning this item to the start of the cross axis.
+/// @example scss
+///   .badge {
+///     @include self-start;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-self align-self on MDN
+/// @see {mixin} self-end
 @mixin self-start {
     align-self: flex-start;
 }
 
-// @mixin self-end
-// @description Sets align-self to flex-end, aligning this item to the end of the cross axis.
-// @example
-// .timestamp {
-//   @include self-end;
-// }
-// @see self-start
+/// Sets align-self to flex-end, aligning this item to the end of the cross axis.
+/// @example scss
+///   .timestamp {
+///     @include self-end;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-self align-self on MDN
+/// @see {mixin} self-start
 @mixin self-end {
     align-self: flex-end;
 }
 
-// @mixin self-center
-// @description Sets align-self to center, centring this item on the cross axis.
-// @example
-// .icon {
-//   @include self-center;
-// }
-// @see x-center
+/// Sets align-self to center, centering this item on the cross axis.
+/// @example scss
+///   .icon {
+///     @include self-center;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-self align-self on MDN
+/// @see {mixin} x-center
 @mixin self-center {
     align-self: center;
 }
 
-// @mixin self-stretch
-// @description Sets align-self to stretch, stretching this item to fill the cross axis.
-// @example
-// .divider {
-//   @include self-stretch;
-// }
-// @see x-stretch
+/// Sets align-self to stretch, stretching this item to fill the cross axis.
+/// @example scss
+///   .divider {
+///     @include self-stretch;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-self align-self on MDN
+/// @see {mixin} x-stretch
 @mixin self-stretch {
     align-self: stretch;
 }
 
-// @mixin self-baseline
-// @description Sets align-self to baseline, aligning this item along the text baseline.
-// @example
-// .label {
-//   @include self-baseline;
-// }
-// @see x-baseline
+/// Sets align-self to baseline, aligning this item along the text baseline.
+/// @example scss
+///   .label {
+///     @include self-baseline;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-self align-self on MDN
+/// @see {mixin} x-baseline
 @mixin self-baseline {
     align-self: baseline;
 }
 
-// @mixin shrink
-// @description Sets flex-shrink to 1 so the item can shrink when space runs out.
-// @example
-// .title {
-//   @include apply(shrink, truncate);
-// }
-// @see no-shrink, shrink-twice
+/// Sets flex-shrink to 1 so the item can shrink when space runs out.
+/// @example scss
+///   .title {
+///     @include apply(shrink, truncate);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink flex-shrink on MDN
+/// @see {mixin} no-shrink
+/// @see {mixin} shrink-twice
 @mixin shrink {
     flex-shrink: 1;
 }
 
-// @mixin no-shrink
-// @description Sets flex-shrink to 0 so the item never shrinks below its size.
-// @example
-// .avatar {
-//   @include apply(no-shrink, width(10));
-// }
-// @see shrink
+/// Sets flex-shrink to 0 so the item never shrinks below its size.
+/// @example scss
+///   .avatar {
+///     @include apply(no-shrink, width(10));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink flex-shrink on MDN
+/// @see {mixin} shrink
 @mixin no-shrink {
     flex-shrink: 0;
 }
 
-// @mixin shrink-twice
-// @description Sets flex-shrink to 2 so the item shrinks twice as fast as items with flex-shrink 1.
-// @example
-// .sidebar {
-//   @include shrink-twice;
-// }
-// @see shrink
+/// Sets flex-shrink to 2 so the item shrinks twice as fast as items with flex-shrink 1.
+/// @example scss
+///   .sidebar {
+///     @include shrink-twice;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink flex-shrink on MDN
+/// @see {mixin} shrink
 @mixin shrink-twice {
     flex-shrink: 2;
 }
 
 // Flex Child Mixins
 
-// @mixin fill-full
-// @description Sets flex to 0 0 100% so the item takes a full row and neither grows nor shrinks.
-// @example
-// .banner {
-//   @include fill-full;
-// }
-// @see fill, fill-auto
+/// Sets flex to 0 0 100% so the item takes a full row and neither grows nor shrinks.
+/// @example scss
+///   .banner {
+///     @include fill-full;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex flex on MDN
+/// @see {mixin} fill
+/// @see {mixin} fill-auto
 @mixin fill-full {
     flex: 0 0 100%;
 }
 
-// @mixin fill-auto
-// @description Sets flex to 1 1 auto so the item starts at its content size, then grows and shrinks.
-// @example
-// .search {
-//   @include fill-auto;
-// }
-// @see grow, fill-full
+/// Sets flex to 1 1 auto so the item starts at its content size, then grows and shrinks.
+/// @example scss
+///   .search {
+///     @include fill-auto;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex flex on MDN
+/// @see {mixin} grow
+/// @see {mixin} fill-full
 @mixin fill-auto {
     flex: 1 1 auto;
 }
 
-// @mixin grow
-// @description Sets flex to 1 1 0% so the item grows and shrinks from a zero base, sharing space equally with other grow items.
-// @example
-// .main {
-//   @include grow;
-// }
-// @see grow-only, no-grow, fill-auto
+/// Sets flex to 1 1 0% so the item grows and shrinks from a zero base, sharing space equally with other grow items.
+/// @example scss
+///   .main {
+///     @include grow;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex flex on MDN
+/// @see {mixin} grow-only
+/// @see {mixin} no-grow
+/// @see {mixin} fill-auto
 @mixin grow {
     flex: 1 1 0%;
 }
 
-// @mixin no-grow
-// @description Sets flex to none so the item keeps its size and neither grows nor shrinks.
-// @example
-// .logo {
-//   @include no-grow;
-// }
-// @see grow
+/// Sets flex to none so the item keeps its size and neither grows nor shrinks.
+/// @example scss
+///   .logo {
+///     @include no-grow;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex flex on MDN
+/// @see {mixin} grow
 @mixin no-grow {
     flex: none;
 }
 
-// @mixin grow-only
-// @description Sets flex to 1 0 auto so the item grows from its content size but never shrinks.
-// @example
-// .content {
-//   @include grow-only;
-// }
-// @see grow
+/// Sets flex to 1 0 auto so the item grows from its content size but never shrinks.
+/// @example scss
+///   .content {
+///     @include grow-only;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/flex flex on MDN
+/// @see {mixin} grow
 @mixin grow-only {
     flex: 1 0 auto;
 }
 
-// @mixin fill
-// @description Sizes a flex child to span a number of columns out of `$column-count` (12 by default), subtracting the container gap from `--nu-gap`.
-// @param {Number} $size - Whole number of columns to span, from 1 to `$column-count`; a fraction, 0, a negative number, more than `$column-count`, a value with a unit or a non-number raises an error
-// @output flex: 0 0 <width>; max-width: <width>; min-width: 0, where width is a calc() over 100% and var(--nu-gap)
-// @example
-// .sidebar {
-//   @include fill(4); // one third of the row, minus its share of the gap
-// }
-// .layout {
-//   @include apply(flex, gap(4));
-//   > .main {
-//     @include fill(8);
-//   }
-// }
-// @note Gap mixins set `--nu-gap` on direct children, so place the item directly inside the gap container; without a gap it reads the registered initial value 0px.
-// @see grow, fill-full, gap
+/// Sizes a flex child to span a number of columns out of `$column-count` (12 by default), subtracting the container gap from `--wu-gap`.
+///
+/// Gap mixins set `--wu-gap` on direct children, so place the item directly inside the gap container; without a gap it reads the registered initial value 0px.
+/// @param {Number} $size - Whole number of columns to span, from 1 to `$column-count`; a fraction, 0, a negative number, more than `$column-count`, a value with a unit or a non-number raises an error
+/// @output flex: 0 0 <width>; max-width: <width>; min-width: 0, where width is a calc() over 100% and var(--wu-gap)
+/// @example scss
+///   .sidebar {
+///     @include fill(4); // one third of the row, minus its share of the gap
+///   }
+///   .layout {
+///     @include apply(flex, gap(4));
+///     > .main {
+///       @include fill(8);
+///     }
+///   }
+/// @see {mixin} grow
+/// @see {mixin} fill-full
+/// @see {mixin} gap
 @mixin fill($size) {
     $size: fn-math.css-arg($size);
     @if meta.type-of($size) != "number" or not math.is-unitless($size) or math.round($size) != $size or $size <= 0 or $size > config-layout.$column-count {
         @error "fill(#{$size}): use a whole number of columns from 1 to #{config-layout.$column-count}.";
     }
     $columns: math.div(config-layout.$column-count, $size); // How many items per row
-    $width: calc((100% - (#{$columns - 1} * var(--nu-gap))) / #{$columns});
+    $width: calc((100% - (#{$columns - 1} * var(--#{config-constants.$prefix}-gap))) / #{$columns});
 
     flex: 0 0 $width;
     max-width: $width; // Add this to ensure content doesn't push width wider

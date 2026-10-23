@@ -1,6 +1,10 @@
-// Configuration: Breakpoints
-// Media query breakpoints for responsive design
+////
+//// @group config
+//// Media query breakpoints for responsive design.
+////
 
+/// Breakpoints: name to minimum width, used by the @breakpoint modifiers, the media query mixins and the width classes.
+/// @type Map
 $breakpoints: (
     "xs": 480px,
     "sm": 640px,

@@ -1,8 +1,12 @@
-// Configuration: Transitions
-// Timing functions, durations and delays
+////
+//// @group config
+//// Timing functions, durations and delays.
+////
 
 @use "sass:map";
 
+/// Timing functions: name to easing, emitted as --wu-ease-{key} tokens.
+/// @type Map
 $timing-functions: (
     "linear": linear,
     "in": cubic-bezier(0.4, 0, 1, 1),
@@ -10,6 +14,8 @@ $timing-functions: (
     "in-out": cubic-bezier(0.4, 0, 0.2, 1),
 ) !default;
 
+/// Durations: key to time, emitted as --wu-duration-{key} tokens.
+/// @type Map
 $durations: (
     "0": 0ms,
     "75": 75ms,
@@ -22,6 +28,8 @@ $durations: (
     "1000": 1000ms,
 ) !default;
 
+/// Delays: key to time; no tokens are emitted for delays.
+/// @type Map
 $delays: (
     "0": 0ms,
     "75": 75ms,
@@ -34,8 +42,12 @@ $delays: (
     "1000": 1000ms,
 ) !default;
 
-// Duration and easing keys used when none is given: transition(), the .transition classes, hover-ready and tooltips
+/// Duration key used when none is given: transition(), the .transition classes, hover-ready, tooltips and the base-layer button and field transitions.
+/// @type String
 $transition-default-duration: "200" !default;
+
+/// Easing key used when none is given: transition(), the .transition classes, hover-ready, tooltips and the base-layer button and field transitions.
+/// @type String
 $transition-default-ease: "in-out" !default;
 
 @each $label, $map, $key in ("duration" $durations $transition-default-duration, "ease" $timing-functions $transition-default-ease) {

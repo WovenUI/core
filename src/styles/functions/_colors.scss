@@ -1,4 +1,8 @@
-// _colors.scss - get-color() and the color API used by other modules (scales and text contrast are forwarded)
+////
+//// @group functions
+//// get-color() and the color API used by other modules; scales and text contrast are forwarded.
+////
+
 @forward "./color-scale" show create-color-scale;
 @forward "./contrast" show find-text-color;
 
@@ -47,16 +51,15 @@ $color-cache: ();
     @return $base;
 }
 
-// @function get-color
-// @description Returns a real color value for Sass math from a role, palette name or color value at a shade stop; role and palette names win over CSS named colors, and var() or an invalid stop raises an error.
-// @param {String|Color} $color - Role (brand, danger), palette hue (red, blue, gray) or color value
-// @param {Number} $shade [500] - Shade stop: 50, 100 to 900, or 950
-// @return {Color} - The shaded color (not a var() reference, so it does not follow the theme)
-// @example
-// .chart-bar {
-//   background: get-color(brand, 600);
-//   border-color: rgba(get-color(red, 700), 0.4);
-// }
+/// Returns a real color value for Sass math from a role, palette name or color value at a shade stop; role and palette names win over CSS named colors, and var() or an invalid stop raises an error.
+/// @param {String|Color} $color - Role (brand, danger), palette hue (red, blue, gray) or color value
+/// @param {Number} $shade [500] - Shade stop: 50, 100 to 900, or 950
+/// @return {Color} - The shaded color (not a var() reference, so it does not follow the theme)
+/// @example scss
+///   .chart-bar {
+///     background: get-color(brand, 600);
+///     border-color: rgba(get-color(red, 700), 0.4);
+///   }
 @function get-color($color, $shade: 500) {
     @if not $color {
         @error "get-color() needs a color name or color value.";

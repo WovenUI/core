@@ -1,6 +1,9 @@
-// Section: Layout
-// Module: Grid | Grid Inline
-// Note: Gap utilities are defined in _spacing.scss
+////
+//// @group grid
+//// Grid layout system: column and row templates, auto-fit and auto-fill tracks, flow, alignment and item placement.
+////
+//// Gap utilities are defined in _spacing.scss.
+////
 
 @use "sass:list";
 @use "sass:map";
@@ -29,42 +32,44 @@
     @error "#{$mixin}: #{meta.inspect($value)} is not a count. Use a whole number of 1 or more, calc() or var().";
 }
 
-// @mixin cols
-// @description Sets grid-template-columns to a number of equal columns that can shrink below their content width.
-// @param {Number|String} $count - Number of columns: a whole number of 1 or more, calc() or var(); anything else raises an error
-// @output grid-template-columns: repeat($count, minmax(0, 1fr))
-// @example
-// .cards {
-//   @include apply(grid, cols(3), gap(4));
-// }
-// @see rows, cols-custom, auto-fit
+/// Sets grid-template-columns to a number of equal columns that can shrink below their content width.
+/// @param {Number|String} $count - Number of columns: a whole number of 1 or more, calc() or var(); anything else raises an error
+/// @output grid-template-columns: repeat($count, minmax(0, 1fr))
+/// @example scss
+///   .cards {
+///     @include apply(grid, cols(3), gap(4));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns grid-template-columns on MDN
+/// @see {mixin} rows
+/// @see {mixin} cols-custom
+/// @see {mixin} auto-fit
 @mixin cols($count) {
     grid-template-columns: repeat(-count("cols", $count), minmax(0, 1fr));
 }
 
-// @mixin rows
-// @description Sets grid-template-rows to a number of equal rows that can shrink below their content height.
-// @param {Number|String} $count - Number of rows: a whole number of 1 or more, calc() or var(); anything else raises an error
-// @output grid-template-rows: repeat($count, minmax(0, 1fr))
-// @example
-// .board {
-//   @include grid;
-//   @include rows(2);
-// }
-// @see cols
+/// Sets grid-template-rows to a number of equal rows that can shrink below their content height.
+/// @param {Number|String} $count - Number of rows: a whole number of 1 or more, calc() or var(); anything else raises an error
+/// @output grid-template-rows: repeat($count, minmax(0, 1fr))
+/// @example scss
+///   .board {
+///     @include grid;
+///     @include rows(2);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-rows grid-template-rows on MDN
+/// @see {mixin} cols
 @mixin rows($count) {
     grid-template-rows: repeat(-count("rows", $count), minmax(0, 1fr));
 }
 
-// @mixin cols-custom
-// @description Sets grid-template-columns to a custom track list, with underscores standing in for spaces.
-// @param {String|List} $template - Track list, quoted ("1fr_auto_1fr", each underscore outside brackets and parentheses becomes a space) or unquoted (1fr auto 1fr)
-// @example
-// .layout {
-//   @include grid;
-//   @include cols-custom("250px_1fr"); // grid-template-columns: 250px 1fr
-// }
-// @see cols
+/// Sets grid-template-columns to a custom track list, with underscores standing in for spaces.
+/// @param {String|List} $template - Track list, quoted ("1fr_auto_1fr", each underscore outside brackets and parentheses becomes a space) or unquoted (1fr auto 1fr)
+/// @example scss
+///   .layout {
+///     @include grid;
+///     @include cols-custom("250px_1fr"); // grid-template-columns: 250px 1fr
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns grid-template-columns on MDN
+/// @see {mixin} cols
 @mixin cols-custom($template) {
     grid-template-columns: string.unquote(-underscores-to-spaces("#{$template}"));
 }
@@ -114,15 +119,15 @@
     @error "#{$mixin}: #{meta.inspect($value)} is not a minimum width. Use a key (#{map.keys(config-layout.$grid-item-sizes)}), a length or percentage, calc() or var().";
 }
 
-// @mixin auto-fit
-// @description Creates as many columns of at least `$min-width` as fit, collapsing empty tracks so items stretch to fill the row.
-// @param {Length|String} $min-width - Minimum column width: a $grid-item-sizes key (xs, sm, md, lg, xl; sm gives 250px by default), a length or percentage, calc() or var(), or a whole minmax() track used as written; a unitless number or unknown word raises an error
-// @output grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr))
-// @example
-// .cards {
-//   @include apply(grid, auto-fit(250px), gap(4));
-// }
-// @see auto-fill
+/// Creates as many columns of at least `$min-width` as fit, collapsing empty tracks so items stretch to fill the row.
+/// @param {Length|String} $min-width - Minimum column width: a $grid-item-sizes key (xs, sm, md, lg, xl; sm gives 250px by default), a length or percentage, calc() or var(), or a whole minmax() track used as written; a unitless number or unknown word raises an error
+/// @output grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr))
+/// @example scss
+///   .cards {
+///     @include apply(grid, auto-fit(250px), gap(4));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns grid-template-columns on MDN
+/// @see {mixin} auto-fill
 @mixin auto-fit($min-width) {
     grid-template-columns: repeat(auto-fit, -track("auto-fit", $min-width));
 }
@@ -136,55 +141,56 @@
     @return minmax(-min-width($mixin, $value), 1fr);
 }
 
-// @mixin auto-fill
-// @description Creates as many columns of at least `$min-width` as fit, keeping empty tracks so items keep their column width.
-// @param {Length|String} $min-width - Minimum column width: a $grid-item-sizes key (xs, sm, md, lg, xl; sm gives 250px by default), a length or percentage, calc() or var(), or a whole minmax() track used as written; a unitless number or unknown word raises an error
-// @output grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr))
-// @example
-// .gallery {
-//   @include grid;
-//   @include auto-fill(200px);
-// }
-// @see auto-fit
+/// Creates as many columns of at least `$min-width` as fit, keeping empty tracks so items keep their column width.
+/// @param {Length|String} $min-width - Minimum column width: a $grid-item-sizes key (xs, sm, md, lg, xl; sm gives 250px by default), a length or percentage, calc() or var(), or a whole minmax() track used as written; a unitless number or unknown word raises an error
+/// @output grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr))
+/// @example scss
+///   .gallery {
+///     @include grid;
+///     @include auto-fill(200px);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns grid-template-columns on MDN
+/// @see {mixin} auto-fit
 @mixin auto-fill($min-width) {
     grid-template-columns: repeat(auto-fill, -track("auto-fill", $min-width));
 }
 
 // Grid Flow Mixins
 
-// @mixin flow-row
-// @description Sets grid-auto-flow to row, placing items row by row; same as the `.flow-row` class.
-// @example
-// .list {
-//   @include grid;
-//   @include flow-row;
-// }
-// @see flow-col, flow-dense
+/// Sets grid-auto-flow to row, placing items row by row; same as the `.flow-row` class.
+/// @example scss
+///   .list {
+///     @include grid;
+///     @include flow-row;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow grid-auto-flow on MDN
+/// @see {mixin} flow-col
+/// @see {mixin} flow-dense
 @mixin flow-row {
     grid-auto-flow: row;
 }
 
-// @mixin flow-col
-// @description Sets grid-auto-flow to column, placing items column by column; same as the `.flow-col` class.
-// @example
-// .list {
-//   @include grid;
-//   @include rows(3);
-//   @include flow-col;
-// }
-// @see flow-row
+/// Sets grid-auto-flow to column, placing items column by column; same as the `.flow-col` class.
+/// @example scss
+///   .list {
+///     @include grid;
+///     @include rows(3);
+///     @include flow-col;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow grid-auto-flow on MDN
+/// @see {mixin} flow-row
 @mixin flow-col {
     grid-auto-flow: column;
 }
 
-// @mixin flow-dense
-// @description Sets grid-auto-flow to dense so later items back-fill earlier gaps; same as the `.flow-dense` class.
-// @example
-// .masonry {
-//   @include grid;
-//   @include flow-dense;
-// }
-// @see flow-row
+/// Sets grid-auto-flow to dense so later items back-fill earlier gaps; same as the `.flow-dense` class.
+/// @example scss
+///   .masonry {
+///     @include grid;
+///     @include flow-dense;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow grid-auto-flow on MDN
+/// @see {mixin} flow-row
 @mixin flow-dense {
     grid-auto-flow: dense;
 }
@@ -199,134 +205,145 @@ $alignments: (
     "stretch": stretch,
 );
 
-// @mixin justify
-// @description Sets justify-items, aligning grid items along the inline axis of their cells. Grid only: for flex containers use the flex justify mixins (start, center, between).
-// @param {String} $value - Any justify-items value, such as start, end, center or stretch
-// @example
-// .cards {
-//   @include apply(grid, cols(3), justify(center));
-// }
-// @see align, place
+/// Sets justify-items, aligning grid items along the inline axis of their cells.
+///
+/// Grid only: for flex containers use the flex justify mixins (start, center, between).
+/// @param {String} $value - Any justify-items value, such as start, end, center or stretch
+/// @example scss
+///   .cards {
+///     @include apply(grid, cols(3), justify(center));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/justify-items justify-items on MDN
+/// @see {mixin} align
+/// @see {mixin} place
 @mixin justify($value) {
     justify-items: fn-math.css-arg($value);
 }
 
-// @mixin align
-// @description Sets align-items, aligning grid items along the block axis of their cells. Grid only: for flex containers use the x-* mixins (x-center, x-start).
-// @param {String} $value - Any align-items value, such as start, end, center or stretch
-// @example
-// .cards {
-//   @include grid;
-//   @include align(start);
-// }
-// @see justify, place
+/// Sets align-items, aligning grid items along the block axis of their cells.
+///
+/// Grid only: for flex containers use the x-* mixins (x-center, x-start).
+/// @param {String} $value - Any align-items value, such as start, end, center or stretch
+/// @example scss
+///   .cards {
+///     @include grid;
+///     @include align(start);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/align-items align-items on MDN
+/// @see {mixin} justify
+/// @see {mixin} place
 @mixin align($value) {
     align-items: fn-math.css-arg($value);
 }
 
-// @mixin place
-// @description Sets place-items, aligning grid items on both axes of their cells at once. Grid only.
-// @param {String} $value - Any place-items value, such as center or start end
-// @example
-// .icon-grid {
-//   @include grid;
-//   @include place(center);
-// }
-// @see justify, align
+/// Sets place-items, aligning grid items on both axes of their cells at once.
+///
+/// Grid only.
+/// @param {String} $value - Any place-items value, such as center or start end
+/// @example scss
+///   .icon-grid {
+///     @include grid;
+///     @include place(center);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/place-items place-items on MDN
+/// @see {mixin} justify
+/// @see {mixin} align
 @mixin place($value) {
     place-items: fn-math.css-arg($value);
 }
 
 // Grid Item Placement Mixins
 
-// @mixin col-span
-// @description Makes a grid item span a number of columns.
-// @param {Number|String} $span - Number of columns to span: a whole number of 1 or more, calc() or var(); anything else raises an error
-// @output grid-column: span $span / span $span
-// @example
-// .featured {
-//   @include col-span(2);
-// }
-// @see row-span, col-start
+/// Makes a grid item span a number of columns.
+/// @param {Number|String} $span - Number of columns to span: a whole number of 1 or more, calc() or var(); anything else raises an error
+/// @output grid-column: span $span / span $span
+/// @example scss
+///   .featured {
+///     @include col-span(2);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column grid-column on MDN
+/// @see {mixin} row-span
+/// @see {mixin} col-start
 @mixin col-span($span) {
     $span: -count("col-span", $span);
 
     grid-column: span $span / span $span;
 }
 
-// @mixin row-span
-// @description Makes a grid item span a number of rows.
-// @param {Number|String} $span - Number of rows to span: a whole number of 1 or more, calc() or var(); anything else raises an error
-// @output grid-row: span $span / span $span
-// @example
-// .tall {
-//   @include row-span(2);
-// }
-// @see col-span
+/// Makes a grid item span a number of rows.
+/// @param {Number|String} $span - Number of rows to span: a whole number of 1 or more, calc() or var(); anything else raises an error
+/// @output grid-row: span $span / span $span
+/// @example scss
+///   .tall {
+///     @include row-span(2);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row grid-row on MDN
+/// @see {mixin} col-span
 @mixin row-span($span) {
     $span: -count("row-span", $span);
 
     grid-row: span $span / span $span;
 }
 
-// @mixin col-start
-// @description Sets grid-column-start, the column line where the item begins.
-// @param {Number|String} $start - Line number, line name or span value
-// @example
-// .aside {
-//   @include col-start(2);
-// }
-// @see col-end
+/// Sets grid-column-start, the column line where the item begins.
+/// @param {Number|String} $start - Line number, line name or span value
+/// @example scss
+///   .aside {
+///     @include col-start(2);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-start grid-column-start on MDN
+/// @see {mixin} col-end
 @mixin col-start($start) {
     grid-column-start: -line("col-start", $start);
 }
 
-// @mixin col-end
-// @description Sets grid-column-end, the column line where the item ends.
-// @param {Number|String} $end - Line number, line name or span value
-// @example
-// .wide {
-//   @include col-end(-1); // runs to the last column line
-// }
-// @see col-start
+/// Sets grid-column-end, the column line where the item ends.
+/// @param {Number|String} $end - Line number, line name or span value
+/// @example scss
+///   .wide {
+///     @include col-end(-1); // runs to the last column line
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-end grid-column-end on MDN
+/// @see {mixin} col-start
 @mixin col-end($end) {
     grid-column-end: -line("col-end", $end);
 }
 
-// @mixin row-start
-// @description Sets grid-row-start, the row line where the item begins.
-// @param {Number|String} $start - Line number, line name or span value
-// @example
-// .footer {
-//   @include row-start(3);
-// }
-// @see row-end
+/// Sets grid-row-start, the row line where the item begins.
+/// @param {Number|String} $start - Line number, line name or span value
+/// @example scss
+///   .footer {
+///     @include row-start(3);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-start grid-row-start on MDN
+/// @see {mixin} row-end
 @mixin row-start($start) {
     grid-row-start: -line("row-start", $start);
 }
 
-// @mixin row-end
-// @description Sets grid-row-end, the row line where the item ends.
-// @param {Number|String} $end - Line number, line name or span value
-// @example
-// .sidebar {
-//   @include row-end(-1);
-// }
-// @see row-start
+/// Sets grid-row-end, the row line where the item ends.
+/// @param {Number|String} $end - Line number, line name or span value
+/// @example scss
+///   .sidebar {
+///     @include row-end(-1);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-end grid-row-end on MDN
+/// @see {mixin} row-start
 @mixin row-end($end) {
     grid-row-end: -line("row-end", $end);
 }
 
-// @mixin grid-place-at
-// @description Sets grid-column and grid-row together to place an item in the grid.
-// @param {Number|String|List} $col - Value for grid-column, such as 2 or span 2
-// @param {Number|String|List} $row - Value for grid-row, such as 1 or span 2
-// @example
-// .hero {
-//   @include grid-place-at(2, span 2);
-// }
-// @note For start / end pairs pass `list.slash(1, 3)`; a literal `1 / 3` is Sass division and warns.
-// @see grid-col-at, grid-row-at
+/// Sets grid-column and grid-row together to place an item in the grid.
+///
+/// For start / end pairs pass `list.slash(1, 3)`; a literal `1 / 3` is Sass division and warns.
+/// @param {Number|String|List} $col - Value for grid-column, such as 2 or span 2
+/// @param {Number|String|List} $row - Value for grid-row, such as 1 or span 2
+/// @example scss
+///   .hero {
+///     @include grid-place-at(2, span 2);
+///   }
+/// @see {mixin} grid-col-at
+/// @see {mixin} grid-row-at
 @mixin grid-place-at($col, $row) {
     grid-column: -line("grid-place-at", $col);
     grid-row: -line("grid-place-at", $row);
@@ -342,27 +359,27 @@ $alignments: (
     @return $value;
 }
 
-// @mixin grid-col-at
-// @description Sets grid-column to place an item across columns.
-// @param {Number|String|List} $col - Value for grid-column, such as 2, span 2 or list.slash(1, -1)
-// @example
-// @use "sass:list";
-// .full-width {
-//   @include grid-col-at(list.slash(1, -1)); // grid-column: 1 / -1
-// }
-// @see grid-place-at
+/// Sets grid-column to place an item across columns.
+/// @param {Number|String|List} $col - Value for grid-column, such as 2, span 2 or list.slash(1, -1)
+/// @example scss
+///   @use "sass:list";
+///   .full-width {
+///     @include grid-col-at(list.slash(1, -1)); // grid-column: 1 / -1
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column grid-column on MDN
+/// @see {mixin} grid-place-at
 @mixin grid-col-at($col) {
     grid-column: -line("grid-col-at", $col);
 }
 
-// @mixin grid-row-at
-// @description Sets grid-row to place an item across rows.
-// @param {Number|String|List} $row - Value for grid-row, such as 2, span 2 or list.slash(1, 3)
-// @example
-// .tall {
-//   @include grid-row-at(span 2);
-// }
-// @see grid-place-at
+/// Sets grid-row to place an item across rows.
+/// @param {Number|String|List} $row - Value for grid-row, such as 2, span 2 or list.slash(1, 3)
+/// @example scss
+///   .tall {
+///     @include grid-row-at(span 2);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row grid-row on MDN
+/// @see {mixin} grid-place-at
 @mixin grid-row-at($row) {
     grid-row: -line("grid-row-at", $row);
 }

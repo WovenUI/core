@@ -1,16 +1,32 @@
-// Configuration: Color system
-// Core color definitions and semantic mappings
+////
+//// @group config
+//// Core color definitions and semantic mappings.
+////
 
 @use "sass:map";
 
-// Accessible color palette - semantic colors
+/// Brand role color: stop 500 of the brand scale.
+/// @type Color
 $brand: #007bff !default;
+
+/// Success role color: stop 500 of the success scale.
+/// @type Color
 $success: #28a745 !default;
+
+/// Danger role color: stop 500 of the danger scale.
+/// @type Color
 $danger: #dc3545 !default;
+
+/// Warning role color: stop 500 of the warning scale.
+/// @type Color
 $warning: #ffc107 !default;
+
+/// Info role color: stop 500 of the info scale.
+/// @type Color
 $info: #17a2b8 !default;
 
-// Color primitives
+/// Palette hues: name to base color; each gets a 50 to 950 scale, hue role tokens and classes.
+/// @type Map
 $color-primitives: (
     "gray": #6b7280,
     "red": #ef4444,
@@ -21,14 +37,18 @@ $color-primitives: (
     "pink": #ec4899,
 ) !default;
 
-// Basic colors
+/// Basic colors emitted as fixed tokens: black, white and transparent.
+/// @type Map
 $basic-colors: (
     "black": #000,
     "white": #fff,
     "transparent": transparent,
 ) !default;
 
-// Semantic roles: role name to color. Single source for get-color() and theme scales
+/// Semantic roles: role name to color; the single source for get-color() and the theme scales.
+///
+/// Add a key for an extra role.
+/// @type Map
 $semantic-colors: (
     "brand": $brand,
     "success": $success,
@@ -49,22 +69,24 @@ $semantic-colors: (
 $color-primitives: -string-keys($color-primitives);
 $semantic-colors: -string-keys($semantic-colors);
 
-// Shade stops produced by the scale generator. Not configurable: the generator has one step per stop
+/// Shade stops produced by the scale generator.
+///
+/// Not configurable: the generator has one step per stop.
+/// @type List
 $shade-stops: (50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950);
 
-// Palette hue names. Derived, not configurable
+/// Palette hue names, derived from $color-primitives.
+///
+/// Not configurable.
+/// @type List
 $primitive-color-names: map.keys($color-primitives);
 
-// CSS Named Colors Map
-// Purpose: This map contains 159+ CSS named colors for internal use only.
-// These colors are NOT generated as utility classes to prevent CSS bloat.
-// Used by:
-// - Color validation functions (to check if a string is a valid color)
-// - SCSS mixins that accept color names (e.g., @include apply(bg(coral)))
-// - Type detection in the framework
-// Note: Generating utilities for all these colors would create thousands of classes
-// (each color × states × breakpoints), significantly increasing bundle size.
-// If you need specific named colors as utilities, add them to $color-primitives instead.
+/// CSS named colors map for internal use: 149 colors that are not generated as utility classes, to prevent CSS bloat.
+///
+/// Used by the color validation functions, the mixins that accept color names (for example bg(coral)) and type detection.
+///
+/// Generating utilities for all of them would create thousands of classes (each color times states times breakpoints); to get specific named colors as utilities, add them to $color-primitives instead.
+/// @type Map
 $colors-constants: (
     "aliceblue": aliceblue,
     "antiquewhite": antiquewhite,

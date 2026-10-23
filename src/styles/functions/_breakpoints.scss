@@ -1,3 +1,8 @@
+////
+//// @group functions
+//// Breakpoint lookup: resolves a breakpoint name or length to a width.
+////
+
 @use "sass:map";
 @use "sass:math";
 @use "sass:meta";
@@ -5,15 +10,14 @@
 @use "../config/breakpoints" as config-breakpoint;
 @use "./math" as fn-math;
 
-// @function get-breakpoint-value
-// @description Resolves a breakpoint name from $breakpoints to its width; a length passes through, and a unitless number that is not a breakpoint name or an unknown name raises an error.
-// @param {String|Number} $bp - Breakpoint name (xs, sm, md, lg, xl, 2xl; quoting 2xl is optional) or a length such as 800px
-// @param {Boolean} $debug [false] - Unused
-// @return {Number} - The breakpoint width
-// @example
-// .sidebar {
-//   max-width: get-breakpoint-value(md);
-// }
+/// Resolves a breakpoint name from $breakpoints to its width; a length passes through, and a unitless number that is not a breakpoint name or an unknown name raises an error.
+/// @param {String|Number} $bp - Breakpoint name (xs, sm, md, lg, xl, 2xl; quoting 2xl is optional) or a length such as 800px
+/// @param {Boolean} $debug [false] - Unused
+/// @return {Number} - The breakpoint width
+/// @example scss
+///   .sidebar {
+///     max-width: get-breakpoint-value(md); // 768px
+///   }
 @function get-breakpoint-value($bp, $debug: false) {
     // Interpolated so an unquoted 2xl (the number 2 with unit xl) matches "2xl"
     @if map.has-key(config-breakpoint.$breakpoints, "#{$bp}") {

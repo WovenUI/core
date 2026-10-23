@@ -1,9 +1,18 @@
-// Configuration: Layout
-// Layout constants and grid configurations
+////
+//// @group config
+//// Layout constants and grid configurations.
+////
 
+/// Number of columns in the flex fill() and grid column systems.
+/// @type Number
 $column-count: 12 !default;
-$default-container-name: nuvoui-container !default;
 
+/// Default CSS container name; no mixin reads it yet.
+/// @type String
+$default-container-name: wovenui-container !default;
+
+/// Minimum column widths for auto-fit() and auto-fill(): key to width, as in the .auto-fit-sm class.
+/// @type Map
 $grid-item-sizes: (
     "xs": 200px,
     "sm": 250px,

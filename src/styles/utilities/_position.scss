@@ -1,8 +1,63 @@
+////
+//// @group position
+//// Controls element positioning and placement within the document flow.
+////
+//// ```html
+//// <!-- Basic positioning -->
+//// <div class="relative">
+////   <div class="absolute top-0 right-0">
+////     Positioned in top-right corner
+////   </div>
+//// </div>
+//// <!-- Sticky header -->
+//// <header class="sticky top-0">
+////   This header sticks to the top when scrolling
+//// </header>
+//// <!-- Responsive positioning -->
+//// <div class="relative@md">
+////   <div class="absolute@md top-2 left-2">
+////     Only positioned on medium screens and up
+////   </div>
+//// </div>
+//// ```
+////
+//// Position types:
+////
+//// - static: Default position, follows document flow
+//// - relative: Positioned relative to normal position
+//// - absolute: Positioned relative to nearest positioned ancestor
+//// - fixed: Positioned relative to viewport
+//// - sticky: Positioned based on scroll position
+////
+//// Inset:
+////
+//// - inset-{key}, inset-x-{key}, inset-y-{key}: Sets inset, left and right, or top and bottom from the spacing scale
+//// - inset-auto, inset-x-auto, inset-y-auto: Resets the matching sides to auto
+////
+//// Placement:
+////
+//// - top-{value}: Sets top position
+//// - right-{value}: Sets right position
+//// - bottom-{value}: Sets bottom position
+//// - left-{value}: Sets left position
+//// - start-{value}, end-{value}: Sets inset-inline-start and inset-inline-end (follow text direction)
+////
+//// Common values: spacing keys 0, 1, 2, 3, 4, 5, 6, 8, etc. (var(--wu-space-*)) and fractions 25p, 33p, 50p, 66p, 75p, 100p (percentages)
+////
+//// Responsive: all position classes support responsive variants using the @breakpoint suffix:
+////
+//// - relative@md: Relative positioning on medium screens and up
+//// - top-0@lg: Zero top position on large screens
+////
+//// See also z-index and transform.
+////
+
 @use "sass:list";
 @use "sass:map";
 @use "sass:math";
 @use "sass:meta";
 @use "sass:string";
+@use "../config/constants" as config-constants;
 @use "../config/feature-flags" as config-flags;
 @use "../config/breakpoints" as config-breakpoint;
 @use "../config/spacing" as config-spacing;
@@ -11,48 +66,6 @@
 @use "../functions/math" as fn-math;
 @use "../functions/strings" as fn-strings;
 @use "./spacing" as util-spacing;
-
-// @component Position
-// @description Controls element positioning and placement within the document flow
-// @example
-// <!-- Basic positioning -->
-// <div class="relative">
-//   <div class="absolute top-0 right-0">
-//     Positioned in top-right corner
-//   </div>
-// </div>
-// <!-- Sticky header -->
-// <header class="sticky top-0">
-//   This header sticks to the top when scrolling
-// </header>
-// <!-- Responsive positioning -->
-// <div class="relative@md">
-//   <div class="absolute@md top-2 left-2">
-//     Only positioned on medium screens and up
-//   </div>
-// </div>
-//  @classes
-// Position Types:
-//  - static: Default position, follows document flow
-//  - relative: Positioned relative to normal position
-//  - absolute: Positioned relative to nearest positioned ancestor
-//  - fixed: Positioned relative to viewport
-//  - sticky: Positioned based on scroll position
-// Inset:
-//  - inset-{key}, inset-x-{key}, inset-y-{key}: Sets inset, left and right, or top and bottom from the spacing scale
-//  - inset-auto, inset-x-auto, inset-y-auto: Resets the matching sides to auto
-// Placement:
-//  - top-{value}: Sets top position
-//  - right-{value}: Sets right position
-//  - bottom-{value}: Sets bottom position
-//  - left-{value}: Sets left position
-//  - start-{value}, end-{value}: Sets inset-inline-start and inset-inline-end (follow text direction)
-// Common values: spacing keys 0, 1, 2, 3, 4, 5, 6, 8, etc. (var(--nu-space-*)) and fractions 25p, 33p, 50p, 66p, 75p, 100p (percentages)
-//  @responsive
-// All position classes support responsive variants using @breakpoint suffix:
-//  - relative@md: Relative positioning on medium screens and up
-//  - top-0@lg: Zero top position on large screens
-//  @see z-index, transform
 
 // -----------------------------------------------
 // MIXINS
@@ -101,134 +114,135 @@ $-offset-cache: ();
     @return util-spacing.space-offset($value, $label);
 }
 
-// @mixin static
-// @description Sets position to static, the default document flow.
-// @example
-// .element {
-//   @include static;
-// }
+/// Sets position to static, the default document flow.
+/// @example scss
+///   .element {
+///     @include static;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/position position on MDN
 @mixin static {
     position: static;
 }
 
-// @mixin relative
-// @description Sets position to relative, creating a positioning context for absolute children.
-// @example
-// .container {
-//   @include relative;
-// }
+/// Sets position to relative, creating a positioning context for absolute children.
+/// @example scss
+///   .container {
+///     @include relative;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/position position on MDN
 @mixin relative {
     position: relative;
 }
 
-// @mixin absolute
-// @description Sets position to absolute, removing the element from the normal document flow.
-// @example
-// .popup {
-//   @include absolute;
-//   @include top(0);
-//   @include left(0);
-// }
+/// Sets position to absolute, removing the element from the normal document flow.
+/// @example scss
+///   .popup {
+///     @include absolute;
+///     @include top(0);
+///     @include left(0);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/position position on MDN
 @mixin absolute {
     position: absolute;
 }
 
-// @mixin fixed
-// @description Sets position to fixed, placing the element relative to the viewport.
-// @example
-// .banner {
-//   @include fixed;
-//   @include top(0);
-//   @include inset-x(0);
-// }
+/// Sets position to fixed, placing the element relative to the viewport.
+/// @example scss
+///   .banner {
+///     @include fixed;
+///     @include top(0);
+///     @include inset-x(0);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/position position on MDN
 @mixin fixed {
     position: fixed;
 }
 
-// @mixin sticky
-// @description Sets position to sticky with top 0 and z-index 999, so the element stays in view while scrolling.
-// @output position: sticky; z-index: 999; top: 0
-// @example
-// .nav {
-//   @include sticky;
-// }
+/// Sets position to sticky with top 0 and z-index 999, so the element stays in view while scrolling.
+/// @output position: sticky; z-index: 999; top: 0
+/// @example scss
+///   .nav {
+///     @include sticky;
+///   }
 @mixin sticky {
     position: sticky;
     z-index: 999;
     top: 0;
 }
 
-// @mixin top
-// @description Sets the physical top offset from the spacing scale or a raw value.
-// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .toast {
-//   @include absolute;
-//   @include top(4); // top: var(--nu-space-4)
-// }
+/// Sets the physical top offset from the spacing scale or a raw value.
+/// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .toast {
+///     @include absolute;
+///     @include top(4); // top: var(--wu-space-4)
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/top top on MDN
 @mixin top($value) {
     top: -offset($value, "top");
 }
 
-// @mixin right
-// @description Sets the physical right offset from the spacing scale or a raw value.
-// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .badge {
-//   @include absolute;
-//   @include right(-2); // right: calc(-1 * var(--nu-space-2))
-// }
+/// Sets the physical right offset from the spacing scale or a raw value.
+/// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .badge {
+///     @include absolute;
+///     @include right(-2); // right: calc(-1 * var(--wu-space-2))
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/right right on MDN
 @mixin right($value) {
     right: -offset($value, "right");
 }
 
-// @mixin bottom
-// @description Sets the physical bottom offset from the spacing scale or a raw value.
-// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .footer {
-//   @include fixed;
-//   @include bottom(0);
-// }
+/// Sets the physical bottom offset from the spacing scale or a raw value.
+/// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .footer {
+///     @include fixed;
+///     @include bottom(0);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/bottom bottom on MDN
 @mixin bottom($value) {
     bottom: -offset($value, "bottom");
 }
 
-// @mixin left
-// @description Sets the physical left offset from the spacing scale or a raw value.
-// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .sidebar {
-//   @include fixed;
-//   @include left(50%);
-// }
+/// Sets the physical left offset from the spacing scale or a raw value.
+/// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .sidebar {
+///     @include fixed;
+///     @include left(50%);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/left left on MDN
 @mixin left($value) {
     left: -offset($value, "left");
 }
 
-// @mixin inset-start
-// @description Sets inset-inline-start, which is the left offset in LTR and the right offset in RTL.
-// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .close-button {
-//   @include absolute;
-//   @include inset-start(2); // inset-inline-start: var(--nu-space-2)
-// }
-// @see inset-end, left
+/// Sets inset-inline-start, which is the left offset in LTR and the right offset in RTL.
+/// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .close-button {
+///     @include absolute;
+///     @include inset-start(2); // inset-inline-start: var(--wu-space-2)
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/inset-inline-start inset-inline-start on MDN
+/// @see {mixin} inset-end
+/// @see {mixin} left
 @mixin inset-start($value) {
     inset-inline-start: -offset($value, "inset-start");
 }
 
-// @mixin inset-end
-// @description Sets inset-inline-end, which is the right offset in LTR and the left offset in RTL.
-// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .close-button {
-//   @include absolute;
-//   @include top(2);
-//   @include inset-end(2); // inset-inline-end: var(--nu-space-2)
-// }
-// @see inset-start, right
+/// Sets inset-inline-end, which is the right offset in LTR and the left offset in RTL.
+/// @param {Number|Length|String} $value - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .close-button {
+///     @include absolute;
+///     @include top(2);
+///     @include inset-end(2); // inset-inline-end: var(--wu-space-2)
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/inset-inline-end inset-inline-end on MDN
+/// @see {mixin} inset-start
+/// @see {mixin} right
 @mixin inset-end($value) {
     inset-inline-end: -offset($value, "inset-end");
 }
@@ -237,27 +251,26 @@ $-offset-cache: ();
 // INSET MIXINS
 // -----------------------------------------------
 
-// @mixin inset
-// @description Sets the inset shorthand (top, right, bottom and left) to one value.
-// @param {Number|Length|String} $val - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .overlay {
-//   @include absolute;
-//   @include inset(0); // inset: var(--nu-space-0)
-// }
+/// Sets the inset shorthand (top, right, bottom and left) to one value.
+/// @param {Number|Length|String} $val - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .overlay {
+///     @include absolute;
+///     @include inset(0); // inset: var(--wu-space-0)
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/inset inset on MDN
 @mixin inset($val) {
     inset: -offset($val, "inset");
 }
 
-// @mixin inset-x
-// @description Sets the physical left and right offsets to one value.
-// @param {Number|Length|String} $val - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .drawer-footer {
-//   @include absolute;
-//   @include bottom(0);
-//   @include inset-x(4);
-// }
+/// Sets the physical left and right offsets to one value.
+/// @param {Number|Length|String} $val - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .drawer-footer {
+///     @include absolute;
+///     @include bottom(0);
+///     @include inset-x(4);
+///   }
 @mixin inset-x($val) {
     $val: -offset($val, "inset-x");
 
@@ -265,15 +278,14 @@ $-offset-cache: ();
     right: $val;
 }
 
-// @mixin inset-y
-// @description Sets the top and bottom offsets to one value.
-// @param {Number|Length|String} $val - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
-// @example
-// .side-rail {
-//   @include absolute;
-//   @include inset-y(0);
-//   @include left(0);
-// }
+/// Sets the top and bottom offsets to one value.
+/// @param {Number|Length|String} $val - Spacing key (4), negative key (-4), fraction key (25p, -25p; 33p gives 33.333%), auto, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .side-rail {
+///     @include absolute;
+///     @include inset-y(0);
+///     @include left(0);
+///   }
 @mixin inset-y($val) {
     $val: -offset($val, "inset-y");
 
@@ -281,44 +293,41 @@ $-offset-cache: ();
     bottom: $val;
 }
 
-// @mixin inset-auto
-// @description Sets the inset shorthand to auto on all four sides.
-// @example
-// .popover {
-//   @include inset-auto;
-// }
+/// Sets the inset shorthand to auto on all four sides.
+/// @example scss
+///   .popover {
+///     @include inset-auto;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/inset inset on MDN
 @mixin inset-auto {
     inset: auto;
 }
 
-// @mixin inset-x-auto
-// @description Sets the physical left and right offsets to auto.
-// @example
-// .tooltip {
-//   @include inset-x-auto;
-// }
+/// Sets the physical left and right offsets to auto.
+/// @example scss
+///   .tooltip {
+///     @include inset-x-auto;
+///   }
 @mixin inset-x-auto {
     left: auto;
     right: auto;
 }
 
-// @mixin inset-y-auto
-// @description Sets the top and bottom offsets to auto.
-// @example
-// .tooltip {
-//   @include inset-y-auto;
-// }
+/// Sets the top and bottom offsets to auto.
+/// @example scss
+///   .tooltip {
+///     @include inset-y-auto;
+///   }
 @mixin inset-y-auto {
     top: auto;
     bottom: auto;
 }
 
-// @mixin absolute-center
-// @description Centers an element absolutely within its positioned parent using top and left 50% and a -50% translate.
-// @example
-// .modal {
-//   @include absolute-center;
-// }
+/// Centers an element absolutely within its positioned parent using top and left 50% and a -50% translate.
+/// @example scss
+///   .modal {
+///     @include absolute-center;
+///   }
 @mixin absolute-center {
     @include -center-box;
     @include -center-translate;
@@ -329,24 +338,26 @@ $-offset-cache: ();
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translateX(var(--nu-translate-x)) translateY(var(--nu-translate-y)) translateZ(var(--nu-translate-z)) rotate(var(--nu-rotate)) skewX(var(--nu-skew-x)) skewY(var(--nu-skew-y)) scaleX(var(--nu-scale-x)) scaleY(var(--nu-scale-y));
+    transform: translateX(var(--#{config-constants.$prefix}-translate-x)) translateY(var(--#{config-constants.$prefix}-translate-y)) translateZ(var(--#{config-constants.$prefix}-translate-z)) rotate(var(--#{config-constants.$prefix}-rotate)) skewX(var(--#{config-constants.$prefix}-skew-x)) skewY(var(--#{config-constants.$prefix}-skew-y)) scaleX(var(--#{config-constants.$prefix}-scale-x)) scaleY(var(--#{config-constants.$prefix}-scale-y));
 }
 
 // The -50% translate of absolute-center
 @mixin -center-translate {
-    --nu-translate-x: -50%;
-    --nu-translate-y: -50%;
+    --#{config-constants.$prefix}-translate-x: -50%;
+    --#{config-constants.$prefix}-translate-y: -50%;
 }
 
-// @variable $position-fractions
-// @description Common percentage values for positioning elements
-// @note These values are used to generate position utility classes like .top-25p, .left-50p, etc.
-// @example
-// @use "sass:map";
-// .sidebar {
-//   @include absolute;
-//   @include top(map.get($position-fractions, "25p")); // top: 25%
-// }
+/// Common percentage values for positioning elements: key to percentage.
+///
+/// These values are used to generate position utility classes like .top-25p, .left-50p, etc.
+/// @type Map
+/// @example scss
+///   @use "sass:map";
+///
+///   .sidebar {
+///     @include absolute;
+///     @include top(map.get($position-fractions, "25p")); // top: 25%
+///   }
 $position-fractions: (
     "25p": 25%,
     "33p": 33.333%,
@@ -388,7 +399,7 @@ $position-fractions: (
             z-index: 999;
         }
 
-        // The centring translate sits in :where(), so a .translate-* class (responsive ones included) adjusts it
+        // The centering translate sits in :where(), so a .translate-* class (responsive ones included) adjusts it
         #{config-flags.$parent-selector} .absolute-center {
             @include -center-box;
         }

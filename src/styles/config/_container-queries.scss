@@ -1,1 +1,8 @@
+////
+//// @group config
+//// Container query configuration.
+////
+
+/// Container names that each get a .container-{name} class setting container-name.
+/// @type List
 $container-names: ("main", "sidebar", "card", "section") !default;

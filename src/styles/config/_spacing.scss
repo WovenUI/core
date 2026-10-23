@@ -1,6 +1,10 @@
-// Configuration: Spacing
-// Spacing scale and percentage values
+////
+//// @group config
+//// Spacing scale, percentage values and control sizes.
+////
 
+/// Spacing scale: key to length; keys are the numbers mixins and classes accept.
+/// @type Map
 $spacings: (
     0: 0,
     1: 0.25rem /* 4px */,
@@ -22,15 +26,20 @@ $spacings: (
     64: 16rem /* 256px */,
 ) !default;
 
+/// Percentage keys for the width and height classes (.w-50p) and the percentage sizing keys (width(50p)).
+/// @type List
 $percentages: (0, 5, 10, 20, 25, 30, 33, 40, 50, 60, 66, 70, 75, 80, 90, 100) !default;
 
-// Control sizes for base buttons and inputs
+/// Control heights for base buttons and inputs: size to height.
+/// @type Map
 $control-heights: (
     "sm": 2rem,
     "md": 2.5rem,
     "lg": 3rem,
 ) !default;
 
+/// Inline padding for base buttons and inputs: size to length.
+/// @type Map
 $control-padding-inline: (
     "sm": 0.75rem,
     "md": 1rem,

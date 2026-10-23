@@ -1,4 +1,8 @@
-// _contrast.scss - WCAG luminance, contrast ratio and text color choice
+////
+//// @group functions
+//// WCAG luminance, contrast ratio and text color choice.
+////
+
 @use "sass:math";
 @use "sass:color";
 @use "sass:map";
@@ -82,20 +86,19 @@ $-min-text-contrast: 4.5;
 // text-on tokens already warned about, so a token emitted in several theme blocks warns once
 $-warned: ();
 
-// @function find-text-color
-// @description Picks whichever of two text colors has the higher WCAG contrast against the background, by default the light theme text-regular and text-inverted; a transparent background raises an error.
-// @param {Color} $background - Opaque background color
-// @param {List|Null} $text-colors [null] - Two opaque candidate text colors; null uses the light theme text-regular and text-inverted
-// @return {Color} - The text color with the higher contrast ratio (the first one on a tie)
-// @example
-// .badge {
-//   background: get-color(brand, 700);
-//   color: find-text-color(get-color(brand, 700));
-// }
-// @example
-// .chip {
-//   color: find-text-color(#0b1f3a, (#111, #fafafa));
-// }
+/// Picks whichever of two text colors has the higher WCAG contrast against the background, by default the light theme text-regular and text-inverted; a transparent background raises an error.
+/// @param {Color} $background - Opaque background color
+/// @param {List|Null} $text-colors [null] - Two opaque candidate text colors; null uses the light theme text-regular and text-inverted
+/// @return {Color} - The text color with the higher contrast ratio (the first one on a tie)
+/// @example scss
+///   .badge {
+///     background: get-color(brand, 700);
+///     color: find-text-color(get-color(brand, 700));
+///   }
+/// @example scss
+///   .chip {
+///     color: find-text-color(#0b1f3a, (#111, #fafafa));
+///   }
 @function find-text-color($background, $text-colors: null) {
     @if color.channel($background, "alpha") < 1 {
         @error "find-text-color(#{$background}): the background is not opaque (alpha #{color.channel($background, "alpha")}). Contrast needs an opaque background; set the text color explicitly.";

@@ -1,6 +1,12 @@
+////
+//// @group tooltips
+//// Tooltip component variables and styles, driven by the data-tooltip attribute.
+////
+
 @use "sass:list";
 @use "sass:map";
 @use "sass:meta";
+@use "../config/constants" as config-constants;
 @use "../config/borders" as config-border;
 @use "../config/feature-flags" as config-flags;
 @use "../config/transitions" as config-transitions;
@@ -37,37 +43,37 @@ $-map-names: (
     @return $value;
 }
 
-// @mixin tooltip-variables
-// @description Emits the tooltip component variables (--nu-tooltip--{Name}); the bubble uses text-regular as background and text-inverted as text, so it contrasts with the page in both themes.
-// @output --nu-tooltip--* custom properties for colors, z-index, transition, typography, widths and radius
-// @example
-// .help-panel {
-//   @include tooltip-variables;
-//   --nu-tooltip--WidthLarge: 320px;
-// }
-// @note Already emitted on :root (or $parent-selector) when the tooltips feature is enabled; include it again only to reset a scope. The theme blocks re-declare the two color variables, so tooltips inside a data-theme section take that section's colors.
+/// Emits the tooltip component variables (--wu-tooltip--{Name}); the bubble uses text-regular as background and text-inverted as text, so it contrasts with the page in both themes.
+///
+/// Already emitted on :root (or $parent-selector) when the tooltips feature is enabled; include it again only to reset a scope. The theme blocks re-declare the two color variables, so tooltips inside a data-theme section take that section's colors.
+/// @output --wu-tooltip--* custom properties for colors, z-index, transition, typography, widths and radius
+/// @example scss
+///   .help-panel {
+///     @include tooltip-variables;
+///     --wu-tooltip--WidthLarge: 320px;
+///   }
 @mixin tooltip-variables {
     // Tooltip core variables
-    --nu-tooltip--Background: #{-color("text-regular", rgb(17 17 17 / 90%))};
-    --nu-tooltip--ShadowColor: rgb(0 0 0 / 20%);
-    --nu-tooltip--Color: #{-color("text-inverted", #fff)};
-    --nu-tooltip--ZIndex: #{-scale-var("z", config-z.$z-index-levels, "tooltip")};
+    --#{config-constants.$prefix}-tooltip--Background: #{-color("text-regular", rgb(17 17 17 / 90%))};
+    --#{config-constants.$prefix}-tooltip--ShadowColor: rgb(0 0 0 / 20%);
+    --#{config-constants.$prefix}-tooltip--Color: #{-color("text-inverted", #fff)};
+    --#{config-constants.$prefix}-tooltip--ZIndex: #{-scale-var("z", config-z.$z-index-levels, "tooltip")};
 
     // Animation variables
-    --nu-tooltip--TransitionDuration: #{-scale-var("duration", config-transitions.$durations, config-transitions.$transition-default-duration)};
-    --nu-tooltip--TransitionTimingFunction: #{-scale-var("ease", config-transitions.$timing-functions, config-transitions.$transition-default-ease)};
-    --nu-tooltip--TransitionDelay: 0s;
+    --#{config-constants.$prefix}-tooltip--TransitionDuration: #{-scale-var("duration", config-transitions.$durations, config-transitions.$transition-default-duration)};
+    --#{config-constants.$prefix}-tooltip--TransitionTimingFunction: #{-scale-var("ease", config-transitions.$timing-functions, config-transitions.$transition-default-ease)};
+    --#{config-constants.$prefix}-tooltip--TransitionDelay: 0s;
 
     // Typography variables
-    --nu-tooltip--FontSize: #{-scale-var("font-size", config-typo.$font-sizes, "sm")};
-    --nu-tooltip--FontWeight: normal;
-    --nu-tooltip--TextTransform: none;
+    --#{config-constants.$prefix}-tooltip--FontSize: #{-scale-var("font-size", config-typo.$font-sizes, "sm")};
+    --#{config-constants.$prefix}-tooltip--FontWeight: normal;
+    --#{config-constants.$prefix}-tooltip--TextTransform: none;
 
     // Sizing variables
-    --nu-tooltip--WidthSmall: 80px;
-    --nu-tooltip--WidthMedium: 150px;
-    --nu-tooltip--WidthLarge: 260px;
-    --nu-tooltip--BorderRadius: #{-scale-var("radius", config-border.$border-radii, "xs")};
+    --#{config-constants.$prefix}-tooltip--WidthSmall: 80px;
+    --#{config-constants.$prefix}-tooltip--WidthMedium: 150px;
+    --#{config-constants.$prefix}-tooltip--WidthLarge: 260px;
+    --#{config-constants.$prefix}-tooltip--BorderRadius: #{-scale-var("radius", config-border.$border-radii, "xs")};
 }
 
 // CSS output of this module; index.scss includes it, the mixins entry does not
@@ -97,11 +103,11 @@ $-map-names: (
                     opacity: 0;
                     pointer-events: none;
                     transition:
-                        opacity var(--nu-tooltip--TransitionDuration) var(--nu-tooltip--TransitionTimingFunction) var(--nu-tooltip--TransitionDelay),
-                        transform var(--nu-tooltip--TransitionDuration) var(--nu-tooltip--TransitionTimingFunction) var(--nu-tooltip--TransitionDelay);
+                        opacity var(--#{config-constants.$prefix}-tooltip--TransitionDuration) var(--#{config-constants.$prefix}-tooltip--TransitionTimingFunction) var(--#{config-constants.$prefix}-tooltip--TransitionDelay),
+                        transform var(--#{config-constants.$prefix}-tooltip--TransitionDuration) var(--#{config-constants.$prefix}-tooltip--TransitionTimingFunction) var(--#{config-constants.$prefix}-tooltip--TransitionDelay);
                     position: absolute;
                     box-sizing: border-box;
-                    z-index: var(--nu-tooltip--ZIndex);
+                    z-index: var(--#{config-constants.$prefix}-tooltip--ZIndex);
                     transform-origin: top;
                 }
 
@@ -111,14 +117,14 @@ $-map-names: (
                 }
 
                 &::after {
-                    background: var(--nu-tooltip--Background);
-                    box-shadow: 0 3px 7px var(--nu-tooltip--ShadowColor);
-                    border-radius: var(--nu-tooltip--BorderRadius);
-                    color: var(--nu-tooltip--Color);
+                    background: var(--#{config-constants.$prefix}-tooltip--Background);
+                    box-shadow: 0 3px 7px var(--#{config-constants.$prefix}-tooltip--ShadowColor);
+                    border-radius: var(--#{config-constants.$prefix}-tooltip--BorderRadius);
+                    color: var(--#{config-constants.$prefix}-tooltip--Color);
                     content: attr(data-tooltip);
-                    font-size: var(--nu-tooltip--FontSize);
-                    font-weight: var(--nu-tooltip--FontWeight);
-                    text-transform: var(--nu-tooltip--TextTransform);
+                    font-size: var(--#{config-constants.$prefix}-tooltip--FontSize);
+                    font-weight: var(--#{config-constants.$prefix}-tooltip--FontWeight);
+                    text-transform: var(--#{config-constants.$prefix}-tooltip--TextTransform);
                     padding-block: 0.5em;
                     padding-inline: 1em;
                     white-space: nowrap;
@@ -137,17 +143,17 @@ $-map-names: (
             // Top position tooltips; top is the default when data-tooltip-position is absent
             #{config-flags.$parent-selector} [data-tooltip]:not([data-tooltip-position]),
             #{config-flags.$parent-selector} [data-tooltip][data-tooltip-position|="top"] {
-                // Block-axis offsets are logical; the horizontal centring stays physical to match translate3d()
+                // Block-axis offsets are logical; the horizontal centering stays physical to match translate3d()
                 &::before {
                     border-inline: 9px solid transparent;
-                    border-block-start: 6px solid var(--nu-tooltip--Background);
+                    border-block-start: 6px solid var(--#{config-constants.$prefix}-tooltip--Background);
                     height: 0;
                     width: 0;
                     margin-block-end: 6px;
                     transform: translate3d(-50%, 0, 0);
                     inset-block-end: 100%;
                     left: 50%;
-                    z-index: var(--nu-tooltip--ZIndex);
+                    z-index: var(--#{config-constants.$prefix}-tooltip--ZIndex);
                 }
 
                 &::after {
@@ -196,14 +202,14 @@ $-map-names: (
             #{config-flags.$parent-selector} [data-tooltip][data-tooltip-position|="bottom"] {
                 &::before {
                     border-inline: 9px solid transparent;
-                    border-block-end: 6px solid var(--nu-tooltip--Background);
+                    border-block-end: 6px solid var(--#{config-constants.$prefix}-tooltip--Background);
                     height: 0;
                     width: 0;
                     margin-block: 5px 0;
                     transform: translate3d(-50%, -10px, 0);
                     inset-block: 100% auto;
                     left: 50%;
-                    z-index: var(--nu-tooltip--ZIndex);
+                    z-index: var(--#{config-constants.$prefix}-tooltip--ZIndex);
                 }
 
                 &::after {
@@ -262,12 +268,12 @@ $-map-names: (
 
                 &::before {
                     border-block: 9px solid transparent;
-                    border-left: 6px solid var(--nu-tooltip--Background);
+                    border-left: 6px solid var(--#{config-constants.$prefix}-tooltip--Background);
                     height: 0;
                     width: 0;
                     margin-right: 5px;
                     margin-block-end: 0;
-                    z-index: var(--nu-tooltip--ZIndex);
+                    z-index: var(--#{config-constants.$prefix}-tooltip--ZIndex);
                 }
 
                 &::after {
@@ -294,12 +300,12 @@ $-map-names: (
 
                 &::before {
                     border-block: 9px solid transparent;
-                    border-right: 6px solid var(--nu-tooltip--Background);
+                    border-right: 6px solid var(--#{config-constants.$prefix}-tooltip--Background);
                     height: 0;
                     width: 0;
                     margin-block-end: 0;
                     margin-left: 5px;
-                    z-index: var(--nu-tooltip--ZIndex);
+                    z-index: var(--#{config-constants.$prefix}-tooltip--ZIndex);
                 }
 
                 &::after {
@@ -317,17 +323,17 @@ $-map-names: (
             // Tooltip sizes
             #{config-flags.$parent-selector} [data-tooltip][data-tooltip-size="small"]::after {
                 white-space: initial;
-                width: var(--nu-tooltip--WidthSmall);
+                width: var(--#{config-constants.$prefix}-tooltip--WidthSmall);
             }
 
             #{config-flags.$parent-selector} [data-tooltip][data-tooltip-size="medium"]::after {
                 white-space: initial;
-                width: var(--nu-tooltip--WidthMedium);
+                width: var(--#{config-constants.$prefix}-tooltip--WidthMedium);
             }
 
             #{config-flags.$parent-selector} [data-tooltip][data-tooltip-size="large"]::after {
                 white-space: initial;
-                width: var(--nu-tooltip--WidthLarge);
+                width: var(--#{config-constants.$prefix}-tooltip--WidthLarge);
             }
         } // end @layer components
     }

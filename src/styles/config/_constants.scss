@@ -1,1 +1,11 @@
+////
+//// @group config
+//// Unit constants.
+////
+
+/// CSS unit names that fix-units() and get-type() recognize at the end of a string.
+/// @type List
 $units: ("px", "rem", "%", "em", "vh", "vw", "vmin", "vmax", "ch", "ex", "cm", "mm", "in", "pt", "pc") !default;
+
+// Custom property prefix: every token and internal variable is --{prefix}-{name}. Internal, not configurable.
+$prefix: "wu";

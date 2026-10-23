@@ -1,5 +1,21 @@
-// Section: Text
-// Module: Text
+////
+//// @group typography
+//// Typography utilities: font size, weight and line height, text alignment, transform, style and decoration, word breaking, white-space and letter spacing.
+////
+//// Classes:
+////
+//// - Font Size: .text-xs, .text-sm, .text-base, etc.
+//// - Font Weight: .font-thin, .font-normal, .font-bold, etc.
+//// - Line Height: .leading-none, .leading-tight, .leading-normal, etc.
+//// - Text Align: .text-left, .text-center, .text-right, .text-justify, .text-start, .text-end
+//// - Text Transform: .uppercase, .lowercase, .capitalize, .normal-case
+//// - Text Style: .italic, .not-italic
+//// - Text Decoration: .underline, .line-through, .no-underline
+////
+//// All classes above support responsive variants with the @breakpoint suffix, except .break-* and .whitespace-*:
+////
+//// - .text-lg@md, .font-bold@lg, etc.
+////
 
 @use "sass:list";
 @use "sass:map";
@@ -15,18 +31,6 @@
 @use "../functions/math" as fn-math;
 @use "../functions/css-vars" as fn-css-vars;
 @use "./display" as util-display;
-
-// Typography Utilities
-// Classes:
-// - Font Size: .text-xs, .text-sm, .text-base, etc.
-// - Font Weight: .font-thin, .font-normal, .font-bold, etc.
-// - Line Height: .leading-none, .leading-tight, .leading-normal, etc.
-// - Text Align: .text-left, .text-center, .text-right, .text-justify, .text-start, .text-end
-// - Text Transform: .uppercase, .lowercase, .capitalize, .normal-case
-// - Text Style: .italic, .not-italic
-// - Text Decoration: .underline, .line-through, .no-underline
-// All utilities support responsive variants with @breakpoint suffix:
-// - .text-lg@md, .font-bold@lg, etc.
 
 $-font-size-keywords: (xx-small, x-small, small, medium, large, x-large, xx-large, xxx-large, smaller, larger, math, inherit, initial, unset, revert, revert-layer);
 
@@ -53,18 +57,20 @@ $-font-size-keywords: (xx-small, x-small, small, medium, large, x-large, xx-larg
     @return false;
 }
 
-// @mixin font-size
-// @description Sets font-size from a $font-sizes key (lg gives var(--nu-font-size-lg)) or a raw value; an unknown key or unitless number raises an error.
-// @param {String|Length|Calculation} $size - Font size key, 0, a value with a unit, calc(), var() or a CSS font-size keyword
-// @example
-// .title {
-//   @include font-size(lg); // font-size: var(--nu-font-size-lg)
-// }
-// @example
-// .hero {
-//   @include font-size(clamp(2rem, 5vw, 3rem));
-// }
-// @see font, leading, tracking
+/// Sets font-size from a $font-sizes key (lg gives var(--wu-font-size-lg)) or a raw value; an unknown key or unitless number raises an error.
+/// @param {String|Length|Calculation} $size - Font size key, 0, a value with a unit, calc(), var() or a CSS font-size keyword
+/// @example scss
+///   .title {
+///     @include font-size(lg); // font-size: var(--wu-font-size-lg)
+///   }
+/// @example scss
+///   .hero {
+///     @include font-size(clamp(2rem, 5vw, 3rem));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/font-size font-size on MDN
+/// @see {mixin} font
+/// @see {mixin} leading
+/// @see {mixin} tracking
 @mixin font-size($size) {
     font-size: -font-size($size);
 }
@@ -106,18 +112,18 @@ $-font-size-cache: ();
     @error "font-size(#{$size}): unknown size. Use a key (#{map.keys(config-typo.$font-sizes)}), a value with a unit, calc(), var() or a keyword (#{$-font-size-keywords}).";
 }
 
-// @mixin font
-// @description Sets font-weight from a $font-weights key (bold gives var(--nu-font-weight-bold)) or a unitless number from 1 to 1000; anything else raises an error.
-// @param {String|Number} $weight - Font weight key (thin to black) or a number from 1 to 1000
-// @example
-// .label {
-//   @include font(semibold); // font-weight: var(--nu-font-weight-semibold)
-// }
-// @example
-// .heading {
-//   @include apply(font-size(xl), font(bold), leading(tight));
-// }
-// @see font-size
+/// Sets font-weight from a $font-weights key (bold gives var(--wu-font-weight-bold)) or a unitless number from 1 to 1000; anything else raises an error.
+/// @param {String|Number} $weight - Font weight key (thin to black) or a number from 1 to 1000
+/// @example scss
+///   .label {
+///     @include font(semibold); // font-weight: var(--wu-font-weight-semibold)
+///   }
+/// @example scss
+///   .heading {
+///     @include apply(font-size(xl), font(bold), leading(tight));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight font-weight on MDN
+/// @see {mixin} font-size
 @mixin font($weight) {
     font-weight: -font-weight($weight);
 }
@@ -192,18 +198,19 @@ $-font-weight-cache: ();
 
 $-line-height-keywords: ("normal", "inherit", "initial", "unset", "revert", "revert-layer");
 
-// @mixin leading
-// @description Sets line-height from a $line-heights key (tight gives var(--nu-line-height-tight)) or a raw value; negative or unknown values raise an error.
-// @param {String|Number|Length|Calculation} $value - Line height key, a number or length of 0 or more (also as a string), calc(), var() or a keyword
-// @example
-// .body {
-//   @include leading(relaxed); // line-height: var(--nu-line-height-relaxed)
-// }
-// @example
-// .caption {
-//   @include leading(1.6); // line-height: 1.6
-// }
-// @see leading-normal, font-size
+/// Sets line-height from a $line-heights key (tight gives var(--wu-line-height-tight)) or a raw value; negative or unknown values raise an error.
+/// @param {String|Number|Length|Calculation} $value - Line height key, a number or length of 0 or more (also as a string), calc(), var() or a keyword
+/// @example scss
+///   .body {
+///     @include leading(relaxed); // line-height: var(--wu-line-height-relaxed)
+///   }
+/// @example scss
+///   .caption {
+///     @include leading(1.6); // line-height: 1.6
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/line-height line-height on MDN
+/// @see {mixin} leading-normal
+/// @see {mixin} font-size
 @mixin leading($value) {
     line-height: -line-height($value);
 }
@@ -255,324 +262,331 @@ $-line-height-cache: ();
 
 // Line heights
 
-// @mixin leading-none
-// @description Sets line-height to the none key (var(--nu-line-height-none)); raises an error if the key is missing from $line-heights.
-// @example
-// .text {
-//   @include leading-none; // line-height: var(--nu-line-height-none)
-// }
-// @see leading
+/// Sets line-height to the none key (var(--wu-line-height-none)); raises an error if the key is missing from $line-heights.
+/// @example scss
+///   .text {
+///     @include leading-none; // line-height: var(--wu-line-height-none)
+///   }
+/// @see {mixin} leading
 @mixin leading-none {
     @include leading(-leading-key("none"));
 }
 
-// @mixin leading-tight
-// @description Sets line-height to the tight key (var(--nu-line-height-tight)); raises an error if the key is missing from $line-heights.
-// @example
-// .text {
-//   @include leading-tight; // line-height: var(--nu-line-height-tight)
-// }
-// @see leading
+/// Sets line-height to the tight key (var(--wu-line-height-tight)); raises an error if the key is missing from $line-heights.
+/// @example scss
+///   .text {
+///     @include leading-tight; // line-height: var(--wu-line-height-tight)
+///   }
+/// @see {mixin} leading
 @mixin leading-tight {
     @include leading(-leading-key("tight"));
 }
 
-// @mixin leading-snug
-// @description Sets line-height to the snug key (var(--nu-line-height-snug)); raises an error if the key is missing from $line-heights.
-// @example
-// .text {
-//   @include leading-snug; // line-height: var(--nu-line-height-snug)
-// }
-// @see leading
+/// Sets line-height to the snug key (var(--wu-line-height-snug)); raises an error if the key is missing from $line-heights.
+/// @example scss
+///   .text {
+///     @include leading-snug; // line-height: var(--wu-line-height-snug)
+///   }
+/// @see {mixin} leading
 @mixin leading-snug {
     @include leading(-leading-key("snug"));
 }
 
-// @mixin leading-normal
-// @description Sets line-height to the normal key (var(--nu-line-height-normal)); raises an error if the key is missing from $line-heights.
-// @example
-// .text {
-//   @include leading-normal; // line-height: var(--nu-line-height-normal)
-// }
-// @see leading
+/// Sets line-height to the normal key (var(--wu-line-height-normal)); raises an error if the key is missing from $line-heights.
+/// @example scss
+///   .text {
+///     @include leading-normal; // line-height: var(--wu-line-height-normal)
+///   }
+/// @see {mixin} leading
 @mixin leading-normal {
     @include leading(-leading-key("normal"));
 }
 
-// @mixin leading-relaxed
-// @description Sets line-height to the relaxed key (var(--nu-line-height-relaxed)); raises an error if the key is missing from $line-heights.
-// @example
-// .text {
-//   @include leading-relaxed; // line-height: var(--nu-line-height-relaxed)
-// }
-// @see leading
+/// Sets line-height to the relaxed key (var(--wu-line-height-relaxed)); raises an error if the key is missing from $line-heights.
+/// @example scss
+///   .text {
+///     @include leading-relaxed; // line-height: var(--wu-line-height-relaxed)
+///   }
+/// @see {mixin} leading
 @mixin leading-relaxed {
     @include leading(-leading-key("relaxed"));
 }
 
-// @mixin leading-loose
-// @description Sets line-height to the loose key (var(--nu-line-height-loose)); raises an error if the key is missing from $line-heights.
-// @example
-// .text {
-//   @include leading-loose; // line-height: var(--nu-line-height-loose)
-// }
-// @see leading
+/// Sets line-height to the loose key (var(--wu-line-height-loose)); raises an error if the key is missing from $line-heights.
+/// @example scss
+///   .text {
+///     @include leading-loose; // line-height: var(--wu-line-height-loose)
+///   }
+/// @see {mixin} leading
 @mixin leading-loose {
     @include leading(-leading-key("loose"));
 }
 
 // Text alignment
 
-// @mixin text-left
-// @description Aligns text to the left (physical, does not follow text direction).
-// @example
-// .cell {
-//   @include text-left; // text-align: left
-// }
-// @see text-start, text-right
+/// Aligns text to the left (physical, does not follow text direction).
+/// @example scss
+///   .cell {
+///     @include text-left; // text-align: left
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-align text-align on MDN
+/// @see {mixin} text-start
+/// @see {mixin} text-right
 @mixin text-left {
     text-align: left;
 }
 
-// @mixin text-center
-// @description Centers text.
-// @example
-// .title {
-//   @include text-center; // text-align: center
-// }
-// @see text-start, text-end
+/// Centers text.
+/// @example scss
+///   .title {
+///     @include text-center; // text-align: center
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-align text-align on MDN
+/// @see {mixin} text-start
+/// @see {mixin} text-end
 @mixin text-center {
     text-align: center;
 }
 
-// @mixin text-right
-// @description Aligns text to the right (physical, does not follow text direction).
-// @example
-// .amount {
-//   @include text-right; // text-align: right
-// }
-// @see text-end, text-left
+/// Aligns text to the right (physical, does not follow text direction).
+/// @example scss
+///   .amount {
+///     @include text-right; // text-align: right
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-align text-align on MDN
+/// @see {mixin} text-end
+/// @see {mixin} text-left
 @mixin text-right {
     text-align: right;
 }
 
-// @mixin text-justify
-// @description Justifies text to both edges.
-// @example
-// .article {
-//   @include text-justify; // text-align: justify
-// }
+/// Justifies text to both edges.
+/// @example scss
+///   .article {
+///     @include text-justify; // text-align: justify
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-align text-align on MDN
 @mixin text-justify {
     text-align: justify;
 }
 
-// @mixin text-start
-// @description Aligns text to the inline start: left in LTR, right in RTL.
-// @example
-// .label {
-//   @include text-start; // text-align: start
-// }
-// @see text-end, text-left
+/// Aligns text to the inline start: left in LTR, right in RTL.
+/// @example scss
+///   .label {
+///     @include text-start; // text-align: start
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-align text-align on MDN
+/// @see {mixin} text-end
+/// @see {mixin} text-left
 @mixin text-start {
     text-align: start;
 }
 
-// @mixin text-end
-// @description Aligns text to the inline end: right in LTR, left in RTL.
-// @example
-// .amount {
-//   @include text-end; // text-align: end
-// }
-// @see text-start, text-right
+/// Aligns text to the inline end: right in LTR, left in RTL.
+/// @example scss
+///   .amount {
+///     @include text-end; // text-align: end
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-align text-align on MDN
+/// @see {mixin} text-start
+/// @see {mixin} text-right
 @mixin text-end {
     text-align: end;
 }
 
 // Text transform mixins
 
-// @mixin uppercase
-// @description Transforms text to uppercase.
-// @example
-// .eyebrow {
-//   @include uppercase; // text-transform: uppercase
-// }
-// @see lowercase, capitalize, normal-case
+/// Transforms text to uppercase.
+/// @example scss
+///   .eyebrow {
+///     @include uppercase; // text-transform: uppercase
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform text-transform on MDN
+/// @see {mixin} lowercase
+/// @see {mixin} capitalize
+/// @see {mixin} normal-case
 @mixin uppercase {
     text-transform: uppercase;
 }
 
-// @mixin lowercase
-// @description Transforms text to lowercase.
-// @example
-// .tag {
-//   @include lowercase; // text-transform: lowercase
-// }
-// @see uppercase, normal-case
+/// Transforms text to lowercase.
+/// @example scss
+///   .tag {
+///     @include lowercase; // text-transform: lowercase
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform text-transform on MDN
+/// @see {mixin} uppercase
+/// @see {mixin} normal-case
 @mixin lowercase {
     text-transform: lowercase;
 }
 
-// @mixin capitalize
-// @description Capitalizes the first letter of each word.
-// @example
-// .name {
-//   @include capitalize; // text-transform: capitalize
-// }
-// @see uppercase, normal-case
+/// Capitalizes the first letter of each word.
+/// @example scss
+///   .name {
+///     @include capitalize; // text-transform: capitalize
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform text-transform on MDN
+/// @see {mixin} uppercase
+/// @see {mixin} normal-case
 @mixin capitalize {
     text-transform: capitalize;
 }
 
-// @mixin normal-case
-// @description Removes any text transform.
-// @example
-// .plain {
-//   @include normal-case; // text-transform: none
-// }
-// @see uppercase, lowercase
+/// Removes any text transform.
+/// @example scss
+///   .plain {
+///     @include normal-case; // text-transform: none
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform text-transform on MDN
+/// @see {mixin} uppercase
+/// @see {mixin} lowercase
 @mixin normal-case {
     text-transform: none;
 }
 
 // Font style mixins
 
-// @mixin italic
-// @description Sets the font style to italic.
-// @example
-// .quote {
-//   @include italic; // font-style: italic
-// }
-// @see not-italic
+/// Sets the font style to italic.
+/// @example scss
+///   .quote {
+///     @include italic; // font-style: italic
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/font-style font-style on MDN
+/// @see {mixin} not-italic
 @mixin italic {
     font-style: italic;
 }
 
-// @mixin not-italic
-// @description Resets the font style to normal.
-// @example
-// em {
-//   @include not-italic; // font-style: normal
-// }
-// @see italic
+/// Resets the font style to normal.
+/// @example scss
+///   em {
+///     @include not-italic; // font-style: normal
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/font-style font-style on MDN
+/// @see {mixin} italic
 @mixin not-italic {
     font-style: normal;
 }
 
 // Text decoration mixins
 
-// @mixin underline
-// @description Underlines text.
-// @example
-// .link {
-//   @include underline; // text-decoration: underline
-// }
-// @see no-underline, line-through
+/// Underlines text.
+/// @example scss
+///   .link {
+///     @include underline; // text-decoration: underline
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration text-decoration on MDN
+/// @see {mixin} no-underline
+/// @see {mixin} line-through
 @mixin underline {
     text-decoration: underline;
 }
 
-// @mixin line-through
-// @description Draws a line through text.
-// @example
-// .old-price {
-//   @include line-through; // text-decoration: line-through
-// }
-// @see no-underline
+/// Draws a line through text.
+/// @example scss
+///   .old-price {
+///     @include line-through; // text-decoration: line-through
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration text-decoration on MDN
+/// @see {mixin} no-underline
 @mixin line-through {
     text-decoration: line-through;
 }
 
-// @mixin no-underline
-// @description Removes text decoration.
-// @example
-// a.nav {
-//   @include no-underline; // text-decoration: none
-// }
-// @see underline
+/// Removes text decoration.
+/// @example scss
+///   a.nav {
+///     @include no-underline; // text-decoration: none
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration text-decoration on MDN
+/// @see {mixin} underline
 @mixin no-underline {
     text-decoration: none;
 }
 
-// @mixin break-normal
-// @description Resets overflow-wrap and word-break to normal line breaking.
-// @example
-// .text {
-//   @include break-normal; // overflow-wrap: normal; word-break: normal
-// }
-// @see break-words, break-all
+/// Resets overflow-wrap and word-break to normal line breaking.
+/// @example scss
+///   .text {
+///     @include break-normal; // overflow-wrap: normal; word-break: normal
+///   }
+/// @see {mixin} break-words
+/// @see {mixin} break-all
 @mixin break-normal {
     overflow-wrap: normal;
     word-break: normal;
 }
 
-// @mixin break-words
-// @description Lets long words break onto the next line when they would overflow (overflow-wrap: break-word).
-// @example
-// .url {
-//   @include break-words; // overflow-wrap: break-word
-// }
-// @see break-all, break-normal
+/// Lets long words break onto the next line when they would overflow (overflow-wrap: break-word).
+/// @example scss
+///   .url {
+///     @include break-words; // overflow-wrap: break-word
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-wrap overflow-wrap on MDN
+/// @see {mixin} break-all
+/// @see {mixin} break-normal
 @mixin break-words {
     overflow-wrap: break-word;
 }
 
-// @mixin break-all
-// @description Allows line breaks between any two characters (word-break: break-all).
-// @example
-// .hash {
-//   @include break-all; // word-break: break-all
-// }
-// @see break-words, break-normal
+/// Allows line breaks between any two characters (word-break: break-all).
+/// @example scss
+///   .hash {
+///     @include break-all; // word-break: break-all
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/word-break word-break on MDN
+/// @see {mixin} break-words
+/// @see {mixin} break-normal
 @mixin break-all {
     word-break: break-all;
 }
 
-// @mixin whitespace-normal
-// @description Sets white-space to normal, collapsing spaces and wrapping lines.
-// @example
-// .text {
-//   @include whitespace-normal; // white-space: normal
-// }
+/// Sets white-space to normal, collapsing spaces and wrapping lines.
+/// @example scss
+///   .text {
+///     @include whitespace-normal; // white-space: normal
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/white-space white-space on MDN
 @mixin whitespace-normal {
     white-space: normal;
 }
 
-// @mixin whitespace-nowrap
-// @description Prevents text from wrapping (white-space: nowrap).
-// @example
-// .text {
-//   @include whitespace-nowrap; // white-space: nowrap
-// }
+/// Prevents text from wrapping (white-space: nowrap).
+/// @example scss
+///   .text {
+///     @include whitespace-nowrap; // white-space: nowrap
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/white-space white-space on MDN
 @mixin whitespace-nowrap {
     white-space: nowrap;
 }
 
-// @mixin whitespace-pre
-// @description Preserves spaces and line breaks without wrapping (white-space: pre).
-// @example
-// .text {
-//   @include whitespace-pre; // white-space: pre
-// }
+/// Preserves spaces and line breaks without wrapping (white-space: pre).
+/// @example scss
+///   .text {
+///     @include whitespace-pre; // white-space: pre
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/white-space white-space on MDN
 @mixin whitespace-pre {
     white-space: pre;
 }
 
-// @mixin whitespace-pre-line
-// @description Collapses spaces but keeps line breaks (white-space: pre-line).
-// @example
-// .text {
-//   @include whitespace-pre-line; // white-space: pre-line
-// }
+/// Collapses spaces but keeps line breaks (white-space: pre-line).
+/// @example scss
+///   .text {
+///     @include whitespace-pre-line; // white-space: pre-line
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/white-space white-space on MDN
 @mixin whitespace-pre-line {
     white-space: pre-line;
 }
 
-// @mixin whitespace-pre-wrap
-// @description Preserves spaces and line breaks and wraps lines (white-space: pre-wrap).
-// @example
-// .text {
-//   @include whitespace-pre-wrap; // white-space: pre-wrap
-// }
+/// Preserves spaces and line breaks and wraps lines (white-space: pre-wrap).
+/// @example scss
+///   .text {
+///     @include whitespace-pre-wrap; // white-space: pre-wrap
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/white-space white-space on MDN
 @mixin whitespace-pre-wrap {
     white-space: pre-wrap;
 }
@@ -589,18 +603,19 @@ $-tracking-values: (
 
 $-tracking-keywords: ("inherit", "initial", "unset", "revert", "revert-layer");
 
-// @mixin tracking
-// @description Sets letter-spacing from a key (tighter, tight, normal, wide, wider, widest; raw em values, not tokens) or a raw value; anything else raises an error.
-// @param {String|Number|Length|Calculation} $value - Tracking key, 0, a value with a unit (also as a string), calc(), var() or a CSS-wide keyword
-// @example
-// .eyebrow {
-//   @include tracking(wide); // letter-spacing: 0.025em
-// }
-// @example
-// .logo {
-//   @include tracking(0.2em); // letter-spacing: 0.2em
-// }
-// @see tracking-wide, tracking-tight
+/// Sets letter-spacing from a key (tighter, tight, normal, wide, wider, widest; raw em values, not tokens) or a raw value; anything else raises an error.
+/// @param {String|Number|Length|Calculation} $value - Tracking key, 0, a value with a unit (also as a string), calc(), var() or a CSS-wide keyword
+/// @example scss
+///   .eyebrow {
+///     @include tracking(wide); // letter-spacing: 0.025em
+///   }
+/// @example scss
+///   .logo {
+///     @include tracking(0.2em); // letter-spacing: 0.2em
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing letter-spacing on MDN
+/// @see {mixin} tracking-wide
+/// @see {mixin} tracking-tight
 @mixin tracking($value) {
     $type: meta.type-of($value);
     $numeric: -numeric($value);
@@ -615,68 +630,62 @@ $-tracking-keywords: ("inherit", "initial", "unset", "revert", "revert-layer");
     }
 }
 
-// @mixin tracking-tighter
-// @description Sets letter-spacing to the tighter key (-0.05em).
-// @example
-// .text {
-//   @include tracking-tighter; // letter-spacing: -0.05em
-// }
-// @see tracking
+/// Sets letter-spacing to the tighter key (-0.05em).
+/// @example scss
+///   .text {
+///     @include tracking-tighter; // letter-spacing: -0.05em
+///   }
+/// @see {mixin} tracking
 @mixin tracking-tighter {
     @include tracking(tighter);
 }
 
-// @mixin tracking-tight
-// @description Sets letter-spacing to the tight key (-0.025em).
-// @example
-// .text {
-//   @include tracking-tight; // letter-spacing: -0.025em
-// }
-// @see tracking
+/// Sets letter-spacing to the tight key (-0.025em).
+/// @example scss
+///   .text {
+///     @include tracking-tight; // letter-spacing: -0.025em
+///   }
+/// @see {mixin} tracking
 @mixin tracking-tight {
     @include tracking(tight);
 }
 
-// @mixin tracking-normal
-// @description Sets letter-spacing to the normal key (0).
-// @example
-// .text {
-//   @include tracking-normal; // letter-spacing: 0
-// }
-// @see tracking
+/// Sets letter-spacing to the normal key (0).
+/// @example scss
+///   .text {
+///     @include tracking-normal; // letter-spacing: 0
+///   }
+/// @see {mixin} tracking
 @mixin tracking-normal {
     @include tracking(normal);
 }
 
-// @mixin tracking-wide
-// @description Sets letter-spacing to the wide key (0.025em).
-// @example
-// .text {
-//   @include tracking-wide; // letter-spacing: 0.025em
-// }
-// @see tracking
+/// Sets letter-spacing to the wide key (0.025em).
+/// @example scss
+///   .text {
+///     @include tracking-wide; // letter-spacing: 0.025em
+///   }
+/// @see {mixin} tracking
 @mixin tracking-wide {
     @include tracking(wide);
 }
 
-// @mixin tracking-wider
-// @description Sets letter-spacing to the wider key (0.05em).
-// @example
-// .text {
-//   @include tracking-wider; // letter-spacing: 0.05em
-// }
-// @see tracking
+/// Sets letter-spacing to the wider key (0.05em).
+/// @example scss
+///   .text {
+///     @include tracking-wider; // letter-spacing: 0.05em
+///   }
+/// @see {mixin} tracking
 @mixin tracking-wider {
     @include tracking(wider);
 }
 
-// @mixin tracking-widest
-// @description Sets letter-spacing to the widest key (0.1em).
-// @example
-// .text {
-//   @include tracking-widest; // letter-spacing: 0.1em
-// }
-// @see tracking
+/// Sets letter-spacing to the widest key (0.1em).
+/// @example scss
+///   .text {
+///     @include tracking-widest; // letter-spacing: 0.1em
+///   }
+/// @see {mixin} tracking
 @mixin tracking-widest {
     @include tracking(widest);
 }
@@ -698,13 +707,12 @@ $-tracking-keywords: ("inherit", "initial", "unset", "revert", "revert-layer");
     }
 }
 
-// @mixin responsive-typography
-// @description Emits the typography utility classes (size, weight, line height, alignment, transform, style, decoration, tracking), suffixed with @breakpoint when a breakpoint is given.
-// @param {String|Null} $breakpoint [null] - Breakpoint name for the class suffix (also adds responsive truncate classes); null emits the base classes
-// @example
-// @media (min-width: 1440px) {
-//   @include responsive-typography(wide);
-// }
+/// Emits the typography utility classes (size, weight, line height, alignment, transform, style, decoration, tracking), suffixed with @breakpoint when a breakpoint is given.
+/// @param {String|Null} $breakpoint [null] - Breakpoint name for the class suffix (also adds responsive truncate classes); null emits the base classes
+/// @example scss
+///   @media (min-width: 1440px) {
+///     @include responsive-typography(wide);
+///   }
 @mixin responsive-typography($breakpoint: null) {
     $suffix: "";
     @if $breakpoint {

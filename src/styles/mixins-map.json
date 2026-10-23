@@ -184,6 +184,7 @@
     "^gradient-(\\w+)-(\\w+)$": "(match) => `${mixin.name}(match[1], match[2])`",
     "^cursor-(\\w+)$": "(match) => `${mixin.name}(${match[1]})`",
     "^hide$": "() => mixin.name",
+    "^hidden$": "() => mixin.name",
     "^block$": "() => mixin.name",
     "^inline$": "() => mixin.name",
     "^inline-block$": "() => mixin.name",

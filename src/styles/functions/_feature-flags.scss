@@ -1,3 +1,8 @@
+////
+//// @group functions
+//// Feature flag checks for utility class generation.
+////
+
 @use "sass:map";
 @use "../config/feature-flags" as config-flags;
 
@@ -10,16 +15,15 @@
     @return map.get(config-flags.$feature-flags, $feature);
 }
 
-// @function feature-enabled
-// @description Whether utility classes for a feature are generated: requires $generate-utility-classes and a feature flag that is on (a feature missing from $feature-flags counts as on).
-// @param {String} $feature - Feature flag name (position, spacing, theme, ...)
-// @return {Boolean} - True when the feature's utility classes are generated
-// @example
-// @if feature-enabled("position") {
-//   .pinned {
-//     @include sticky;
-//   }
-// }
+/// Whether utility classes for a feature are generated: requires $generate-utility-classes and a feature flag that is on (a feature missing from $feature-flags counts as on).
+/// @param {String} $feature - Feature flag name (position, spacing, theme, ...)
+/// @return {Boolean} - True when the feature's utility classes are generated
+/// @example scss
+///   @if feature-enabled("position") {
+///     .pinned {
+///       @include sticky;
+///     }
+///   }
 @function feature-enabled($feature) {
     @if not config-flags.$generate-utility-classes {
         @return false;

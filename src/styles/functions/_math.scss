@@ -1,3 +1,8 @@
+////
+//// @group functions
+//// Number parsing helpers: strings to numbers and CSS units.
+////
+
 @use "sass:string";
 @use "sass:math";
 @use "sass:map";
@@ -86,16 +91,15 @@ $unit-values: (
     "fr": 1fr,
 );
 
-// @function to-number-raw
-// @description Parses the leading number of a string and returns it with the remaining text; a string that does not start with a number gives null.
-// @param {Number|String} $value - Number or string to parse
-// @return {List|Null} - A (number, rest) pair, for example (12, "px")
-// @example
-// @use "sass:list";
-// $parsed: to-number-raw("12px");
-// .card {
-//   z-index: list.nth($parsed, 1);
-// }
+/// Parses the leading number of a string and returns it with the remaining text; a string that does not start with a number gives null.
+/// @param {Number|String} $value - Number or string to parse
+/// @return {List|Null} - A (number, rest) pair, for example (12, "px")
+/// @example scss
+///   @use "sass:list";
+///   $parsed: to-number-raw("12px");
+///   .card {
+///     z-index: list.nth($parsed, 1);
+///   }
 @function to-number-raw($value) {
     @if meta.type-of($value) == "number" {
         @return ($value, "");
@@ -158,16 +162,15 @@ $unit-values: (
     @return ($sign * $result, $rest);
 }
 
-// @function to-number
-// @description Converts a string to a number, keeping a trailing CSS unit as a real unit ("12px" gives 12px) or applying $append-unit; other trailing text is dropped and a non-numeric string gives null.
-// @param {Number|String} $value - Number or string to convert
-// @param {String|Number} $append-unit [null] - Unit name or unit number (rem, 1rem) applied to the parsed number, replacing any trailing text
-// @return {Number|Null} - The number, or null when the string is not numeric
-// @example
-// .card {
-//   width: to-number("12px");
-//   height: to-number("8", 1rem);
-// }
+/// Converts a string to a number, keeping a trailing CSS unit as a real unit ("12px" gives 12px) or applying $append-unit; other trailing text is dropped and a non-numeric string gives null.
+/// @param {Number|String} $value - Number or string to convert
+/// @param {String|Number} $append-unit [null] - Unit name or unit number (rem, 1rem) applied to the parsed number, replacing any trailing text
+/// @return {Number|Null} - The number, or null when the string is not numeric
+/// @example scss
+///   .card {
+///     width: to-number("12px");
+///     height: to-number("8", 1rem);
+///   }
 @function to-number($value, $append-unit: null) {
     $parsed: to-number-raw($value);
     @if not $parsed {

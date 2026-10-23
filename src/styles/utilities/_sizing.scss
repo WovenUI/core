@@ -1,7 +1,9 @@
-// _sizing.scss
-// Sizing utilities: .w-{key}, .h-{key}, .min-w-{key}, .min-h-{key}, .max-w-{key}, .max-h-{key} from the spacing scale,
-// .w-{n}p etc. from $percentages, .w-{breakpoint} etc. from breakpoint widths, and keyword classes (.w-full, .h-screen, .w-fit).
-// Responsive variants use the @breakpoint suffix (.w-full@md).
+////
+//// @group sizing
+//// Sizing utilities: .w-{key}, .h-{key}, .min-w-{key}, .min-h-{key}, .max-w-{key}, .max-h-{key} from the spacing scale, .w-{n}p etc. from $percentages, .w-{breakpoint}, .min-w-{breakpoint} and .max-w-{breakpoint} from breakpoint widths (there are no h-, min-h- or max-h- breakpoint classes), and keyword classes (.w-full, .h-screen, .w-fit).
+////
+//// Responsive variants use the @breakpoint suffix (.w-full@md).
+////
 
 @use "sass:list";
 @use "sass:map";
@@ -32,7 +34,7 @@ $-thirds: (
 // Resolved sizing values by property and fn-css-vars.value-key()
 $-size-cache: ();
 
-// A $spacings key gives its token (4 is var(--nu-space-4)), a percentage key (50p) its percentage, a breakpoint name
+// A $spacings key gives its token (4 is var(--wu-space-4)), a percentage key (50p) its percentage, a breakpoint name
 // its width (width, min-width and max-width only); other values stay raw. Unknown words raise an error
 @function -size($property, $value, $keywords: $-size-keywords) {
     @if meta.type-of($value) == "number" and map.has-key(fn-css-vars.$length-percent-unit-set, math.unit($value)) and $value >= 0 and not map.has-key(config-spacing.$spacings, $value) {
@@ -82,68 +84,68 @@ $-size-cache: ();
     @return fn-css-vars.scale-value("space", config-spacing.$spacings, $value, $keywords: $keywords, $label: $property);
 }
 
-// @mixin width
-// @description Sets width from a spacing key, a percentage key, a breakpoint name, a sizing keyword or a raw value; negative keys and unknown words raise an error.
-// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), breakpoint name (lg gives its width), auto, min-content, max-content, fit-content, or a raw length, percentage, calc() or var()
-// @example
-// .sidebar {
-//   @include width(20rem);
-// }
+/// Sets width from a spacing key, a percentage key, a breakpoint name, a sizing keyword or a raw value; negative keys and unknown words raise an error.
+/// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), breakpoint name (lg gives its width), auto, min-content, max-content, fit-content, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .sidebar {
+///     @include width(20rem);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/width width on MDN
 @mixin width($value) {
     width: -size("width", $value);
 }
 
-// @mixin height
-// @description Sets height from a spacing key, a percentage key, a sizing keyword or a raw value; negative keys and unknown words raise an error.
-// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), auto, min-content, max-content, fit-content, or a raw length, percentage, calc() or var()
-// @example
-// .avatar {
-//   @include height(12); // height: var(--nu-space-12)
-// }
+/// Sets height from a spacing key, a percentage key, a sizing keyword or a raw value; negative keys and unknown words raise an error.
+/// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), auto, min-content, max-content, fit-content, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .avatar {
+///     @include height(12); // height: var(--wu-space-12)
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/height height on MDN
 @mixin height($value) {
     height: -size("height", $value);
 }
 
-// @mixin min-width
-// @description Sets min-width from a spacing key, a percentage key, a breakpoint name, a sizing keyword or a raw value; negative keys and unknown words raise an error.
-// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), breakpoint name (lg gives its width), auto, min-content, max-content, fit-content, or a raw length, percentage, calc() or var()
-// @example
-// .dialog {
-//   @include min-width(16); // min-width: var(--nu-space-16)
-// }
+/// Sets min-width from a spacing key, a percentage key, a breakpoint name, a sizing keyword or a raw value; negative keys and unknown words raise an error.
+/// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), breakpoint name (lg gives its width), auto, min-content, max-content, fit-content, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .dialog {
+///     @include min-width(16); // min-width: var(--wu-space-16)
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/min-width min-width on MDN
 @mixin min-width($value) {
     min-width: -size("min-width", $value);
 }
 
-// @mixin min-height
-// @description Sets min-height from a spacing key, a percentage key, a sizing keyword or a raw value; negative keys and unknown words raise an error.
-// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), auto, min-content, max-content, fit-content, or a raw length, percentage, calc() or var()
-// @example
-// .drop-zone {
-//   @include min-height(10rem);
-// }
+/// Sets min-height from a spacing key, a percentage key, a sizing keyword or a raw value; negative keys and unknown words raise an error.
+/// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), auto, min-content, max-content, fit-content, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .drop-zone {
+///     @include min-height(10rem);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/min-height min-height on MDN
 @mixin min-height($value) {
     min-height: -size("min-height", $value);
 }
 
-// @mixin max-width
-// @description Sets max-width from a spacing key, a percentage key, a breakpoint name, a sizing keyword, none or a raw value; negative keys and unknown words raise an error.
-// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), breakpoint name (lg gives its width), auto, min-content, max-content, fit-content, none, or a raw length, percentage, calc() or var()
-// @example
-// .article {
-//   @include max-width(48rem);
-// }
+/// Sets max-width from a spacing key, a percentage key, a breakpoint name, a sizing keyword, none or a raw value; negative keys and unknown words raise an error.
+/// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), breakpoint name (lg gives its width), auto, min-content, max-content, fit-content, none, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .article {
+///     @include max-width(48rem);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/max-width max-width on MDN
 @mixin max-width($value) {
     max-width: -size("max-width", $value, $-max-size-keywords);
 }
 
-// @mixin max-height
-// @description Sets max-height from a spacing key, a percentage key, a sizing keyword, none or a raw value; negative keys and unknown words raise an error.
-// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), auto, min-content, max-content, fit-content, none, or a raw length, percentage, calc() or var()
-// @example
-// .dropdown-menu {
-//   @include max-height(64);
-// }
+/// Sets max-height from a spacing key, a percentage key, a sizing keyword, none or a raw value; negative keys and unknown words raise an error.
+/// @param {Number|Length|String} $value - Spacing key (4), percentage key (50p gives 50%, 33p gives 33.333%), auto, min-content, max-content, fit-content, none, or a raw length, percentage, calc() or var()
+/// @example scss
+///   .dropdown-menu {
+///     @include max-height(64);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/max-height max-height on MDN
 @mixin max-height($value) {
     max-height: -size("max-height", $value, $-max-size-keywords);
 }
@@ -169,228 +171,214 @@ $-size-cache: ();
     @error "#{$mixin}: #{$i} is not a percentage. Use a number (50) or a percentage (50%).";
 }
 
-// @mixin width-percent
-// @description Sets width as a percentage from a unitless number or a percentage; any other value raises an error.
-// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
-// @example
-// .column {
-//   @include width-percent(50); // width: 50%
-// }
+/// Sets width as a percentage from a unitless number or a percentage; any other value raises an error.
+/// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
+/// @example scss
+///   .column {
+///     @include width-percent(50); // width: 50%
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/width width on MDN
 @mixin width-percent($i) {
     width: -percent("width-percent", $i);
 }
 
-// @mixin height-percent
-// @description Sets height as a percentage from a unitless number or a percentage; any other value raises an error.
-// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
-// @example
-// .chart {
-//   @include height-percent(75); // height: 75%
-// }
+/// Sets height as a percentage from a unitless number or a percentage; any other value raises an error.
+/// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
+/// @example scss
+///   .chart {
+///     @include height-percent(75); // height: 75%
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/height height on MDN
 @mixin height-percent($i) {
     height: -percent("height-percent", $i);
 }
 
-// @mixin min-width-percent
-// @description Sets min-width as a percentage from a unitless number or a percentage; any other value raises an error.
-// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
-// @example
-// .search {
-//   @include min-width-percent(30); // min-width: 30%
-// }
+/// Sets min-width as a percentage from a unitless number or a percentage; any other value raises an error.
+/// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
+/// @example scss
+///   .search {
+///     @include min-width-percent(30); // min-width: 30%
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/min-width min-width on MDN
 @mixin min-width-percent($i) {
     min-width: -percent("min-width-percent", $i);
 }
 
-// @mixin min-height-percent
-// @description Sets min-height as a percentage from a unitless number or a percentage; any other value raises an error.
-// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
-// @example
-// .hero {
-//   @include min-height-percent(50); // min-height: 50%
-// }
+/// Sets min-height as a percentage from a unitless number or a percentage; any other value raises an error.
+/// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
+/// @example scss
+///   .hero {
+///     @include min-height-percent(50); // min-height: 50%
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/min-height min-height on MDN
 @mixin min-height-percent($i) {
     min-height: -percent("min-height-percent", $i);
 }
 
-// @mixin max-width-percent
-// @description Sets max-width as a percentage from a unitless number or a percentage; any other value raises an error.
-// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
-// @example
-// .toast {
-//   @include max-width-percent(90); // max-width: 90%
-// }
+/// Sets max-width as a percentage from a unitless number or a percentage; any other value raises an error.
+/// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
+/// @example scss
+///   .toast {
+///     @include max-width-percent(90); // max-width: 90%
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/max-width max-width on MDN
 @mixin max-width-percent($i) {
     max-width: -percent("max-width-percent", $i);
 }
 
-// @mixin max-height-percent
-// @description Sets max-height as a percentage from a unitless number or a percentage; any other value raises an error.
-// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
-// @example
-// .modal-body {
-//   @include max-height-percent(80); // max-height: 80%
-// }
+/// Sets max-height as a percentage from a unitless number or a percentage; any other value raises an error.
+/// @param {Number|Percentage} $i - Unitless number (50 gives 50%; 33 and 66 give the exact thirds 33.333% and 66.667%) or a percentage (50%)
+/// @example scss
+///   .modal-body {
+///     @include max-height-percent(80); // max-height: 80%
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/max-height max-height on MDN
 @mixin max-height-percent($i) {
     max-height: -percent("max-height-percent", $i);
 }
 
-// @mixin w-auto
-// @description Sets width to auto.
-// @example
-// .image {
-//   @include w-auto;
-// }
+/// Sets width to auto.
+/// @example scss
+///   .image {
+///     @include w-auto;
+///   }
 @mixin w-auto {
     @include width(auto);
 }
 
-// @mixin w-full
-// @description Sets width to 100%.
-// @example
-// .input-group {
-//   @include w-full;
-// }
+/// Sets width to 100%.
+/// @example scss
+///   .input-group {
+///     @include w-full;
+///   }
 @mixin w-full {
     @include width(100%);
 }
 
-// @mixin h-auto
-// @description Sets height to auto.
-// @example
-// .image {
-//   @include h-auto;
-// }
+/// Sets height to auto.
+/// @example scss
+///   .image {
+///     @include h-auto;
+///   }
 @mixin h-auto {
     @include height(auto);
 }
 
-// @mixin h-full
-// @description Sets height to 100%.
-// @example
-// .panel {
-//   @include h-full;
-// }
+/// Sets height to 100%.
+/// @example scss
+///   .panel {
+///     @include h-full;
+///   }
 @mixin h-full {
     @include height(100%);
 }
 
-// @mixin w-max
-// @description Sets width to max-content.
-// @example
-// .menu {
-//   @include w-max;
-// }
+/// Sets width to max-content.
+/// @example scss
+///   .menu {
+///     @include w-max;
+///   }
 @mixin w-max {
     @include width(max-content);
 }
 
-// @mixin h-max
-// @description Sets height to max-content.
-// @example
-// .menu {
-//   @include h-max;
-// }
+/// Sets height to max-content.
+/// @example scss
+///   .menu {
+///     @include h-max;
+///   }
 @mixin h-max {
     @include height(max-content);
 }
 
-// @mixin w-min
-// @description Sets width to min-content.
-// @example
-// .label {
-//   @include w-min;
-// }
+/// Sets width to min-content.
+/// @example scss
+///   .label {
+///     @include w-min;
+///   }
 @mixin w-min {
     @include width(min-content);
 }
 
-// @mixin h-min
-// @description Sets height to min-content.
-// @example
-// .label {
-//   @include h-min;
-// }
+/// Sets height to min-content.
+/// @example scss
+///   .label {
+///     @include h-min;
+///   }
 @mixin h-min {
     @include height(min-content);
 }
 
-// @mixin w-fit
-// @description Sets width to fit-content.
-// @example
-// .chip {
-//   @include w-fit;
-// }
+/// Sets width to fit-content.
+/// @example scss
+///   .chip {
+///     @include w-fit;
+///   }
 @mixin w-fit {
     @include width(fit-content);
 }
 
-// @mixin h-fit
-// @description Sets height to fit-content.
-// @example
-// .chip {
-//   @include h-fit;
-// }
+/// Sets height to fit-content.
+/// @example scss
+///   .chip {
+///     @include h-fit;
+///   }
 @mixin h-fit {
     @include height(fit-content);
 }
 
-// @mixin min-w-full
-// @description Sets min-width to 100%.
-// @example
-// .table {
-//   @include min-w-full;
-// }
+/// Sets min-width to 100%.
+/// @example scss
+///   .table {
+///     @include min-w-full;
+///   }
 @mixin min-w-full {
     @include min-width(100%);
 }
 
-// @mixin max-w-full
-// @description Sets max-width to 100%.
-// @example
-// .media {
-//   @include max-w-full;
-// }
+/// Sets max-width to 100%.
+/// @example scss
+///   .media {
+///     @include max-w-full;
+///   }
 @mixin max-w-full {
     @include max-width(100%);
 }
 
-// @mixin min-h-full
-// @description Sets min-height to 100%.
-// @example
-// .layout {
-//   @include min-h-full;
-// }
+/// Sets min-height to 100%.
+/// @example scss
+///   .layout {
+///     @include min-h-full;
+///   }
 @mixin min-h-full {
     @include min-height(100%);
 }
 
-// @mixin max-h-full
-// @description Sets max-height to 100%.
-// @example
-// .media {
-//   @include max-h-full;
-// }
+/// Sets max-height to 100%.
+/// @example scss
+///   .media {
+///     @include max-h-full;
+///   }
 @mixin max-h-full {
     @include max-height(100%);
 }
 
-// @mixin w-screen
-// @description Sets width to 100vw, the full viewport width.
-// @example
-// .backdrop {
-//   @include w-screen;
-// }
+/// Sets width to 100vw, the full viewport width.
+/// @example scss
+///   .backdrop {
+///     @include w-screen;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/width width on MDN
 @mixin w-screen {
     width: 100vw;
 }
 
-// @mixin h-screen
-// @description Sets height to 100dvh, the full dynamic viewport height.
-// @example
-// .app-shell {
-//   @include h-screen;
-// }
+/// Sets height to 100dvh, the full dynamic viewport height.
+/// @example scss
+///   .app-shell {
+///     @include h-screen;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/height height on MDN
 @mixin h-screen {
     height: 100dvh;
 }

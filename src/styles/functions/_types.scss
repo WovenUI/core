@@ -1,3 +1,8 @@
+////
+//// @group functions
+//// Value classification used by the mixin argument parsing.
+////
+
 @use "sass:string";
 @use "sass:math";
 @use "sass:map";
@@ -14,16 +19,15 @@
 @use "./math" as fn-math;
 @use "./css-vars" as fn-css-vars;
 
-// @function get-type
-// @description Classifies a value as null, color, number, boolean, list, map, css-var, state, breakpoint, font-weight, border-radius, css-keyword, css-function or string.
-// @param {Any} $value - Value to classify
-// @return {String} - The type name
-// @example
-// .card {
-//   @if get-type("var(--nu-space-4)") == "css-var" {
-//     padding: var(--nu-space-4);
-//   }
-// }
+/// Classifies a value as null, color, number, boolean, list, map, css-var, state, breakpoint, font-weight, border-radius, css-keyword, css-function or string.
+/// @param {Any} $value - Value to classify
+/// @return {String} - The type name
+/// @example scss
+///   .card {
+///     @if get-type("var(--wu-space-4)") == "css-var" {
+///       padding: var(--wu-space-4);
+///     }
+///   }
 @function get-type($value) {
     // Handle null and empty values
     @if not $value {

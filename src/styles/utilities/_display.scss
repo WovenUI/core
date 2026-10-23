@@ -1,5 +1,21 @@
-// Section: Utilities
-// Module: Display
+////
+//// @group display
+//// Display, visibility, overflow and text truncation utilities.
+////
+//// Classes:
+////
+//// - .hide, .hidden, .show: Control display (.hidden is an exact alias of .hide)
+//// - .block, .inline, .inline-block: Basic display modes
+//// - .table, .table-row, .table-cell: Table display modes
+//// - .grid, .flex, .contents: Layout display modes (.grid.inline and .flex.inline give the inline variants, at one class of specificity so .hide still wins); .grid and .flex follow the grid and flex feature flags, the other classes the displays flag
+//// - .visible, .invisible, .collapse: Control visibility
+//// - .overflow-{hidden|visible|scroll|auto}, .overflow-{x|y}-{hidden|scroll|auto}: Control overflow behavior
+//// - .truncate, .truncate-{2-5}, .overflow-label: Text truncation (one line or 2 to 5 lines)
+////
+//// All classes above support responsive variants with the @breakpoint suffix:
+////
+//// - .hide@md, .hidden@md, .block@lg, etc.
+////
 
 @use "sass:list";
 @use "sass:math";
@@ -10,294 +26,295 @@
 @use "../functions/feature-flags" as fn-flags;
 @use "../functions/math" as fn-math;
 
-// Display Utilities
-// Classes:
-//  - .hide, .hidden, .show: Control display (.hidden is display: none !important)
-//  - .block, .inline, .inline-block: Basic display modes
-//  - .table, .table-row, .table-cell: Table display modes
-//  - .grid, .flex, .contents: Layout display modes (.grid.inline and .flex.inline give the inline variants, at one class
-//    of specificity so .hide still wins); .grid and .flex follow the grid and flex feature flags, the other classes the
-//    displays flag
-//  - .visible, .invisible, .collapse: Control visibility
-//  - .overflow-{hidden|visible|scroll|auto}, .overflow-{x|y}-{hidden|scroll|auto}: Control overflow behavior
-//  - .truncate, .truncate-{2-5}, .overflow-label: Text truncation (one line or 2 to 5 lines)
-// All utilities support responsive variants with @breakpoint suffix:
-//  - .hide@md, .block@lg, etc.
-
 // Display Mixins
 
-// @mixin hide
-// @description Sets display to none.
-// @example
-// .modal-closed {
-//   @include hide;
-// }
+/// Sets display to none.
+/// @example scss
+///   .modal-closed {
+///     @include hide;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
+/// @see {mixin} hidden
+/// @see {mixin} show
 @mixin hide {
     display: none;
 }
 
-// @mixin block
-// @description Sets display to block.
-// @example
-// .thumbnail {
-//   @include block;
-// }
+/// Sets display to none, exactly like hide.
+/// @example scss
+///   .modal-closed {
+///     @include hidden;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
+/// @see {mixin} hide
+/// @see {mixin} show
+@mixin hidden {
+    display: none;
+}
+
+/// Sets display to block.
+/// @example scss
+///   .thumbnail {
+///     @include block;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin block {
     display: block;
 }
 
-// @mixin inline
-// @description Sets display to inline.
-// @example
-// .tag-label {
-//   @include inline;
-// }
+/// Sets display to inline.
+/// @example scss
+///   .tag-label {
+///     @include inline;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin inline {
     display: inline;
 }
 
-// @mixin inline-block
-// @description Sets display to inline-block.
-// @example
-// .badge {
-//   @include inline-block;
-// }
+/// Sets display to inline-block.
+/// @example scss
+///   .badge {
+///     @include inline-block;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin inline-block {
     display: inline-block;
 }
 
-// @mixin show
-// @description Sets display to revert, restoring the element's natural display (block for a div, table for a table) after .hide or a responsive hide.
-// @example
-// .toolbar-label {
-//   @include show;
-// }
+/// Sets display to revert, restoring the element's natural display (block for a div, table for a table) after .hide or a responsive hide.
+/// @example scss
+///   .toolbar-label {
+///     @include show;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
+/// @see {mixin} hide
+/// @see {mixin} hidden
 @mixin show {
     display: revert;
 }
 
-// @mixin grid
-// @description Sets display to grid, establishing a grid container.
-// @example
-// .gallery {
-//   @include grid;
-// }
+/// Sets display to grid, establishing a grid container.
+/// @example scss
+///   .gallery {
+///     @include grid;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin grid {
     display: grid;
 }
 
-// @mixin inline-grid
-// @description Sets display to inline-grid, establishing an inline grid container.
-// @example
-// .icon-set {
-//   @include inline-grid;
-// }
+/// Sets display to inline-grid, establishing an inline grid container.
+/// @example scss
+///   .icon-set {
+///     @include inline-grid;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin inline-grid {
     display: inline-grid;
 }
 
-// @mixin flex
-// @description Sets display to flex, establishing a flex container.
-// @example
-// .toolbar {
-//   @include flex;
-// }
+/// Sets display to flex, establishing a flex container.
+/// @example scss
+///   .toolbar {
+///     @include flex;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin flex {
     display: flex;
 }
 
-// @mixin inline-flex
-// @description Sets display to inline-flex, establishing an inline flex container.
-// @example
-// .chip {
-//   @include inline-flex;
-// }
+/// Sets display to inline-flex, establishing an inline flex container.
+/// @example scss
+///   .chip {
+///     @include inline-flex;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin inline-flex {
     display: inline-flex;
 }
 
-// @mixin table
-// @description Sets display to table.
-// @example
-// .data-grid {
-//   @include table;
-// }
+/// Sets display to table.
+/// @example scss
+///   .data-grid {
+///     @include table;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin table {
     display: table;
 }
 
-// @mixin table-row
-// @description Sets display to table-row.
-// @example
-// .data-grid-row {
-//   @include table-row;
-// }
+/// Sets display to table-row.
+/// @example scss
+///   .data-grid-row {
+///     @include table-row;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin table-row {
     display: table-row;
 }
 
-// @mixin table-cell
-// @description Sets display to table-cell.
-// @example
-// .data-grid-cell {
-//   @include table-cell;
-// }
+/// Sets display to table-cell.
+/// @example scss
+///   .data-grid-cell {
+///     @include table-cell;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin table-cell {
     display: table-cell;
 }
 
-// @mixin visible
-// @description Sets visibility to visible.
-// @example
-// .row-actions {
-//   @include visible;
-// }
+/// Sets visibility to visible.
+/// @example scss
+///   .row-actions {
+///     @include visible;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility visibility on MDN
 @mixin visible {
     visibility: visible;
 }
 
-// @mixin invisible
-// @description Sets visibility to hidden, keeping the element in the layout.
-// @example
-// .row-actions {
-//   @include invisible;
-// }
+/// Sets visibility to hidden, keeping the element in the layout.
+/// @example scss
+///   .row-actions {
+///     @include invisible;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility visibility on MDN
 @mixin invisible {
     visibility: hidden;
 }
 
-// @mixin collapse
-// @description Sets visibility to collapse, which removes table rows and columns without changing table layout.
-// @example
-// .table-row-hidden {
-//   @include collapse;
-// }
+/// Sets visibility to collapse, which removes table rows and columns without changing table layout.
+/// @example scss
+///   .table-row-hidden {
+///     @include collapse;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility visibility on MDN
 @mixin collapse {
     visibility: collapse;
 }
 
-// @mixin contents
-// @description Sets display to contents, so the element box disappears and its children join the parent layout.
-// @example
-// .field-group {
-//   @include contents;
-// }
+/// Sets display to contents, so the element box disappears and its children join the parent layout.
+/// @example scss
+///   .field-group {
+///     @include contents;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/display display on MDN
 @mixin contents {
     display: contents;
 }
 
-// @mixin overflow-hidden
-// @description Sets overflow to hidden on both axes.
-// @example
-// .panel {
-//   @include overflow-hidden;
-// }
+/// Sets overflow to hidden on both axes.
+/// @example scss
+///   .panel {
+///     @include overflow-hidden;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow overflow on MDN
 @mixin overflow-hidden {
     overflow: hidden;
 }
 
-// @mixin overflow-visible
-// @description Sets overflow to visible on both axes.
-// @example
-// .panel {
-//   @include overflow-visible;
-// }
+/// Sets overflow to visible on both axes.
+/// @example scss
+///   .panel {
+///     @include overflow-visible;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow overflow on MDN
 @mixin overflow-visible {
     overflow: visible;
 }
 
-// @mixin overflow-scroll
-// @description Sets overflow to scroll on both axes.
-// @example
-// .panel {
-//   @include overflow-scroll;
-// }
+/// Sets overflow to scroll on both axes.
+/// @example scss
+///   .panel {
+///     @include overflow-scroll;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow overflow on MDN
 @mixin overflow-scroll {
     overflow: scroll;
 }
 
-// @mixin overflow-auto
-// @description Sets overflow to auto on both axes.
-// @example
-// .panel {
-//   @include overflow-auto;
-// }
+/// Sets overflow to auto on both axes.
+/// @example scss
+///   .panel {
+///     @include overflow-auto;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow overflow on MDN
 @mixin overflow-auto {
     overflow: auto;
 }
 
-// @mixin overflow-x-hidden
-// @description Sets overflow-x to hidden (horizontal axis).
-// @example
-// .panel {
-//   @include overflow-x-hidden;
-// }
+/// Sets overflow-x to hidden (horizontal axis).
+/// @example scss
+///   .panel {
+///     @include overflow-x-hidden;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x overflow-x on MDN
 @mixin overflow-x-hidden {
     overflow-x: hidden;
 }
 
-// @mixin overflow-y-hidden
-// @description Sets overflow-y to hidden (vertical axis).
-// @example
-// .panel {
-//   @include overflow-y-hidden;
-// }
+/// Sets overflow-y to hidden (vertical axis).
+/// @example scss
+///   .panel {
+///     @include overflow-y-hidden;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-y overflow-y on MDN
 @mixin overflow-y-hidden {
     overflow-y: hidden;
 }
 
-// @mixin overflow-x-scroll
-// @description Sets overflow-x to scroll (horizontal axis).
-// @example
-// .panel {
-//   @include overflow-x-scroll;
-// }
+/// Sets overflow-x to scroll (horizontal axis).
+/// @example scss
+///   .panel {
+///     @include overflow-x-scroll;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x overflow-x on MDN
 @mixin overflow-x-scroll {
     overflow-x: scroll;
 }
 
-// @mixin overflow-y-scroll
-// @description Sets overflow-y to scroll (vertical axis).
-// @example
-// .panel {
-//   @include overflow-y-scroll;
-// }
+/// Sets overflow-y to scroll (vertical axis).
+/// @example scss
+///   .panel {
+///     @include overflow-y-scroll;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-y overflow-y on MDN
 @mixin overflow-y-scroll {
     overflow-y: scroll;
 }
 
-// @mixin overflow-x-auto
-// @description Sets overflow-x to auto (horizontal axis).
-// @example
-// .panel {
-//   @include overflow-x-auto;
-// }
+/// Sets overflow-x to auto (horizontal axis).
+/// @example scss
+///   .panel {
+///     @include overflow-x-auto;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x overflow-x on MDN
 @mixin overflow-x-auto {
     overflow-x: auto;
 }
 
-// @mixin overflow-y-auto
-// @description Sets overflow-y to auto (vertical axis).
-// @example
-// .panel {
-//   @include overflow-y-auto;
-// }
+/// Sets overflow-y to auto (vertical axis).
+/// @example scss
+///   .panel {
+///     @include overflow-y-auto;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-y overflow-y on MDN
 @mixin overflow-y-auto {
     overflow-y: auto;
 }
 
-// @mixin truncate
-// @description Truncates text to one line with an ellipsis, or to a number of lines like truncate-lines() (truncate(2) matches the .truncate-2 class).
-// @param {Number|String} $lines [1] - Number of visible lines: 1, or a whole number above 1, calc() or var() for a multi-line clamp
-// @example
-// .file-name {
-//   @include truncate;
-// }
-// @example
-// .card-summary {
-//   @include truncate(2); // the same as truncate-lines(2)
-// }
-// @see truncate-lines
+/// Truncates text to one line with an ellipsis, or to a number of lines like truncate-lines() (truncate(2) matches the .truncate-2 class).
+/// @param {Number|String} $lines [1] - Number of visible lines: 1, or a whole number above 1, calc() or var() for a multi-line clamp
+/// @example scss
+///   .file-name {
+///     @include truncate;
+///   }
+/// @example scss
+///   .card-summary {
+///     @include truncate(2); // the same as truncate-lines(2)
+///   }
+/// @see {mixin} truncate-lines
 @mixin truncate($lines: 1) {
     @if $lines == 1 or $lines == "1" {
         overflow: hidden;
@@ -320,12 +337,11 @@
     @error "#{$mixin}: #{meta.inspect($value)} is not a line count. Use a whole number of 1 or more, calc() or var().";
 }
 
-// @mixin overflow-label
-// @description Truncates a flex or grid child to one line; min-width 0 lets it shrink below its content width.
-// @example
-// .nav-item-label {
-//   @include overflow-label;
-// }
+/// Truncates a flex or grid child to one line; min-width 0 lets it shrink below its content width.
+/// @example scss
+///   .nav-item-label {
+///     @include overflow-label;
+///   }
 @mixin overflow-label {
     white-space: nowrap;
     word-break: break-all;
@@ -334,14 +350,13 @@
     min-width: 0;
 }
 
-// @mixin truncate-lines
-// @description Clamps text to a number of lines with an ellipsis using -webkit-line-clamp.
-// @param {Number|String} $lines [2] - Number of visible lines: a whole number of 1 or more, calc() or var(); anything else raises an error
-// @example
-// .card-summary {
-//   @include truncate-lines(3);
-// }
-// @see truncate
+/// Clamps text to a number of lines with an ellipsis using -webkit-line-clamp.
+/// @param {Number|String} $lines [2] - Number of visible lines: a whole number of 1 or more, calc() or var(); anything else raises an error
+/// @example scss
+///   .card-summary {
+///     @include truncate-lines(3);
+///   }
+/// @see {mixin} truncate
 @mixin truncate-lines($lines: 2) {
     display: -webkit-box;
     -webkit-line-clamp: -line-count("truncate-lines", $lines);
@@ -435,7 +450,7 @@ $-grid: fn-flags.feature-enabled("grid");
         }
 
         #{config-flags.$parent-selector} .hidden {
-            display: none !important;
+            @include hidden;
         }
 
         #{config-flags.$parent-selector} .overflow-hidden {
@@ -498,6 +513,9 @@ $-grid: fn-flags.feature-enabled("grid");
                 @if $-displays {
                     #{config-flags.$parent-selector} .hide\@#{$breakpoint} {
                         @include hide;
+                    }
+                    #{config-flags.$parent-selector} .hidden\@#{$breakpoint} {
+                        @include hidden;
                     }
                     #{config-flags.$parent-selector} .show\@#{$breakpoint} {
                         @include show;

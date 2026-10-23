@@ -1,6 +1,10 @@
-// Configuration: Opacity
-// Opacity scale: key to opacity value; keys name the .opacity-{key} classes and the opacity() mixin keys
+////
+//// @group config
+//// Opacity scale.
+////
 
+/// Opacity scale: key to opacity value; keys name the .opacity-{key} classes and the opacity() mixin keys.
+/// @type Map
 $opacities: (
     0: 0,
     5: 0.05,

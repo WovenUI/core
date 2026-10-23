@@ -1,49 +1,68 @@
+////
+//// @group alignment
+//// Vertical alignment utilities for inline and table cell content.
+////
+//// Classes:
+////
+//// - align-baseline/align-top/align-middle/align-bottom: Sets vertical-align
+////
+//// Responsive: each class has an @breakpoint variant (align-top@md).
+////
+
 @use "sass:list";
 @use "sass:meta";
 @use "../config/feature-flags" as config-flags;
 @use "../config/breakpoints" as config-breakpoint;
 @use "../functions/feature-flags" as fn-flags;
 
-// @mixin align-baseline
-// @description Sets vertical-align to baseline (inline and table cell content).
-// @example
-// .icon {
-//   @include align-baseline;
-// }
-// @see align-top, align-middle, align-bottom
+/// Sets vertical-align to baseline (inline and table cell content).
+/// @example scss
+///   .icon {
+///     @include align-baseline;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align vertical-align on MDN
+/// @see {mixin} align-top
+/// @see {mixin} align-middle
+/// @see {mixin} align-bottom
 @mixin align-baseline {
     vertical-align: baseline;
 }
 
-// @mixin align-top
-// @description Sets vertical-align to top (inline and table cell content).
-// @example
-// td {
-//   @include align-top;
-// }
-// @see align-baseline, align-middle, align-bottom
+/// Sets vertical-align to top (inline and table cell content).
+/// @example scss
+///   td {
+///     @include align-top;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align vertical-align on MDN
+/// @see {mixin} align-baseline
+/// @see {mixin} align-middle
+/// @see {mixin} align-bottom
 @mixin align-top {
     vertical-align: top;
 }
 
-// @mixin align-middle
-// @description Sets vertical-align to middle (inline and table cell content).
-// @example
-// .avatar {
-//   @include align-middle;
-// }
-// @see align-baseline, align-top, align-bottom
+/// Sets vertical-align to middle (inline and table cell content).
+/// @example scss
+///   .avatar {
+///     @include align-middle;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align vertical-align on MDN
+/// @see {mixin} align-baseline
+/// @see {mixin} align-top
+/// @see {mixin} align-bottom
 @mixin align-middle {
     vertical-align: middle;
 }
 
-// @mixin align-bottom
-// @description Sets vertical-align to bottom (inline and table cell content).
-// @example
-// td {
-//   @include align-bottom;
-// }
-// @see align-baseline, align-top, align-middle
+/// Sets vertical-align to bottom (inline and table cell content).
+/// @example scss
+///   td {
+///     @include align-bottom;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align vertical-align on MDN
+/// @see {mixin} align-baseline
+/// @see {mixin} align-top
+/// @see {mixin} align-middle
 @mixin align-bottom {
     vertical-align: bottom;
 }

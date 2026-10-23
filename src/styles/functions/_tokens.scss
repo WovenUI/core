@@ -1,11 +1,16 @@
-// Token names and the token() function. themes/_theme.scss emits palette, basic color, text-on, error alias
-// and scale tokens from the functions below, and theme tokens from config-theme.$light-tokens (whose keys are
-// config-theme.$theme-tokens), so token() accepts exactly the emitted names
+////
+//// @group functions
+//// Token names and the token() function.
+////
+//// themes/_theme.scss emits palette, basic color, text-on, error alias and scale tokens from the functions in this file, and theme tokens from config-theme.$light-tokens (whose keys are config-theme.$theme-tokens), so token() accepts exactly the emitted names.
+////
+
 @use "sass:color";
 @use "sass:list";
 @use "sass:map";
 @use "sass:meta";
 @use "sass:string";
+@use "../config/constants" as config-constants;
 @use "../config/borders" as config-border;
 @use "../config/colors" as config-color;
 @use "../config/feature-flags" as config-flags;
@@ -195,7 +200,7 @@ $-fallback: ":root:not([data-theme])";
 $-palette-tokens: -palette-tokens();
 $-scale-tokens: -scale-tokens();
 
-// Every emitted token name (without --nu-), as a map for lookup; only the keys are read. Whole maps are merged in
+// Every emitted token name (without --wu-), as a map for lookup; only the keys are read. Whole maps are merged in
 // emission order because map.set copies the map, so adding 300 names one at a time is slow
 @function -token-names() {
     $theme: ();
@@ -214,7 +219,7 @@ $-scale-tokens: -scale-tokens();
 $-names: -token-names();
 
 // Role and hue names must not reuse a basic color name (black), and their palette and role tokens must not reuse a
-// non-color scale token (a hue named opacity would emit --nu-opacity-50 twice)
+// non-color scale token (a hue named opacity would emit --wu-opacity-50 twice)
 @mixin -validate-scale-names {
     $basic: ();
     @each $key in map.keys(basic-tokens()) {
@@ -228,14 +233,14 @@ $-names: -token-names();
     }
     @each $token in map.keys($generated) {
         @if map.has-key(scale-tokens(), $token) {
-            @error "The color token '#{$token}' (from a role or palette hue name) is also a non-color scale token (--nu-#{$token}). Rename the role or hue.";
+            @error "The color token '#{$token}' (from a role or palette hue name) is also a non-color scale token (--#{config-constants.$prefix}-#{$token}). Rename the role or hue.";
         }
     }
 }
 
 @include -validate-scale-names;
 
-// True when --nu-{name} is emitted (the names token() accepts); false when the theme feature flag is off. Never raises
+// True when --wu-{name} is emitted (the names token() accepts); false when the theme feature flag is off. Never raises
 @function has-token($name) {
     @if meta.type-of($name) == "color" {
         $name: meta.inspect($name);
@@ -279,16 +284,15 @@ $-names: -token-names();
     @return null;
 }
 
-// @function token
-// @description Returns the var() reference of a v2 token; an unknown name, a --nu- prefixed name or a disabled theme feature raises an error.
-// @param {String} $name - Token name without the --nu- prefix (brand, text-muted, space-4)
-// @return {String} - var(--nu-{name}), with no fallback value
-// @example
-// .card {
-//   color: token(text-muted);
-//   background: token(bg-surface);
-//   padding: token(space-4);
-// }
+/// Returns the var() reference of a v2 token; an unknown name, a --wu- prefixed name or a disabled theme feature raises an error.
+/// @param {String} $name - Token name without the --wu- prefix (brand, text-muted, space-4)
+/// @return {String} - A var() reference to the --wu- custom property, with no fallback value
+/// @example scss
+///   .card {
+///     color: token(text-muted);
+///     background: token(bg-surface);
+///     padding: token(space-4);
+///   }
 @function token($name) {
     // Unquoted black, white and transparent arrive as colors
     @if meta.type-of($name) == "color" {
@@ -302,16 +306,16 @@ $-names: -token-names();
         @error "token(#{$name}): no tokens are emitted because the theme feature flag is off.";
     }
     @if map.has-key($-names, $name) {
-        @return var(--nu-#{$name});
+        @return var(--#{config-constants.$prefix}-#{$name});
     }
 
-    // Not a token name: strip a leading --, - or nu- prefix
+    // Not a token name: strip a leading --, - or wu- prefix
     $bare: $name;
     @while string.index($bare, "-") == 1 {
         $bare: string.slice($bare, 2);
     }
-    @if string.index($bare, "nu-") == 1 {
-        $bare: string.slice($bare, 4);
+    @if string.index($bare, "#{config-constants.$prefix}-") == 1 {
+        $bare: string.slice($bare, string.length(config-constants.$prefix) + 2);
     }
     @if $bare == "" {
         @error "token(\"#{$name}\"): pass a token name, e.g. token(brand).";
@@ -329,5 +333,5 @@ $-names: -token-names();
     @if list.length($matches) > 0 {
         @error "token(#{$name}): unknown token. Close matches: #{$matches}.";
     }
-    @error "token(#{$name}): unknown token. Valid names are the --nu- custom properties in :root, without --nu-.";
+    @error "token(#{$name}): unknown token. Valid names are the --#{config-constants.$prefix}- custom properties in :root, without --#{config-constants.$prefix}-.";
 }

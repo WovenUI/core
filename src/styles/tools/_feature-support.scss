@@ -1,81 +1,77 @@
-// Section: Tools
-// Module: Device Capabilities
-// Description: Mixins for targeting device-specific capabilities
+////
+//// @group feature-support
+//// Mixins for targeting device-specific capabilities.
+////
 
-// @mixin touch
-// @description Applies styles on touch devices: no hover support and a coarse pointer.
-// @content Styles for touch devices
-// @example
-// .menu-link {
-//   @include touch {
-//     padding-block: 12px;
-//   }
-// }
-// @see fine-pointer
+/// Applies styles on touch devices: no hover support and a coarse pointer.
+/// @content Styles for touch devices
+/// @example scss
+///   .menu-link {
+///     @include touch {
+///       padding-block: 12px;
+///     }
+///   }
+/// @see {mixin} fine-pointer
 @mixin touch {
     @media (hover: none) and (pointer: coarse) {
         @content;
     }
 }
 
-// @mixin fine-pointer
-// @description Applies styles on devices with a precise pointer such as a mouse (pointer: fine).
-// @content Styles for fine pointer devices
-// @example
-// .row-actions {
-//   @include fine-pointer {
-//     opacity: 0;
-//   }
-// }
-// @see touch
+/// Applies styles on devices with a precise pointer such as a mouse (pointer: fine).
+/// @content Styles for fine pointer devices
+/// @example scss
+///   .row-actions {
+///     @include fine-pointer {
+///       opacity: 0;
+///     }
+///   }
+/// @see {mixin} touch
 @mixin fine-pointer {
     @media (pointer: fine) {
         @content;
     }
 }
 
-// @mixin landscape
-// @description Applies styles in landscape orientation ((orientation: landscape) media query, no screen and).
-// @content Styles for landscape orientation
-// @example
-// .gallery {
-//   @include landscape {
-//     grid-template-columns: repeat(3, 1fr);
-//   }
-// }
-// @see portrait
+/// Applies styles in landscape orientation ((orientation: landscape) media query, no screen and).
+/// @content Styles for landscape orientation
+/// @example scss
+///   .gallery {
+///     @include landscape {
+///       grid-template-columns: repeat(3, 1fr);
+///     }
+///   }
+/// @see {mixin} portrait
 @mixin landscape {
     @media (orientation: landscape) {
         @content;
     }
 }
 
-// @mixin portrait
-// @description Applies styles in portrait orientation ((orientation: portrait) media query, no screen and).
-// @content Styles for portrait orientation
-// @example
-// .gallery {
-//   @include portrait {
-//     grid-template-columns: 1fr;
-//   }
-// }
-// @see landscape
+/// Applies styles in portrait orientation ((orientation: portrait) media query, no screen and).
+/// @content Styles for portrait orientation
+/// @example scss
+///   .gallery {
+///     @include portrait {
+///       grid-template-columns: 1fr;
+///     }
+///   }
+/// @see {mixin} landscape
 @mixin portrait {
     @media (orientation: portrait) {
         @content;
     }
 }
 
-// @mixin display-mode
-// @description Applies styles when the page runs in the given Progressive Web App display mode.
-// @param {String} $mode ["standalone"] - Display mode (standalone, fullscreen, minimal-ui, browser)
-// @content Styles for that display mode
-// @example
-// .install-banner {
-//   @include display-mode(standalone) {
-//     display: none;
-//   }
-// }
+/// Applies styles when the page runs in the given Progressive Web App display mode.
+/// @param {String} $mode ["standalone"] - Display mode (standalone, fullscreen, minimal-ui, browser)
+/// @content Styles for that display mode
+/// @example scss
+///   .install-banner {
+///     @include display-mode(standalone) {
+///       display: none;
+///     }
+///   }
 @mixin display-mode($mode: "standalone") {
     @media (display-mode: #{$mode}) {
         @content;

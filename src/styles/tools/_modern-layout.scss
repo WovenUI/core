@@ -1,6 +1,7 @@
-// Section: Tools
-// Module: Modern Layout
-// Description: Mixins for modern CSS layout techniques
+////
+//// @group modern-layout
+//// Mixins for modern CSS layout techniques.
+////
 
 @use "sass:list";
 @use "sass:math";
@@ -54,29 +55,29 @@
     @error "aspect-ratio: #{$given} is not a ratio. Use width and height (aspect-ratio(16, 9) or \"16/9\"), a positive number, auto, calc() or var().";
 }
 
-// @mixin aspect-ratio
-// @description Sets the aspect-ratio property from a width and height (emitted as 16 / 9), a single number, auto, calc() or var(); anything else raises an error.
-// @param {Number|String|List} $ratio - Width (with $height), a ratio as text ("16/9"), list.slash(16, 9), a positive number (1.5), auto, calc() or var()
-// @param {Number|Null} $height [null] - Height of the ratio, when $ratio is the width
-// @example
-// .video {
-//   @include aspect-ratio(16, 9); // aspect-ratio: 16 / 9
-// }
-// @example
-// .thumb {
-//   @include apply(aspect-ratio("4/3")); // aspect-ratio: 4 / 3
-// }
-// @note An unquoted 16/9 is Sass division: Sass warns and passes 1.7777777778. Write aspect-ratio(16, 9) or "16/9".
+/// Sets the aspect-ratio property from a width and height (emitted as 16 / 9), a single number, auto, calc() or var(); anything else raises an error.
+///
+/// An unquoted 16/9 is Sass division: Sass warns and passes 1.7777777778. Write aspect-ratio(16, 9) or "16/9".
+/// @param {Number|String|List} $ratio - Width (with $height), a ratio as text ("16/9"), list.slash(16, 9), a positive number (1.5), auto, calc() or var()
+/// @param {Number|Null} $height [null] - Height of the ratio, when $ratio is the width
+/// @example scss
+///   .video {
+///     @include aspect-ratio(16, 9); // aspect-ratio: 16 / 9
+///   }
+/// @example scss
+///   .thumb {
+///     @include apply(aspect-ratio("4/3")); // aspect-ratio: 4 / 3
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio aspect-ratio on MDN
 @mixin aspect-ratio($ratio, $height: null) {
     aspect-ratio: -ratio($ratio, $height);
 }
 
-// @mixin dvh
-// @description Sets height to 100dvh where supported and to 100vh otherwise, each inside an @supports block.
-// @example
-// .app-shell {
-//   @include dvh;
-// }
+/// Sets height to 100dvh where supported and to 100vh otherwise, each inside an @supports block.
+/// @example scss
+///   .app-shell {
+///     @include dvh;
+///   }
 @mixin dvh {
     @supports (height: 100dvh) {
         height: 100dvh;
@@ -87,14 +88,13 @@
     }
 }
 
-// @mixin safe-area-inset
-// @description Sets a property to the device safe area inset for one side, for notches and rounded screens.
-// @param {String} $property - CSS property to set, e.g. padding-top
-// @param {String} $position - Inset side (top, right, bottom, left); any other value raises an error
-// @example
-// .toolbar {
-//   @include safe-area-inset(padding-bottom, bottom); // padding-bottom: env(safe-area-inset-bottom)
-// }
+/// Sets a property to the device safe area inset for one side, for notches and rounded screens.
+/// @param {String} $property - CSS property to set, e.g. padding-top
+/// @param {String} $position - Inset side (top, right, bottom, left); any other value raises an error
+/// @example scss
+///   .toolbar {
+///     @include safe-area-inset(padding-bottom, bottom); // padding-bottom: env(safe-area-inset-bottom)
+///   }
 @mixin safe-area-inset($property, $position) {
     $side: string.unquote("#{$position}");
     @if not list.index((top, right, bottom, left), $side) {
@@ -107,31 +107,29 @@
     #{$property}: env(safe-area-inset-#{$side});
 }
 
-// @mixin print
-// @description Wraps styles in a print media query.
-// @content Styles for printed output
-// @example
-// .site-nav {
-//   @include print {
-//     display: none;
-//   }
-// }
+/// Wraps styles in a print media query.
+/// @content Styles for printed output
+/// @example scss
+///   .site-nav {
+///     @include print {
+///       display: none;
+///     }
+///   }
 @mixin print {
     @media print {
         @content;
     }
 }
 
-// @mixin supports
-// @description Wraps styles in an @supports query for the given declaration; pass it as a quoted string.
-// @param {String} $property - Declaration to test, e.g. "display: grid"; a value without a colon raises an error
-// @content Styles to apply when the declaration is supported
-// @example
-// .layout {
-//   @include supports("display: grid") {
-//     display: grid;
-//   }
-// }
+/// Wraps styles in an @supports query for the given declaration; pass it as a quoted string.
+/// @param {String} $property - Declaration to test, e.g. "display: grid"; a value without a colon raises an error
+/// @content Styles to apply when the declaration is supported
+/// @example scss
+///   .layout {
+///     @include supports("display: grid") {
+///       display: grid;
+///     }
+///   }
 @mixin supports($property) {
     @if meta.type-of($property) != "string" or not string.index($property, ":") {
         @error "supports(#{meta.inspect($property)}): pass a declaration as a quoted string, such as \"display: grid\".";

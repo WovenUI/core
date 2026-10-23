@@ -1,58 +1,60 @@
-// Section: Tools
-// Module: Media Queries
+////
+//// @group media-queries
+//// Media query mixins that take a breakpoint name or a length.
+////
 
 @use "sass:math";
 @use "sass:meta";
 @use "../config/breakpoints" as config-breakpoint;
 @use "../functions/breakpoints" as fn-breakpoints;
 
-// @mixin media-up
-// @description Applies styles from the given breakpoint width upward (min-width media query, no screen and).
-// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints (xs, sm, md, lg, xl, 2xl) or a length such as 800px; a unitless number that is not a name raises an error
-// @param {Any} $debug [null] - Unused
-// @content Styles to apply at and above the breakpoint
-// @example
-// .sidebar {
-//   @include media-up(lg) {
-//     display: block;
-//   }
-// }
-// @see media-down, media-between, media-only
+/// Applies styles from the given breakpoint width upward (min-width media query, no screen and).
+/// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints (xs, sm, md, lg, xl, 2xl) or a length such as 800px; a unitless number that is not a name raises an error
+/// @param {Any} $debug [null] - Unused
+/// @content Styles to apply at and above the breakpoint
+/// @example scss
+///   .sidebar {
+///     @include media-up(lg) {
+///       display: block;
+///     }
+///   }
+/// @see {mixin} media-down
+/// @see {mixin} media-between
+/// @see {mixin} media-only
 @mixin media-up($breakpoint, $debug: null) {
     @media (min-width: #{fn-breakpoints.get-breakpoint-value($breakpoint)}) {
         @content;
     }
 }
 
-// @mixin media-down
-// @description Applies styles below the given breakpoint (max-width of the breakpoint minus 0.02px).
-// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints or a length such as 800px
-// @content Styles to apply below the breakpoint
-// @example
-// .sidebar {
-//   @include media-down(md) {
-//     display: none;
-//   }
-// }
-// @see media-up
+/// Applies styles below the given breakpoint (max-width of the breakpoint minus 0.02px).
+/// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints or a length such as 800px
+/// @content Styles to apply below the breakpoint
+/// @example scss
+///   .sidebar {
+///     @include media-down(md) {
+///       display: none;
+///     }
+///   }
+/// @see {mixin} media-up
 @mixin media-down($breakpoint) {
     @media (max-width: #{fn-breakpoints.breakpoint-max($breakpoint)}) {
         @content;
     }
 }
 
-// @mixin media-between
-// @description Applies styles from the lower breakpoint up to just below the upper breakpoint (upper minus 0.02px).
-// @param {String|Number} $lower - Lower breakpoint name or length (inclusive)
-// @param {String|Number} $upper - Upper breakpoint name or length (exclusive)
-// @content Styles to apply inside the range
-// @example
-// .grid {
-//   @include media-between(sm, lg) {
-//     grid-template-columns: repeat(2, 1fr);
-//   }
-// }
-// @see media-up, media-down
+/// Applies styles from the lower breakpoint up to just below the upper breakpoint (upper minus 0.02px).
+/// @param {String|Number} $lower - Lower breakpoint name or length (inclusive)
+/// @param {String|Number} $upper - Upper breakpoint name or length (exclusive)
+/// @content Styles to apply inside the range
+/// @example scss
+///   .grid {
+///     @include media-between(sm, lg) {
+///       grid-template-columns: repeat(2, 1fr);
+///     }
+///   }
+/// @see {mixin} media-up
+/// @see {mixin} media-down
 @mixin media-between($lower, $upper) {
     $min: fn-breakpoints.get-breakpoint-value($lower);
     $max: fn-breakpoints.get-breakpoint-value($upper);
@@ -64,17 +66,16 @@
     }
 }
 
-// @mixin media-only
-// @description Applies styles only between the given breakpoint and the next larger one (minus 0.02px); the largest breakpoint has no upper limit.
-// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints (2xl may be unquoted) or a length in the breakpoint unit (px by default), such as 800px; a length in another unit raises an error
-// @content Styles to apply within that breakpoint range
-// @example
-// .hero {
-//   @include media-only(md) {
-//     padding-inline: 2rem;
-//   }
-// }
-// @see container-only
+/// Applies styles only between the given breakpoint and the next larger one (minus 0.02px); the largest breakpoint has no upper limit.
+/// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints (2xl may be unquoted) or a length in the breakpoint unit (px by default), such as 800px; a length in another unit raises an error
+/// @content Styles to apply within that breakpoint range
+/// @example scss
+///   .hero {
+///     @include media-only(md) {
+///       padding-inline: 2rem;
+///     }
+///   }
+/// @see {mixin} container-only
 @mixin media-only($breakpoint) {
     $min: fn-breakpoints.get-breakpoint-value($breakpoint);
     $next-breakpoint: null;

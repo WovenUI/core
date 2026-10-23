@@ -1,7 +1,10 @@
-// _shadows.scss
-// Shadow utilities: .shadow-{size}, .shadow-{size}-{color}, .shadow-inset-{size}, .shadow-inset-{size}-{color}, .shadow-none,
-// hover:, focus: and active: variants, and .elevation-{1-5}. Sizes and colors come from config/_shadows.scss.
-// Responsive variants use the @breakpoint suffix (.shadow-md@lg); inset and active classes have no responsive variant.
+////
+//// @group shadows
+//// Shadow utilities: .shadow-{size}, .shadow-{size}-{color}, .shadow-inset-{size}, .shadow-inset-{size}-{color}, .shadow-none, hover:, focus: and active: variants, and .elevation-{1-5}. Sizes and colors come from config/_shadows.scss.
+////
+//// Responsive variants use the @breakpoint suffix (.shadow-md@lg); active: classes have no responsive variant, and shadow-inset-* and elevation-* have no responsive or state variants.
+////
+
 @use "sass:list";
 @use "sass:map";
 @use "sass:meta";
@@ -12,18 +15,18 @@
 @use "../functions/feature-flags" as fn-flags;
 @use "../functions/math" as fn-math;
 
-// @mixin shadow-base
-// @description Sets box-shadow from explicit offset, blur, spread and color values.
-// @param {Length|Number} $x - Horizontal offset
-// @param {Length|Number} $y - Vertical offset
-// @param {Length|Number} $blur - Blur radius
-// @param {Length|Number} $spread - Spread radius
-// @param {Color|String} $color - Shadow color
-// @example
-// .floating-button {
-//   @include shadow-base(0, 2px, 4px, 0, rgb(0 0 0 / 20%));
-// }
-// @see shadow
+/// Sets box-shadow from explicit offset, blur, spread and color values.
+/// @param {Length|Number} $x - Horizontal offset
+/// @param {Length|Number} $y - Vertical offset
+/// @param {Length|Number} $blur - Blur radius
+/// @param {Length|Number} $spread - Spread radius
+/// @param {Color|String} $color - Shadow color
+/// @example scss
+///   .floating-button {
+///     @include shadow-base(0, 2px, 4px, 0, rgb(0 0 0 / 20%));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow box-shadow on MDN
+/// @see {mixin} shadow
 @mixin shadow-base($x, $y, $blur, $spread, $color) {
     box-shadow: fn-math.css-arg($x) fn-math.css-arg($y) fn-math.css-arg($blur) fn-math.css-arg($spread) fn-math.css-arg($color);
 }
@@ -38,19 +41,21 @@
     }
 }
 
-// @mixin shadow
-// @description Sets box-shadow from a configured size; the default color emits the var(--nu-shadow-*) token when the theme feature is on, other colors emit a raw shadow.
-// @param {String} $size ["md"] - Size key from $shadow-sizes (sm, md, lg, xl, hero, monster), or none (box-shadow: none, as .shadow-none)
-// @param {String} $color ["default"] - Color key from $shadow-colors (default, dark, darker, darkest)
-// @example
-// .card {
-//   @include shadow(sm); // box-shadow: var(--nu-shadow-sm)
-//   &:hover {
-//     @include shadow(lg, dark);
-//   }
-// }
-// @note Unknown size or color keys raise an error.
-// @see shadow-inset, elevation
+/// Sets box-shadow from a configured size; the default color emits the var(--wu-shadow-*) token when the theme feature is on, other colors emit a raw shadow.
+///
+/// Unknown size or color keys raise an error.
+/// @param {String} $size ["md"] - Size key from $shadow-sizes (sm, md, lg, xl, hero, monster), or none (box-shadow: none, as .shadow-none)
+/// @param {String} $color ["default"] - Color key from $shadow-colors (default, dark, darker, darkest)
+/// @example scss
+///   .card {
+///     @include shadow(sm); // box-shadow: var(--wu-shadow-sm)
+///     &:hover {
+///       @include shadow(lg, dark);
+///     }
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow box-shadow on MDN
+/// @see {mixin} shadow-inset
+/// @see {mixin} elevation
 @mixin shadow($size: "md", $color: "default") {
     @if $size == "none" {
         box-shadow: none;
@@ -73,15 +78,15 @@
     }
 }
 
-// @mixin shadow-inset
-// @description Sets an inset box-shadow from a configured size and color, always as a raw value (no token).
-// @param {String} $size ["md"] - Size key from $shadow-sizes (sm, md, lg, xl, hero, monster)
-// @param {String} $color ["default"] - Color key from $shadow-colors (default, dark, darker, darkest)
-// @example
-// .input-well {
-//   @include shadow-inset(sm);
-// }
-// @see shadow
+/// Sets an inset box-shadow from a configured size and color, always as a raw value (no token).
+/// @param {String} $size ["md"] - Size key from $shadow-sizes (sm, md, lg, xl, hero, monster)
+/// @param {String} $color ["default"] - Color key from $shadow-colors (default, dark, darker, darkest)
+/// @example scss
+///   .input-well {
+///     @include shadow-inset(sm);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow box-shadow on MDN
+/// @see {mixin} shadow
 @mixin shadow-inset($size: "md", $color: "default") {
     @include -check-shadow($size, $color);
 
@@ -91,15 +96,16 @@
     box-shadow: inset map.get($shadow, "x") map.get($shadow, "y") map.get($shadow, "blur") map.get($shadow, "spread") $shadow-color;
 }
 
-// @mixin elevation
-// @description Sets a shadow and a matching z-index for levels 1 to 5 (sm, md, lg, xl, monster); other levels raise an error.
-// @param {Number} $i - Elevation level from 1 to 5, also emitted as the raw z-index
-// @example
-// .dropdown-panel {
-//   @include elevation(3); // box-shadow: var(--nu-shadow-lg); z-index: 3
-// }
-// @note The z-index is the level itself (1 to 5), a small local scale that orders raised siblings; it is not a $z-index-levels token. Use z-index(dropdown), z-index(modal) and the other level tokens for page layers.
-// @see shadow, z-index
+/// Sets a shadow and a matching z-index for levels 1 to 5 (sm, md, lg, xl, monster); other levels raise an error.
+///
+/// The z-index is the level itself (1 to 5), a small local scale that orders raised siblings; it is not a $z-index-levels token. Use z-index(dropdown), z-index(modal) and the other level tokens for page layers.
+/// @param {Number} $i - Elevation level from 1 to 5, also emitted as the raw z-index
+/// @example scss
+///   .dropdown-panel {
+///     @include elevation(3); // box-shadow: var(--wu-shadow-lg); z-index: 3
+///   }
+/// @see {mixin} shadow
+/// @see {mixin} z-index
 @mixin elevation($i) {
     $i: fn-math.css-arg($i);
     @if not list.index((1, 2, 3, 4, 5), $i) {

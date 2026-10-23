@@ -1,6 +1,10 @@
-// Configuration: Shadows
-// Shadow color definitions and shadow size configurations
+////
+//// @group config
+//// Shadow color definitions and shadow size configurations.
+////
 
+/// Shadow colors: name to color; default is the color of the --wu-shadow-{size} tokens and the .shadow-{size} classes.
+/// @type Map
 $shadow-colors: (
     "default": rgb(0 0 0 / 10%),
     "dark": rgb(0 0 0 / 20%),
@@ -8,8 +12,8 @@ $shadow-colors: (
     "darkest": rgb(0 0 0 / 50%),
 ) !default;
 
-// Shadow size definitions
-// Each size contains x, y, blur, and spread values
+/// Shadow sizes: name to a map of x, y, blur and spread values.
+/// @type Map
 $shadow-sizes: (
     "sm": (
         "x": 0,

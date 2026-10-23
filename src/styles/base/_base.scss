@@ -5,6 +5,7 @@
 
 // The reset first, so its layer is declared before the base layer in every entry that loads this module
 @use "./reset";
+@use "../config/constants" as config-constants;
 @use "../config/borders" as config-border;
 @use "../config/spacing" as config-spacing;
 @use "../config/transitions" as config-transition;
@@ -188,7 +189,7 @@ $-invalid-border: "border-control";
             #{config-flags.$parent-selector} :is(#{$-text-inputs}, textarea, select) {
                 padding-block: $-space-2;
                 padding-inline: -scale-var("control-padding-inline", config-spacing.$control-padding-inline, "md");
-                border: -scale-var("border-width", $-border-width-map, 1) var(--nu-border-style) -token("border-control");
+                border: -scale-var("border-width", $-border-width-map, 1) var(--#{config-constants.$prefix}-border-style) -token("border-control");
                 border-radius: -scale-var("radius", config-border.$border-radii, "xs");
                 width: 100%; // Full width
                 background-color: -token("bg-surface");
@@ -196,7 +197,7 @@ $-invalid-border: "border-control";
                 font-family: $-font-family;
                 transition: border-color $-transition-duration $-transition-ease;
 
-                --nu-border-style: solid;
+                --#{config-constants.$prefix}-border-style: solid;
 
                 // :is() is forgiving, so browsers without :user-invalid keep the rule
                 &:hover:not(:disabled, [aria-invalid="true"], :is(:user-invalid)) {
@@ -237,19 +238,19 @@ $-invalid-border: "border-control";
             #{config-flags.$parent-selector} blockquote {
                 margin: $-space-4 0;
                 padding: $-space-2 $-space-4;
-                border-inline-start: -scale-var("border-width", $-border-width-map, 4) var(--nu-border-style) -token("border-regular");
+                border-inline-start: -scale-var("border-width", $-border-width-map, 4) var(--#{config-constants.$prefix}-border-style) -token("border-regular");
                 font-style: italic;
 
-                --nu-border-style: solid;
+                --#{config-constants.$prefix}-border-style: solid;
             }
 
             // Horizontal Rule
             #{config-flags.$parent-selector} hr {
                 border: none;
-                border-top: -scale-var("border-width", $-border-width-map, 1) var(--nu-border-style) -token("border-regular");
+                border-top: -scale-var("border-width", $-border-width-map, 1) var(--#{config-constants.$prefix}-border-style) -token("border-regular");
                 margin: $-space-4 0;
 
-                --nu-border-style: solid;
+                --#{config-constants.$prefix}-border-style: solid;
             }
 
             // Images

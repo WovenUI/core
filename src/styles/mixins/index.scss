@@ -1,10 +1,10 @@
-// @nuvoui/core/mixins: the public API of @nuvoui/core (mixins, functions, variables, with() configuration)
-// without any CSS output. Load @nuvoui/core once, in the global stylesheet, for the tokens, base styles and classes
+// @wovenui/core/mixins: the public API of @wovenui/core (mixins, functions, variables, with() configuration)
+// without any CSS output. Load @wovenui/core once, in the global stylesheet, for the tokens, base styles and classes
 
 @forward "../config/borders";
 @forward "../config/breakpoints";
 @forward "../config/colors";
-@forward "../config/constants";
+@forward "../config/constants" hide $prefix;
 @forward "../config/container-queries";
 @forward "../config/feature-flags";
 @forward "../config/layouts";

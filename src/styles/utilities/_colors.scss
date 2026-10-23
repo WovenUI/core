@@ -1,4 +1,8 @@
-// _colors.scss - Color mixins (bg, text-color, text-on-color) and the color name resolver shared with border-color
+////
+//// @group colors
+//// Color mixins (bg, text-color, text-on-color, gradient, adaptive-contrast) and the color name resolver shared with border-color.
+////
+
 @use "sass:color";
 @use "sass:map";
 @use "sass:math";
@@ -6,6 +10,7 @@
 @use "sass:list";
 @use "sass:string";
 
+@use "../config/constants" as config-constants;
 @use "../config/colors" as config-color;
 @use "../config/theme-validation" as config-theme;
 @use "../functions/colors" as color-fn;
@@ -182,7 +187,7 @@ $-color-functions: (
                 @error "#{$mixin}(#{$name}, #{$shade}): invalid shade. Valid shades: #{config-color.$shade-stops}.";
             }
             @if not fn-flags.feature-flag-on("theme") {
-                @error "#{$mixin}(#{$name}, #{$shade}): color names give --nu-* tokens, which are not emitted because the theme feature flag is off. Use a color value, or get-color(#{$name}, #{$stop}) for a compile time color.";
+                @error "#{$mixin}(#{$name}, #{$shade}): color names give --#{config-constants.$prefix}-* tokens, which are not emitted because the theme feature flag is off. Use a color value, or get-color(#{$name}, #{$stop}) for a compile time color.";
             }
             @return fn-tokens.token("#{$name}-#{$stop}");
         }
@@ -203,7 +208,7 @@ $-color-functions: (
             @if map.has-key(fn-tokens.color-scales(), $name) {
                 $hint: "Use a color value, or get-color(#{$name}) for a compile time color";
             }
-            @error "#{$mixin}(#{$name}): color names give --nu-* tokens, which are not emitted because the theme feature flag is off. #{$hint}.";
+            @error "#{$mixin}(#{$name}): color names give --#{config-constants.$prefix}-* tokens, which are not emitted because the theme feature flag is off. #{$hint}.";
         }
         $token: -color-token($name, $family);
         @if $token {
@@ -225,19 +230,20 @@ $-color-functions: (
     @error "#{$mixin}(#{$name}): unknown color. Use a role (#{map.keys(config-color.$semantic-colors)}), a palette name (#{config-color.$primitive-color-names}), a theme word (#{map.get($-theme-words, $family)}), a hex color, a CSS color name, a color function (rgb(), hsl(), hwb(), lab(), lch(), oklab(), oklch(), color(), color-mix(), light-dark()), a keyword (#{$-color-keywords}) or var().";
 }
 
-// @mixin adaptive-contrast
-// @description Sets background-color and the higher contrast text color, both computed at compile time; under prefers-contrast: more the background moves away from the text color (darker under light text, lighter under dark text) for a higher ratio.
-// @param {String|Color} $color - A role or palette name (resolved with get-color()) or a color value
-// @output Resolved color values, not var(--nu-*) tokens, so the result does not follow themes
-// @example
-// .banner {
-//   @include adaptive-contrast(brand);
-// }
-// @example
-// .badge {
-//   @include adaptive-contrast(#1e293b);
-// }
-// @see bg, text-on-color
+/// Sets background-color and the higher contrast text color, both computed at compile time; under prefers-contrast: more the background moves away from the text color (darker under light text, lighter under dark text) for a higher ratio.
+///
+/// The output is resolved color values, not var(--wu-*) tokens, so the result does not follow themes.
+/// @param {String|Color} $color - A role or palette name (resolved with get-color()) or a color value
+/// @example scss
+///   .banner {
+///     @include adaptive-contrast(brand);
+///   }
+/// @example scss
+///   .badge {
+///     @include adaptive-contrast(#1e293b);
+///   }
+/// @see {mixin} bg
+/// @see {mixin} text-on-color
 @mixin adaptive-contrast($color) {
     $color: color-fn.get-color($color);
     $text: color-fn.find-text-color($color);
@@ -259,61 +265,67 @@ $-color-functions: (
     }
 }
 
-// @mixin bg
-// @description Sets background-color from a role, palette name, theme word or color, emitting the matching var(--nu-*) token.
-// @param {String|Color} $color - A role (brand, danger), role state (danger-subtle, brand-hover), palette name (red), theme word (base, surface, alternate, raised, hover, selected, disabled), color value or var()
-// @param {Number|Null} $shade [null] - A shade stop (50, 100 to 900, 950) for a role or palette name
-// @example
-// .card {
-//   @include bg(surface); // var(--nu-bg-surface)
-// }
-// @example
-// .alert {
-//   @include apply(bg(danger-subtle), text-color(danger), border(1, solid, danger-border));
-// }
-// @example
-// .chip {
-//   @include bg(brand, 100); // var(--nu-brand-100)
-// }
-// @note bg(brand) gives var(--nu-brand) and bg(red) the fixed var(--nu-red-500); a shade outside 50 to 950 raises an error, and a raw color with a shade is shaded at compile time.
-// @see text-color, border-color
+/// Sets background-color from a role, palette name, theme word or color, emitting the matching var(--wu-*) token.
+///
+/// bg(brand) gives var(--wu-brand) and bg(red) the fixed var(--wu-red-500); a shade outside 50 to 950 raises an error, and a raw color with a shade is shaded at compile time.
+/// @param {String|Color} $color - A role (brand, danger), role state (danger-subtle, brand-hover), palette name (red), theme word (base, surface, alternate, raised, hover, selected, disabled), color value or var()
+/// @param {Number|Null} $shade [null] - A shade stop (50, 100 to 900, 950) for a role or palette name
+/// @example scss
+///   .card {
+///     @include bg(surface); // var(--wu-bg-surface)
+///   }
+/// @example scss
+///   .alert {
+///     @include apply(bg(danger-subtle), text-color(danger), border(1, solid, danger-border));
+///   }
+/// @example scss
+///   .chip {
+///     @include bg(brand, 100); // var(--wu-brand-100)
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/background-color background-color on MDN
+/// @see {mixin} text-color
+/// @see {mixin} border-color
 @mixin bg($color, $shade: null) {
     background-color: color-value($color, $shade, "bg");
 }
 
-// @mixin text-color
-// @description Sets color from a role, palette name, theme word or color, emitting the matching var(--nu-text-*) token.
-// @param {String|Color} $color-name - A role (brand, danger), palette name (red), theme word (regular, muted, subtle, inverted, link, link-hover), color value or var()
-// @param {Number|Null} $shade [null] - A shade stop (50, 100 to 900, 950) for a role or palette name, giving the fixed palette token
-// @example
-// .caption {
-//   @include text-color(muted); // var(--nu-text-muted)
-// }
-// @example
-// .error-message {
-//   @include apply(text-color(danger), font-size(sm));
-// }
-// @note text-color(brand) gives var(--nu-text-brand) and text-color(red) the theme aware var(--nu-text-red); with a shade the token is var(--nu-{name}-{stop}).
-// @see bg, text-on-color
+/// Sets color from a role, palette name, theme word or color, emitting the matching var(--wu-text-*) token.
+///
+/// text-color(brand) gives var(--wu-text-brand) and text-color(red) the theme aware var(--wu-text-red); with a shade the token is var(--wu-{name}-{stop}).
+/// @param {String|Color} $color-name - A role (brand, danger), palette name (red), theme word (regular, muted, subtle, inverted, link, link-hover), color value or var()
+/// @param {Number|Null} $shade [null] - A shade stop (50, 100 to 900, 950) for a role or palette name, giving the fixed palette token
+/// @example scss
+///   .caption {
+///     @include text-color(muted); // var(--wu-text-muted)
+///   }
+/// @example scss
+///   .error-message {
+///     @include apply(text-color(danger), font-size(sm));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/color color on MDN
+/// @see {mixin} bg
+/// @see {mixin} text-on-color
 @mixin text-color($color-name, $shade: null) {
     color: color-value($color-name, $shade, "text");
 }
 
-// @mixin text-on-color
-// @description Sets the text color for content placed on a filled color: a role gives its var(--nu-text-on-*) token, anything else the higher contrast text color computed at compile time.
-// @param {String|Color} $color-name - A role (brand, danger), palette name (purple) or color value
-// @param {Number|Null} $shade [null] - Shade stop of the fill (50, 100 to 900, 950); defaults to 500 when the color is not a role
-// @example
-// .button {
-//   @include apply(bg(brand), text-on-color(brand)); // color: var(--nu-text-on-brand)
-// }
-// @example
-// .tag {
-//   @include bg(purple, 700);
-//   @include text-on-color(purple, 700);
-// }
-// @note A role with a shade, a palette name or a color value gives a fixed color that does not follow themes.
-// @see adaptive-contrast, text-color
+/// Sets the text color for content placed on a filled color: a role gives its var(--wu-text-on-*) token, anything else the higher contrast text color computed at compile time.
+///
+/// A role with a shade, a palette name or a color value gives a fixed color that does not follow themes.
+/// @param {String|Color} $color-name - A role (brand, danger), palette name (purple) or color value
+/// @param {Number|Null} $shade [null] - Shade stop of the fill (50, 100 to 900, 950); defaults to 500 when the color is not a role
+/// @example scss
+///   .button {
+///     @include apply(bg(brand), text-on-color(brand)); // color: var(--wu-text-on-brand)
+///   }
+/// @example scss
+///   .tag {
+///     @include bg(purple, 700);
+///     @include text-on-color(purple, 700);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/color color on MDN
+/// @see {mixin} adaptive-contrast
+/// @see {mixin} text-color
 @mixin text-on-color($color-name, $shade: null) {
     $name: string.unquote("#{$color-name}");
     @if not $shade and fn-tokens.has-token("text-on-#{$name}") {
@@ -341,8 +353,8 @@ $-color-functions: (
     }
 }
 
-// A gradient stop with its color resolved like bg(): brand gives var(--nu-brand), red var(--nu-red-500),
-// surface var(--nu-bg-surface); a color hint or position (50%) and a stop holding a CSS function stay as written
+// A gradient stop with its color resolved like bg(): brand gives var(--wu-brand), red var(--wu-red-500),
+// surface var(--wu-bg-surface); a color hint or position (50%) and a stop holding a CSS function stay as written
 @function -gradient-stop($stop) {
     $parts: null;
     @if meta.type-of($stop) == "string" and string.index($stop, " ") and not string.index($stop, "(") {
@@ -369,19 +381,21 @@ $-color-functions: (
     @return color-value($value, null, "bg");
 }
 
-// @mixin gradient
-// @description Sets background-image to a linear-gradient with the given direction and color stops; color names resolve like bg() (roles, palette names, theme words), other colors and positions are written as passed.
-// @param {String|Number} $direction - A direction such as to right or an angle such as 135deg
-// @param {Any} $colors - Color stops: a role (brand), palette name (red), theme word (surface), color value or var(), each optionally followed by a position (brand 20%)
-// @example
-// .hero {
-//   @include gradient(to right, brand, purple); // linear-gradient(to right, var(--nu-brand), var(--nu-purple-500))
-// }
-// @example
-// .fade {
-//   @include gradient(180deg, transparent, base 80%);
-// }
-// @note An unknown color word raises the same error as bg().
+/// Sets background-image to a linear-gradient with the given direction and color stops; color names resolve like bg() (roles, palette names, theme words), other colors and positions are written as passed.
+///
+/// An unknown color word raises the same error as bg().
+/// @param {String|Number} $direction - A direction such as to right or an angle such as 135deg
+/// @param {Any} $colors - Color stops: a role (brand), palette name (red), theme word (surface), color value or var(), each optionally followed by a position (brand 20%)
+/// @example scss
+///   .hero {
+///     @include gradient(to right, brand, purple); // linear-gradient(to right, var(--wu-brand), var(--wu-purple-500))
+///   }
+/// @example scss
+///   .fade {
+///     @include gradient(180deg, transparent, base 80%);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/background-image background-image on MDN
+/// @see {mixin} bg
 @mixin gradient($direction, $colors...) {
     $stops: ();
     @each $stop in $colors {

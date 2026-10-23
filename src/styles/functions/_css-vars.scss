@@ -1,3 +1,8 @@
+////
+//// @group functions
+//// Custom property helpers and the scale value resolvers behind the utility mixins.
+////
+
 @use "sass:list";
 @use "sass:map";
 @use "sass:math";
@@ -10,17 +15,16 @@
 @use "../config/constants" as config-constants;
 @use "./units" as fn-units;
 
-// @function is-css-var
-// @description Whether a value is a var() reference.
-// @param {Any} $value - Value to test
-// @return {Boolean} - True when the value is a string starting with var(
-// @example
-// $value: var(--nu-space-4);
-// .card {
-//   @if is-css-var($value) {
-//     padding: $value;
-//   }
-// }
+/// Whether a value is a var() reference.
+/// @param {Any} $value - Value to test
+/// @return {Boolean} - True when the value is a string starting with var(
+/// @example scss
+///   $value: var(--wu-space-4);
+///   .card {
+///     @if is-css-var($value) {
+///       padding: $value;
+///     }
+///   }
 @function is-css-var($value) {
     @if meta.type-of($value) != "string" {
         @return false;
@@ -43,21 +47,20 @@
     @return $open != null and $open > 1 and string.slice($value, -1) == ")";
 }
 
-// @function get-css-var
-// @description Normalizes a var() reference given as a string (quoted or not) into a var() value; any other value raises an error.
-// @param {String} $value - A var() reference
-// @return {String} - The var() value
-// @example
-// .card {
-//   padding: get-css-var("var(--nu-space-4)");
-// }
+/// Normalizes a var() reference given as a string (quoted or not) into a var() value; any other value raises an error.
+/// @param {String} $value - A var() reference
+/// @return {String} - The var() value
+/// @example scss
+///   .card {
+///     padding: get-css-var("var(--wu-space-4)");
+///   }
 @function get-css-var($value) {
     @if is-css-var($value) {
         $val: string.unquote(fn-strings.strip-quotes($value));
         $var-name: string.slice($val, 5, -2);
         @return var(#{$var-name});
     } @else {
-        @error "get-css-var(): #{meta.inspect($value)} is not a CSS variable. Pass a var() reference such as var(--nu-space-4).";
+        @error "get-css-var(): #{meta.inspect($value)} is not a CSS variable. Pass a var() reference such as var(--#{config-constants.$prefix}-space-4).";
         @return null;
     }
 }
@@ -167,7 +170,7 @@ $-key-tokens: ();
     @return map.get(key-tokens($prefix, $map), $value);
 }
 
-// var(--nu-{prefix}-{key}) when $value is a key of $map, else null. With the theme flag off no tokens are emitted,
+// var(--wu-{prefix}-{key}) when $value is a key of $map, else null. With the theme flag off no tokens are emitted,
 // so the raw map value is returned
 @function scale-var($prefix, $map, $value) {
     $hit: key-token($prefix, $map, $value);
@@ -194,7 +197,7 @@ $-key-tokens: ();
     @if not fn-flags.feature-flag-on("theme") {
         @return map.get($map, $key);
     }
-    @return var(--nu-#{$prefix}-#{css-var-key($key)});
+    @return var(--#{config-constants.$prefix}-#{$prefix}-#{css-var-key($key)});
 }
 
 // A number, or a string holding exactly one ("4", "-4"); else null

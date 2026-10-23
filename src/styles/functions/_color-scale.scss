@@ -1,4 +1,8 @@
-// _color-scale.scss - OKLCH shade generator and color scales
+////
+//// @group functions
+//// OKLCH shade generator and color scales.
+////
+
 @use "sass:math";
 @use "sass:color";
 @use "sass:map";
@@ -106,17 +110,16 @@ $-chroma-steps: (
     @return color.change(#000, $red: math.round(color.channel($rgb, "red", $space: rgb)), $green: math.round(color.channel($rgb, "green", $space: rgb)), $blue: math.round(color.channel($rgb, "blue", $space: rgb)), $alpha: color.channel($color, "alpha"));
 }
 
-// @function create-color-scale
-// @description Returns the OKLCH shade scale (50 to 950) of a color value, precomputed for the default role and palette colors and generated for any other; the value is shaded directly and never re-read as a palette name, so "blue" is CSS blue.
-// @param {Color|String} $color - Color value or color string (#007bff, blue, rgb())
-// @return {Map} - Stop to color map with keys 50, 100 to 900 and 950
-// @example
-// @use "sass:map";
-// $teal: create-color-scale(#1ab5a5);
-// .card {
-//   background: map.get($teal, 100);
-//   border-color: map.get($teal, 600);
-// }
+/// Returns the OKLCH shade scale (50 to 950) of a color value, precomputed for the default role and palette colors and generated for any other; the value is shaded directly and never re-read as a palette name, so "blue" is CSS blue.
+/// @param {Color|String} $color - Color value or color string (#007bff, blue, rgb())
+/// @return {Map} - Stop to color map with keys 50, 100 to 900 and 950
+/// @example scss
+///   @use "sass:map";
+///   $teal: create-color-scale(#1ab5a5);
+///   .card {
+///     background: map.get($teal, 100);
+///     border-color: map.get($teal, 600);
+///   }
 @function create-color-scale($color) {
     $base: $color;
     @if meta.type-of($base) == "string" and fn-types.get-type($base) == "color" {

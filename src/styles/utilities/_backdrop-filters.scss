@@ -1,27 +1,35 @@
+////
+//// @group backdrop-filters
+//// Provides utility classes and mixins for backdrop-filter effects.
+////
+//// All utilities come with responsive variants.
+////
+//// Filter classes (.backdrop-blur-*, .backdrop-brightness-*, .backdrop-hue-rotate-*, etc.) only set a --wu-backdrop-* variable; .backdrop-layer writes the backdrop-filter property that combines them, so both classes are required.
+////
+//// Presets (.backdrop-frosted, .backdrop-glass, etc.) and .backdrop-none set backdrop-filter directly and work alone.
+////
+//// ```html
+//// <div class="backdrop-layer backdrop-blur-md">Blurred backdrop</div>
+//// <div class="backdrop-layer backdrop-blur-md backdrop-brightness-90">Blurred and darkened backdrop</div>
+//// <div class="backdrop-layer backdrop-blur-lg@md">Blurred backdrop on medium screens and up</div>
+//// <div class="backdrop-frosted">Preset, no layer needed</div>
+//// ```
+////
+
 @use "sass:list";
 @use "sass:map";
 @use "sass:math";
 @use "sass:meta";
 @use "sass:string";
+@use "../config/constants" as config-constants;
 @use "../config/feature-flags" as config-flags;
 @use "../config/breakpoints" as config-breakpoint;
 @use "../functions/css-vars" as fn-css-vars;
 @use "../functions/feature-flags" as fn-flags;
 @use "../functions/math" as fn-math;
 
-// Backdrop Filter Utilities
-// Provides utility classes and mixins for backdrop-filter effects.
-// All utilities come with responsive variants.
-// Filter classes (.backdrop-blur-*, .backdrop-brightness-*, .backdrop-hue-rotate-*, etc.) only set a --nu-backdrop-* variable;
-// .backdrop-layer writes the backdrop-filter property that combines them, so both classes are required.
-// Presets (.backdrop-frosted, .backdrop-glass, etc.) and .backdrop-none set backdrop-filter directly and work alone.
-// Usage:
-// <div class="backdrop-layer backdrop-blur-md">Blurred backdrop</div>
-// <div class="backdrop-layer backdrop-blur-md backdrop-brightness-90">Blurred and darkened backdrop</div>
-// <div class="backdrop-layer backdrop-blur-lg@md">Blurred backdrop on medium screens and up</div>
-// <div class="backdrop-frosted">Preset, no layer needed</div>
-
-// Blur values
+/// Blur values: key to blur length.
+/// @type Map
 $backdrop-blur-values: (
     "none": 0,
     "sm": 2px,
@@ -31,7 +39,8 @@ $backdrop-blur-values: (
     "2xl": 32px,
 ) !default;
 
-// Brightness values
+/// Brightness values: key to brightness percentage.
+/// @type Map
 $backdrop-brightness-values: (
     "none": 100%,
     "75": 75%,
@@ -41,7 +50,8 @@ $backdrop-brightness-values: (
     "150": 150%,
 ) !default;
 
-// Contrast values
+/// Contrast values: key to contrast percentage.
+/// @type Map
 $backdrop-contrast-values: (
     "none": 100%,
     "75": 75%,
@@ -51,7 +61,8 @@ $backdrop-contrast-values: (
     "150": 150%,
 ) !default;
 
-// Grayscale values
+/// Grayscale values: key to grayscale amount.
+/// @type Map
 $backdrop-grayscale-values: (
     "none": 0,
     "25": 25%,
@@ -60,7 +71,8 @@ $backdrop-grayscale-values: (
     "100": 100%,
 ) !default;
 
-// Saturate values
+/// Saturate values: key to saturate percentage.
+/// @type Map
 $backdrop-saturate-values: (
     "none": 100%,
     "50": 50%,
@@ -70,7 +82,8 @@ $backdrop-saturate-values: (
     "200": 200%,
 ) !default;
 
-// Sepia values
+/// Sepia values: key to sepia amount.
+/// @type Map
 $backdrop-sepia-values: (
     "none": 0,
     "25": 25%,
@@ -79,7 +92,8 @@ $backdrop-sepia-values: (
     "100": 100%,
 ) !default;
 
-// Hue-rotate values
+/// Hue-rotate values: key to rotation angle.
+/// @type Map
 $backdrop-hue-rotate-values: (
     "0": 0deg,
     "90": 90deg,
@@ -87,7 +101,8 @@ $backdrop-hue-rotate-values: (
     "270": 270deg,
 ) !default;
 
-// Invert values
+/// Invert values: key to invert amount.
+/// @type Map
 $backdrop-invert-values: (
     "none": 0,
     "25": 25%,
@@ -96,7 +111,8 @@ $backdrop-invert-values: (
     "100": 100%,
 ) !default;
 
-// Common backdrop-filter presets
+/// Common backdrop-filter presets: name to composed filter value.
+/// @type Map
 $backdrop-filter-presets: (
     "frosted": blur(8px) saturate(90%) brightness(120%),
     "glass": blur(8px) saturate(120%) contrast(90%),
@@ -105,14 +121,13 @@ $backdrop-filter-presets: (
     "matte": blur(20px) saturate(90%) brightness(90%),
 ) !default;
 
-// @mixin backdrop-filter
-// @description Sets backdrop-filter to the given value as written, replacing any composed or preset filter.
-// @param {String} $value - Any backdrop-filter value, such as blur(6px) saturate(140%) or none
-// @example
-// .overlay {
-//   @include backdrop-filter(blur(6px) saturate(140%));
-// }
-// @see backdrop-layer
+/// Sets backdrop-filter to the given value as written, replacing any composed or preset filter.
+/// @param {String} $value - Any backdrop-filter value, such as blur(6px) saturate(140%) or none
+/// @example scss
+///   .overlay {
+///     @include backdrop-filter(blur(6px) saturate(140%));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-filter($value) {
     @include -backdrop(fn-math.css-arg($value));
 }
@@ -135,32 +150,33 @@ $-backdrop-identity: (
     "sepia": sepia(0),
 );
 
-// Sets every --nu-backdrop-* variable to its identity value
+// Sets every --wu-backdrop-* variable to its identity value
 @mixin -backdrop-identity {
     @each $name, $value in $-backdrop-identity {
-        --nu-backdrop-#{$name}: #{$value};
+        --#{config-constants.$prefix}-backdrop-#{$name}: #{$value};
     }
 }
 
-// Writes backdrop-filter as the combination of all --nu-backdrop-* variables
+// Writes backdrop-filter as the combination of all --wu-backdrop-* variables
 @mixin -backdrop-compose {
-    @include -backdrop(var(--nu-backdrop-blur) var(--nu-backdrop-brightness) var(--nu-backdrop-contrast) var(--nu-backdrop-grayscale) var(--nu-backdrop-hue-rotate) var(--nu-backdrop-invert) var(--nu-backdrop-saturate) var(--nu-backdrop-sepia));
+    @include -backdrop(var(--#{config-constants.$prefix}-backdrop-blur) var(--#{config-constants.$prefix}-backdrop-brightness) var(--#{config-constants.$prefix}-backdrop-contrast) var(--#{config-constants.$prefix}-backdrop-grayscale) var(--#{config-constants.$prefix}-backdrop-hue-rotate) var(--#{config-constants.$prefix}-backdrop-invert) var(--#{config-constants.$prefix}-backdrop-saturate) var(--#{config-constants.$prefix}-backdrop-sepia));
 }
 
-// @mixin backdrop-layer
-// @description Resets every backdrop filter variable to its identity value and writes the backdrop-filter that combines them; include it before the filter mixins.
-// @output Eight --nu-backdrop-* identity values and backdrop-filter: var(--nu-backdrop-blur) ... var(--nu-backdrop-sepia)
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-blur(md);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-blur(lg), backdrop-saturate(150%));
-// }
-// @note A filter mixin included before backdrop-layer in the same rule is reset by it.
-// @see backdrop-blur, backdrop-none
+/// Resets every backdrop filter variable to its identity value and writes the backdrop-filter that combines them; include it before the filter mixins.
+///
+/// A filter mixin included before backdrop-layer in the same rule is reset by it.
+/// @output Eight --wu-backdrop-* identity values and backdrop-filter: var(--wu-backdrop-blur) ... var(--wu-backdrop-sepia)
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-blur(md);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-blur(lg), backdrop-saturate(150%));
+///   }
+/// @see {mixin} backdrop-blur
+/// @see {mixin} backdrop-none
 @mixin backdrop-layer {
     @include -backdrop-identity;
     @include -backdrop-compose;
@@ -190,218 +206,203 @@ $-backdrop-identity: (
     @error "#{$mixin}(#{$value}): use a key (#{map.keys($map)}), a value in #{$units}, calc() or var().";
 }
 
-// @mixin backdrop-blur
-// @description Sets the --nu-backdrop-blur variable to blur() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
-// @param {Number|String} $value - A $backdrop-blur-values key (none, sm, md, lg, xl, 2xl), a length in px, rem or em, calc() or var(); anything else raises an error
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-blur(md);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-blur(6px));
-// }
-// @see backdrop-layer
+/// Sets the --wu-backdrop-blur variable to blur() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
+/// @param {Number|String} $value - A $backdrop-blur-values key (none, sm, md, lg, xl, 2xl), a length in px, rem or em, calc() or var(); anything else raises an error
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-blur(md);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-blur(6px));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-blur($value) {
-    --nu-backdrop-blur: blur(#{-filter-value("backdrop-blur", $backdrop-blur-values, $value, (px, rem, em))});
+    --#{config-constants.$prefix}-backdrop-blur: blur(#{-filter-value("backdrop-blur", $backdrop-blur-values, $value, (px, rem, em))});
 }
 
-// @mixin backdrop-brightness
-// @description Sets the --nu-backdrop-brightness variable to brightness() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
-// @param {Number|String} $value - A $backdrop-brightness-values key (none, 75, 90, 110, 125, 150; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-brightness(90);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-brightness(80%));
-// }
-// @see backdrop-layer
+/// Sets the --wu-backdrop-brightness variable to brightness() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
+/// @param {Number|String} $value - A $backdrop-brightness-values key (none, 75, 90, 110, 125, 150; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-brightness(90);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-brightness(80%));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-brightness($value) {
-    --nu-backdrop-brightness: brightness(#{-filter-value("backdrop-brightness", $backdrop-brightness-values, $value, ("%"))});
+    --#{config-constants.$prefix}-backdrop-brightness: brightness(#{-filter-value("backdrop-brightness", $backdrop-brightness-values, $value, ("%"))});
 }
 
-// @mixin backdrop-contrast
-// @description Sets the --nu-backdrop-contrast variable to contrast() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
-// @param {Number|String} $value - A $backdrop-contrast-values key (none, 75, 90, 110, 125, 150; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-contrast(125);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-contrast(120%));
-// }
-// @see backdrop-layer
+/// Sets the --wu-backdrop-contrast variable to contrast() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
+/// @param {Number|String} $value - A $backdrop-contrast-values key (none, 75, 90, 110, 125, 150; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-contrast(125);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-contrast(120%));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-contrast($value) {
-    --nu-backdrop-contrast: contrast(#{-filter-value("backdrop-contrast", $backdrop-contrast-values, $value, ("%"))});
+    --#{config-constants.$prefix}-backdrop-contrast: contrast(#{-filter-value("backdrop-contrast", $backdrop-contrast-values, $value, ("%"))});
 }
 
-// @mixin backdrop-grayscale
-// @description Sets the --nu-backdrop-grayscale variable to grayscale() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
-// @param {Number|String} $value - A $backdrop-grayscale-values key (none, 25, 50, 75, 100; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-grayscale(50);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-grayscale(30%));
-// }
-// @see backdrop-layer
+/// Sets the --wu-backdrop-grayscale variable to grayscale() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
+/// @param {Number|String} $value - A $backdrop-grayscale-values key (none, 25, 50, 75, 100; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-grayscale(50);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-grayscale(30%));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-grayscale($value) {
-    --nu-backdrop-grayscale: grayscale(#{-filter-value("backdrop-grayscale", $backdrop-grayscale-values, $value, ("%"))});
+    --#{config-constants.$prefix}-backdrop-grayscale: grayscale(#{-filter-value("backdrop-grayscale", $backdrop-grayscale-values, $value, ("%"))});
 }
 
-// @mixin backdrop-hue-rotate
-// @description Sets the --nu-backdrop-hue-rotate variable to hue-rotate() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
-// @param {Number|String} $value - A $backdrop-hue-rotate-values key (0, 90, 180, 270; unquoted and quoted numbers both match), an angle such as 45deg, calc() or var(); anything else raises an error
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-hue-rotate(90);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-hue-rotate(45deg));
-// }
-// @see backdrop-layer
+/// Sets the --wu-backdrop-hue-rotate variable to hue-rotate() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
+/// @param {Number|String} $value - A $backdrop-hue-rotate-values key (0, 90, 180, 270; unquoted and quoted numbers both match), an angle such as 45deg, calc() or var(); anything else raises an error
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-hue-rotate(90);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-hue-rotate(45deg));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-hue-rotate($value) {
-    --nu-backdrop-hue-rotate: hue-rotate(#{-filter-value("backdrop-hue-rotate", $backdrop-hue-rotate-values, $value, (deg, rad, grad, turn))});
+    --#{config-constants.$prefix}-backdrop-hue-rotate: hue-rotate(#{-filter-value("backdrop-hue-rotate", $backdrop-hue-rotate-values, $value, (deg, rad, grad, turn))});
 }
 
-// @mixin backdrop-invert
-// @description Sets the --nu-backdrop-invert variable to invert() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
-// @param {Number|String} $value - A $backdrop-invert-values key (none, 25, 50, 75, 100; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-invert(100);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-invert(10%));
-// }
-// @see backdrop-layer
+/// Sets the --wu-backdrop-invert variable to invert() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
+/// @param {Number|String} $value - A $backdrop-invert-values key (none, 25, 50, 75, 100; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-invert(100);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-invert(10%));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-invert($value) {
-    --nu-backdrop-invert: invert(#{-filter-value("backdrop-invert", $backdrop-invert-values, $value, ("%"))});
+    --#{config-constants.$prefix}-backdrop-invert: invert(#{-filter-value("backdrop-invert", $backdrop-invert-values, $value, ("%"))});
 }
 
-// @mixin backdrop-saturate
-// @description Sets the --nu-backdrop-saturate variable to saturate() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
-// @param {Number|String} $value - A $backdrop-saturate-values key (none, 50, 75, 125, 150, 200; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-saturate(150);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-saturate(180%));
-// }
-// @see backdrop-layer
+/// Sets the --wu-backdrop-saturate variable to saturate() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
+/// @param {Number|String} $value - A $backdrop-saturate-values key (none, 50, 75, 125, 150, 200; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-saturate(150);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-saturate(180%));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-saturate($value) {
-    --nu-backdrop-saturate: saturate(#{-filter-value("backdrop-saturate", $backdrop-saturate-values, $value, ("%"))});
+    --#{config-constants.$prefix}-backdrop-saturate: saturate(#{-filter-value("backdrop-saturate", $backdrop-saturate-values, $value, ("%"))});
 }
 
-// @mixin backdrop-sepia
-// @description Sets the --nu-backdrop-sepia variable to sepia() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
-// @param {Number|String} $value - A $backdrop-sepia-values key (none, 25, 50, 75, 100; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
-// @example
-// .overlay {
-//   @include backdrop-layer;
-//   @include backdrop-sepia(50);
-// }
-// @example
-// .overlay {
-//   @include apply(backdrop-layer, backdrop-sepia(20%));
-// }
-// @see backdrop-layer
+/// Sets the --wu-backdrop-sepia variable to sepia() with a configured key or a validated raw value; it has no visible effect without backdrop-layer.
+/// @param {Number|String} $value - A $backdrop-sepia-values key (none, 25, 50, 75, 100; unquoted and quoted numbers both match), a percentage, calc() or var(); anything else raises an error
+/// @example scss
+///   .overlay {
+///     @include backdrop-layer;
+///     @include backdrop-sepia(50);
+///   }
+/// @example scss
+///   .overlay {
+///     @include apply(backdrop-layer, backdrop-sepia(20%));
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-sepia($value) {
-    --nu-backdrop-sepia: sepia(#{-filter-value("backdrop-sepia", $backdrop-sepia-values, $value, ("%"))});
+    --#{config-constants.$prefix}-backdrop-sepia: sepia(#{-filter-value("backdrop-sepia", $backdrop-sepia-values, $value, ("%"))});
 }
 
-// @mixin backdrop-frosted
-// @description Applies the frosted preset (blur(8px) saturate(90%) brightness(120%)) directly to backdrop-filter, so no backdrop-layer is needed.
-// @example
-// .panel {
-//   @include backdrop-frosted;
-// }
-// @see backdrop-layer
+/// Applies the frosted preset (blur(8px) saturate(90%) brightness(120%)) directly to backdrop-filter, so no backdrop-layer is needed.
+/// @example scss
+///   .panel {
+///     @include backdrop-frosted;
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-frosted {
     @include -backdrop(#{map.get($backdrop-filter-presets, "frosted")});
 }
 
-// @mixin backdrop-glass
-// @description Applies the glass preset (blur(8px) saturate(120%) contrast(90%)) directly to backdrop-filter, so no backdrop-layer is needed.
-// @example
-// .panel {
-//   @include backdrop-glass;
-// }
-// @see backdrop-layer
+/// Applies the glass preset (blur(8px) saturate(120%) contrast(90%)) directly to backdrop-filter, so no backdrop-layer is needed.
+/// @example scss
+///   .panel {
+///     @include backdrop-glass;
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-glass {
     @include -backdrop(#{map.get($backdrop-filter-presets, "glass")});
 }
 
-// @mixin backdrop-dark-glass
-// @description Applies the dark glass preset (blur(8px) saturate(180%) brightness(70%) contrast(90%)) directly to backdrop-filter, so no backdrop-layer is needed.
-// @example
-// .panel {
-//   @include backdrop-dark-glass;
-// }
-// @see backdrop-layer
+/// Applies the dark glass preset (blur(8px) saturate(180%) brightness(70%) contrast(90%)) directly to backdrop-filter, so no backdrop-layer is needed.
+/// @example scss
+///   .panel {
+///     @include backdrop-dark-glass;
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-dark-glass {
     @include -backdrop(#{map.get($backdrop-filter-presets, "dark-glass")});
 }
 
-// @mixin backdrop-crystal
-// @description Applies the crystal preset (blur(8px) saturate(150%)) directly to backdrop-filter, so no backdrop-layer is needed.
-// @example
-// .panel {
-//   @include backdrop-crystal;
-// }
-// @see backdrop-layer
+/// Applies the crystal preset (blur(8px) saturate(150%)) directly to backdrop-filter, so no backdrop-layer is needed.
+/// @example scss
+///   .panel {
+///     @include backdrop-crystal;
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-crystal {
     @include -backdrop(#{map.get($backdrop-filter-presets, "crystal")});
 }
 
-// @mixin backdrop-matte
-// @description Applies the matte preset (blur(20px) saturate(90%) brightness(90%)) directly to backdrop-filter, so no backdrop-layer is needed.
-// @example
-// .panel {
-//   @include backdrop-matte;
-// }
-// @see backdrop-layer
+/// Applies the matte preset (blur(20px) saturate(90%) brightness(90%)) directly to backdrop-filter, so no backdrop-layer is needed.
+/// @example scss
+///   .panel {
+///     @include backdrop-matte;
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-matte {
     @include -backdrop(#{map.get($backdrop-filter-presets, "matte")});
 }
 
-// @mixin backdrop-none
-// @description Removes the backdrop filter and returns the --nu-backdrop-* variables to their identity values, so a later composed filter stays valid.
-// @example
-// .panel {
-//   @include backdrop-none;
-// }
-// @see backdrop-layer
+/// Removes the backdrop filter and returns the --wu-backdrop-* variables to their identity values, so a later composed filter stays valid.
+/// @example scss
+///   .panel {
+///     @include backdrop-none;
+///   }
+/// @see {mixin} backdrop-layer
 @mixin backdrop-none {
     @include -backdrop(none);
 
     @include -backdrop-identity;
 }
 
-// @mixin generate-backdrop-filter-utilities
-// @description Emits the backdrop utility classes (layer, filters, presets, none), with an @breakpoint suffix when a breakpoint is given.
-// @param {String|Null} $breakpoint [null] - Breakpoint name used as the class suffix; place the call inside the matching media query
-// @output Classes such as .backdrop-layer@md, .backdrop-blur-md@md and .backdrop-frosted@md
-// @example
-// @media (min-width: 768px) {
-//   @include generate-backdrop-filter-utilities(md);
-// }
+/// Emits the backdrop utility classes (layer, filters, presets, none), with an @breakpoint suffix when a breakpoint is given.
+/// @param {String|Null} $breakpoint [null] - Breakpoint name used as the class suffix; place the call inside the matching media query
+/// @output Classes such as .backdrop-layer@md, .backdrop-blur-md@md and .backdrop-frosted@md
+/// @example scss
+///   @media (min-width: 768px) {
+///     @include generate-backdrop-filter-utilities(md);
+///   }
 @mixin generate-backdrop-filter-utilities($breakpoint: null) {
     $suffix: "";
     @if $breakpoint {

@@ -1,11 +1,22 @@
-// Configuration: Theme validation
-// Theme token definitions and validation
+////
+//// @group config
+//// Theme token definitions and validation.
+////
+//// Theme maps are keyed by token name without the --wu- prefix ("bg-surface" is --wu-bg-surface).
+////
+//// A value is a color (#fff), any CSS value (2px), or a scale reference: a two-item list of scale name and stop, e.g. brand 600 or gray 200, emitted as var(--wu-brand-600).
+////
+//// text-on-{role} is computed from the {role} fill with find-text-color() in light and dark alike, choosing between that theme's text-regular and text-inverted, unless a theme sets text-on-{role}.
+////
+//// A new key must be set in both $light-theme and $dark-theme (in $light-theme alone when dark mode is off).
+////
 
 @use "sass:map";
 @use "sass:list";
 @use "sass:math";
 @use "sass:meta";
 @use "sass:string";
+@use "./constants" as config-constants;
 @use "./borders" as config-border;
 @use "./colors" as config-color;
 @use "./feature-flags" as config-flags;
@@ -17,18 +28,22 @@
 @use "./z-index" as config-z;
 @use "../functions/css-vars" as fn-css-vars;
 
-// Theme maps are keyed by token name without the --nu- prefix ("bg-surface" is --nu-bg-surface).
-// A value is a color (#fff), any CSS value (2px), or a scale reference: a two-item list of
-// scale name and stop, e.g. brand 600 or gray 200, emitted as var(--nu-brand-600).
-// $light-theme and $dark-theme hold overrides; they merge over the defaults. $high-contrast-light and
-// $high-contrast-dark hold only the overrides emitted under [data-contrast="high"] in light and dark contexts.
-// text-on-{role} is computed from the {role} fill with find-text-color() in light and dark alike, choosing between
-// that theme's text-regular and text-inverted, unless a theme sets text-on-{role}.
-// A new key must be set in both $light-theme and $dark-theme (in $light-theme alone when dark mode is off).
-// Example: @use "@nuvoui/core" with ($light-theme: ("brand": brand 600, "bg-base": #fff));
+/// Light theme token overrides: token name to value; they merge over the built-in defaults.
+///
+/// Example: `@use "@wovenui/core" with ($light-theme: ("brand": brand 600, "bg-base": #fff));`
+/// @type Map
 $light-theme: () !default;
+
+/// Dark theme token overrides: token name to value; they merge over the built-in defaults.
+/// @type Map
 $dark-theme: () !default;
+
+/// Token overrides emitted under [data-contrast="high"] in light contexts; nothing is emitted while the map is empty.
+/// @type Map
 $high-contrast-light: () !default;
+
+/// Token overrides emitted under [data-contrast="high"] in dark contexts; nothing is emitted while the map is empty.
+/// @type Map
 $high-contrast-dark: () !default;
 
 // Keys as unquoted strings, so an unquoted key that Sass reads as a color (tan, red) works like a quoted one
@@ -450,7 +465,7 @@ $-error-tokens: ("text-error", "text-on-error");
                 @error "'#{$name}' generates the token '#{$token}', which is a built-in theme token. Rename '#{$name}'.";
             }
             @if map.has-key($reserved, $token) {
-                @error "'#{$name}' generates the token '#{$token}', which is already a palette, basic color or scale token (--nu-#{$token}). Rename '#{$name}'.";
+                @error "'#{$name}' generates the token '#{$token}', which is already a palette, basic color or scale token (--#{config-constants.$prefix}-#{$token}). Rename '#{$name}'.";
             }
             @if map.has-key($owners, $token) {
                 @error "'#{map.get($owners, $token)}' and '#{$name}' both generate the token '#{$token}'. Rename one of them.";
@@ -516,7 +531,7 @@ $-error-tokens: ("text-error", "text-on-error");
     @each $theme-name, $theme in $themes {
         @each $token, $value in $theme {
             @if map.has-key($reserved, $token) and not is-builtin-token($token) {
-                @error "#{$theme-name}: custom token '#{$token}' is already a palette, basic color or scale token (--nu-#{$token}). Choose another name.";
+                @error "#{$theme-name}: custom token '#{$token}' is already a palette, basic color or scale token (--#{config-constants.$prefix}-#{$token}). Choose another name.";
             }
         }
     }
@@ -533,7 +548,7 @@ $-error-tokens: ("text-error", "text-on-error");
                     @error "#{$theme-name}: '#{$token}' was renamed to 'error' in 2.0, and error tokens follow danger; set 'danger' instead.";
                 }
                 @if list.index($role-names, $name) {
-                    @error "#{$theme-name}: '#{$token}' was renamed to '#{$name}' in 2.0 (--nu-#{$name}). Rename the key.";
+                    @error "#{$theme-name}: '#{$token}' was renamed to '#{$name}' in 2.0 (--#{config-constants.$prefix}-#{$name}). Rename the key.";
                 }
             }
         }

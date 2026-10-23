@@ -1,3 +1,14 @@
+////
+//// @group animations
+//// Animation mixins that emit their own keyframes once, and the animation utility classes.
+////
+//// Classes: .animate-pulse, .animate-spin, .animate-ping, .animate-fade-in, .animate-fade-out, .animate-fade-in-up, .animate-fade-in-down, .animate-shake and .hover-ready.
+////
+//// Responsive variants use the @breakpoint suffix (.animate-spin@md); .hover-ready has none.
+////
+//// Animation options are passed as a map: animate-spin((duration: 2s)). An unknown key raises an error.
+////
+
 @use "sass:list";
 @use "sass:math";
 @use "sass:map";
@@ -18,22 +29,21 @@ $generated-keyframes: ();
     @return fn-strings.str-replace(fn-strings.str-replace("#{$name}", ".", "_"), "%", "per");
 }
 
-// @mixin ensure-keyframes
-// @description Emits an @keyframes rule with the given name once per compilation, at the root of the stylesheet (outside @media, @supports, @container and @scope, inside any @layer); later calls with the same name emit nothing.
-// @param {String} $name - Keyframes name
-// @content The keyframe selectors and declarations
-// @example
-// .toast {
-//   animation: toast-in 0.3s ease-out;
-//   @include ensure-keyframes(toast-in) {
-//     from {
-//       opacity: 0;
-//     }
-//     to {
-//       opacity: 1;
-//     }
-//   }
-// }
+/// Emits an @keyframes rule with the given name once per compilation, at the root of the stylesheet (outside @media, @supports, @container and @scope, inside any @layer); later calls with the same name emit nothing.
+/// @param {String} $name - Keyframes name
+/// @content The keyframe selectors and declarations
+/// @example scss
+///   .toast {
+///     animation: toast-in 0.3s ease-out;
+///     @include ensure-keyframes(toast-in) {
+///       from {
+///         opacity: 0;
+///       }
+///       to {
+///         opacity: 1;
+///       }
+///     }
+///   }
 @mixin ensure-keyframes($name) {
     @if not list.index($generated-keyframes, $name) {
         $generated-keyframes: list.append($generated-keyframes, $name) !global;
@@ -79,13 +89,13 @@ $generated-keyframes: ();
     @return $value;
 }
 
-// @mixin animate-bounce
-// @description Sets an animation that moves the element to a horizontal and vertical offset and back, and emits its keyframes once.
-// @param {Map} $props [()] - Overrides for vertical (0.5rem), horizontal (0), duration (1s), timing (ease-in-out), iteration (infinite); offsets are lengths, and a unitless number other than 0 raises an error
-// @example
-// .scroll-hint {
-//   @include animate-bounce((vertical: 10px, duration: 2s));
-// }
+/// Sets an animation that moves the element to a horizontal and vertical offset and back, and emits its keyframes once.
+/// @param {Map} $props [()] - Overrides for vertical (0.5rem), horizontal (0), duration (1s), timing (ease-in-out), iteration (infinite); offsets are lengths, and a unitless number other than 0 raises an error
+/// @example scss
+///   .scroll-hint {
+///     @include animate-bounce((vertical: 10px, duration: 2s));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/animation animation on MDN
 @mixin animate-bounce($props: ()) {
     $defaults: (
         vertical: 0.5rem,
@@ -143,27 +153,26 @@ $generated-keyframes: ();
     }
 }
 
-// @mixin hover-ready
-// @description Adds a transition on all properties with the default duration and easing tokens ($transition-default-duration, $transition-default-ease) so hover changes animate.
-// @output transition-property: all; transition-duration: var(--nu-duration-200); transition-timing-function: var(--nu-ease-in-out)
-// @example
-// .card {
-//   @include hover-ready;
-// }
-// @see transition
+/// Adds a transition on all properties with the default duration and easing tokens ($transition-default-duration, $transition-default-ease) so hover changes animate.
+/// @output transition-property: all; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// @example scss
+///   .card {
+///     @include hover-ready;
+///   }
+/// @see {mixin} transition
 @mixin hover-ready {
     transition-property: all;
     transition-duration: fn-css-vars.scale-var("duration", config-transitions.$durations, config-transitions.$transition-default-duration);
     transition-timing-function: fn-css-vars.scale-var("ease", config-transitions.$timing-functions, config-transitions.$transition-default-ease);
 }
 
-// @mixin animate-pulse
-// @description Sets an animation that fades opacity between a maximum and a minimum, and emits its keyframes once.
-// @param {Map} $props [()] - Overrides for min-opacity (0.5), max-opacity (1), duration (1s), timing (ease-in-out), iteration (infinite)
-// @example
-// .skeleton {
-//   @include animate-pulse((min-opacity: 0.4, duration: 1.5s));
-// }
+/// Sets an animation that fades opacity between a maximum and a minimum, and emits its keyframes once.
+/// @param {Map} $props [()] - Overrides for min-opacity (0.5), max-opacity (1), duration (1s), timing (ease-in-out), iteration (infinite)
+/// @example scss
+///   .skeleton {
+///     @include animate-pulse((min-opacity: 0.4, duration: 1.5s));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/animation animation on MDN
 @mixin animate-pulse($props: ()) {
     $defaults: (
         min-opacity: 0.5,
@@ -197,13 +206,13 @@ $generated-keyframes: ();
     }
 }
 
-// @mixin animate-spin
-// @description Sets a full 360 degree rotation animation (any direction other than normal spins backwards), and emits its keyframes once.
-// @param {Map} $props [()] - Overrides for direction (normal), duration (1s), timing (linear), iteration (infinite)
-// @example
-// .spinner {
-//   @include animate-spin((duration: 0.8s));
-// }
+/// Sets a full 360 degree rotation animation (any direction other than normal spins backwards), and emits its keyframes once.
+/// @param {Map} $props [()] - Overrides for direction (normal), duration (1s), timing (linear), iteration (infinite)
+/// @example scss
+///   .spinner {
+///     @include animate-spin((duration: 0.8s));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/animation animation on MDN
 @mixin animate-spin($props: ()) {
     $defaults: (
         direction: normal,
@@ -238,13 +247,13 @@ $generated-keyframes: ();
     }
 }
 
-// @mixin animate-ping
-// @description Sets an animation that scales the element up while fading it out, and emits its keyframes once.
-// @param {Map} $props [()] - Overrides for scale (2), duration (1s), timing (cubic-bezier(0, 0, 0.2, 1)), iteration (infinite)
-// @example
-// .status-dot {
-//   @include animate-ping((scale: 3));
-// }
+/// Sets an animation that scales the element up while fading it out, and emits its keyframes once.
+/// @param {Map} $props [()] - Overrides for scale (2), duration (1s), timing (cubic-bezier(0, 0, 0.2, 1)), iteration (infinite)
+/// @example scss
+///   .status-dot {
+///     @include animate-ping((scale: 3));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/animation animation on MDN
 @mixin animate-ping($props: ()) {
     $defaults: (
         scale: 2,
@@ -276,13 +285,13 @@ $generated-keyframes: ();
     }
 }
 
-// @mixin animate-fade
-// @description Sets a fade animation of type in, out, in-up or in-down (the up and down types also slide 20px), and emits its keyframes once; any other type raises an error.
-// @param {Map} $props [()] - Overrides for type (in), duration (0.5s), timing (ease-in-out), iteration (1 forwards)
-// @example
-// .modal {
-//   @include animate-fade((type: in-up, duration: 0.3s));
-// }
+/// Sets a fade animation of type in, out, in-up or in-down (the up and down types also slide 20px), and emits its keyframes once; any other type raises an error.
+/// @param {Map} $props [()] - Overrides for type (in), duration (0.5s), timing (ease-in-out), iteration (1 forwards)
+/// @example scss
+///   .modal {
+///     @include animate-fade((type: in-up, duration: 0.3s));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/animation animation on MDN
 @mixin animate-fade($props: ()) {
     $defaults: (
         type: in,
@@ -346,13 +355,13 @@ $generated-keyframes: ();
     }
 }
 
-// @mixin animate-shake
-// @description Sets a horizontal shake animation of the given intensity, and emits its keyframes once per intensity and unit (5px and 5rem get separate keyframes).
-// @param {Map} $props [()] - Overrides for intensity (5px; a length, a unitless number other than 0 raises an error), duration (0.5s), timing (ease-in-out), iteration (1)
-// @example
-// .input-invalid {
-//   @include animate-shake((intensity: 8px));
-// }
+/// Sets a horizontal shake animation of the given intensity, and emits its keyframes once per intensity and unit (5px and 5rem get separate keyframes).
+/// @param {Map} $props [()] - Overrides for intensity (5px; a length, a unitless number other than 0 raises an error), duration (0.5s), timing (ease-in-out), iteration (1)
+/// @example scss
+///   .input-invalid {
+///     @include animate-shake((intensity: 8px));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/animation animation on MDN
 @mixin animate-shake($props: ()) {
     $defaults: (
         intensity: 5px,

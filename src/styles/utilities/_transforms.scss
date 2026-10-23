@@ -1,8 +1,25 @@
+////
+//// @group transforms
+//// Transform utilities: translate (x, y, z), scale, rotate, skew (mixins only, no classes) and transform origin.
+////
+//// Each transform mixin sets its own --wu-* variable and writes one combined transform, so several transforms on an element compose.
+////
+//// Classes:
+////
+//// - translate-x-{key}/translate-y-{key}: Moves by a spacing key or a fraction key (25p, 33p, 50p, 66p, 75p, 100p); -translate-x-{key} negates
+//// - scale-{key}/scale-x-{key}/scale-y-{key}: Scales by a factor key (0, 50, 75, 90, 95, 100, 105, 110, 125, 150)
+//// - rotate-{key}/-rotate-{key}: Rotates by an angle key (0, 45, 90, 180, 270)
+//// - origin-{key}: Sets transform-origin (top-left, center, bottom-right)
+////
+//// Interactive states: hover: and group-hover: variants exist for every class. Responsive: every class supports the @breakpoint suffix.
+////
+
 @use "sass:list";
 @use "sass:map";
 @use "sass:math";
 @use "sass:meta";
 @use "sass:string";
+@use "../config/constants" as config-constants;
 @use "../config/feature-flags" as config-flags;
 @use "../config/breakpoints" as config-breakpoint;
 @use "../config/spacing" as config-spacing;
@@ -11,24 +28,18 @@
 @use "../functions/math" as fn-math;
 @use "../functions/strings" as fn-strings;
 
-// Transform Utilities
-// - Translate (X, Y, Z)
-// - Scale
-// - Rotate
-// - Skew
-// - Transform origin
-
-// @mixin apply-transform
-// @description Writes the transform property that combines every --nu-translate-*, --nu-rotate, --nu-skew-* and --nu-scale-* variable; the transform mixins include it.
-// @output transform: translateX(var(--nu-translate-x)) ... scaleY(var(--nu-scale-y)), with no fallbacks; unset variables use their @property initial values
-// @example
-// .icon {
-//   --nu-rotate: 90deg;
-//   @include apply-transform;
-// }
-// @see translate, rotate, scale
+/// Writes the transform property that combines every --wu-translate-*, --wu-rotate, --wu-skew-* and --wu-scale-* variable; the transform mixins include it.
+/// @output transform: translateX(var(--wu-translate-x)) ... scaleY(var(--wu-scale-y)), with no fallbacks; unset variables use their @property initial values
+/// @example scss
+///   .icon {
+///     --wu-rotate: 90deg;
+///     @include apply-transform;
+///   }
+/// @see {mixin} translate
+/// @see {mixin} rotate
+/// @see {mixin} scale
 @mixin apply-transform {
-    transform: translateX(var(--nu-translate-x)) translateY(var(--nu-translate-y)) translateZ(var(--nu-translate-z)) rotate(var(--nu-rotate)) skewX(var(--nu-skew-x)) skewY(var(--nu-skew-y)) scaleX(var(--nu-scale-x)) scaleY(var(--nu-scale-y));
+    transform: translateX(var(--#{config-constants.$prefix}-translate-x)) translateY(var(--#{config-constants.$prefix}-translate-y)) translateZ(var(--#{config-constants.$prefix}-translate-z)) rotate(var(--#{config-constants.$prefix}-rotate)) skewX(var(--#{config-constants.$prefix}-skew-x)) skewY(var(--#{config-constants.$prefix}-skew-y)) scaleX(var(--#{config-constants.$prefix}-scale-x)) scaleY(var(--#{config-constants.$prefix}-scale-y));
 }
 
 // CSS angle units
@@ -70,7 +81,8 @@ $-angle-units: (deg, grad, rad, turn);
     @return null;
 }
 
-// Fraction keys for translate, as in the .translate-x-25p classes
+/// Fraction keys for translate, as in the .translate-x-25p classes
+/// @type Map
 $translate-fractions: (
     "25p": 25%,
     "33p": 33.333%,
@@ -80,7 +92,7 @@ $translate-fractions: (
     "100p": 100%,
 );
 
-// Translate values: a $spacings key gives its token (4 is var(--nu-space-4)), a negated key gives calc(-1 * token),
+// Translate values: a $spacings key gives its token (4 is var(--wu-space-4)), a negated key gives calc(-1 * token),
 // a fraction key (25p, -25p) gives its percentage; values with units, calc() and var() pass through. Results are
 // cached by mixin name and fn-css-vars.value-key()
 $-translate-cache: ();
@@ -121,84 +133,89 @@ $-translate-cache: ();
     @return fn-css-vars.scale-value("space", config-spacing.$spacings, $value, $allow-negative: true, $label: $mixin);
 }
 
-// @mixin translate-x
-// @description Moves the element along the x axis by setting --nu-translate-x and writing the combined transform.
-// @param {Number|Length|String} $value - A $spacings key (4 gives var(--nu-space-4)), a negated key (-4 gives calc(-1 * token)), a fraction key (25p, -25p), a length, percentage, calc() or var()
-// @example
-// .drawer {
-//   @include translate-x(4);
-// }
-// @example
-// .card {
-//   @include apply(translate-x(-50p) hover);
-// }
-// @note A unitless number that is not a spacing key raises an error.
-// @see translate, apply-transform
+/// Moves the element along the x axis by setting --wu-translate-x and writing the combined transform.
+///
+/// A unitless number that is not a spacing key raises an error.
+/// @param {Number|Length|String} $value - A $spacings key (4 gives var(--wu-space-4)), a negated key (-4 gives calc(-1 * token)), a fraction key (25p, -25p), a length, percentage, calc() or var()
+/// @example scss
+///   .drawer {
+///     @include translate-x(4);
+///   }
+/// @example scss
+///   .card {
+///     @include apply(translate-x(-50p) hover);
+///   }
+/// @see {mixin} translate
+/// @see {mixin} apply-transform
 @mixin translate-x($value) {
-    --nu-translate-x: #{-translate("translate-x", $value)};
+    --#{config-constants.$prefix}-translate-x: #{-translate("translate-x", $value)};
     @include apply-transform;
 }
 
-// @mixin translate-y
-// @description Moves the element along the y axis by setting --nu-translate-y and writing the combined transform.
-// @param {Number|Length|String} $value - A $spacings key (4 gives var(--nu-space-4)), a negated key (-4 gives calc(-1 * token)), a fraction key (25p, -25p), a length, percentage, calc() or var()
-// @example
-// .drawer {
-//   @include translate-y(-1);
-// }
-// @example
-// .card {
-//   @include apply(translate-y(100%) hover);
-// }
-// @note A unitless number that is not a spacing key raises an error.
-// @see translate, apply-transform
+/// Moves the element along the y axis by setting --wu-translate-y and writing the combined transform.
+///
+/// A unitless number that is not a spacing key raises an error.
+/// @param {Number|Length|String} $value - A $spacings key (4 gives var(--wu-space-4)), a negated key (-4 gives calc(-1 * token)), a fraction key (25p, -25p), a length, percentage, calc() or var()
+/// @example scss
+///   .drawer {
+///     @include translate-y(-1);
+///   }
+/// @example scss
+///   .card {
+///     @include apply(translate-y(100%) hover);
+///   }
+/// @see {mixin} translate
+/// @see {mixin} apply-transform
 @mixin translate-y($value) {
-    --nu-translate-y: #{-translate("translate-y", $value)};
+    --#{config-constants.$prefix}-translate-y: #{-translate("translate-y", $value)};
     @include apply-transform;
 }
 
-// @mixin translate-z
-// @description Moves the element along the z axis by setting --nu-translate-z and writing the combined transform.
-// @param {Number|Length|String} $value - A $spacings key, a negated key, a length, calc() or var()
-// @example
-// .layer {
-//   @include translate-z(10px);
-// }
-// @note A unitless number that is not a spacing key raises an error, as do percentages and fraction keys (50%, 50p): the z axis takes a length.
-// @see translate, apply-transform
+/// Moves the element along the z axis by setting --wu-translate-z and writing the combined transform.
+///
+/// A unitless number that is not a spacing key raises an error, as do percentages and fraction keys (50%, 50p): the z axis takes a length.
+/// @param {Number|Length|String} $value - A $spacings key, a negated key, a length, calc() or var()
+/// @example scss
+///   .layer {
+///     @include translate-z(10px);
+///   }
+/// @see {mixin} translate
+/// @see {mixin} apply-transform
 @mixin translate-z($value) {
     $result: -translate("translate-z", $value);
     @if meta.type-of($result) == "number" and math.unit($result) == "%" or string.index("#{$result}", "%") {
         @error "translate-z: #{meta.inspect($value)} is a percentage; the z axis takes a length (a spacing key, a value with a length unit, calc() or var()).";
     }
 
-    --nu-translate-z: #{$result};
+    --#{config-constants.$prefix}-translate-z: #{$result};
     @include apply-transform;
 }
 
-// @mixin translate
-// @description Moves the element on the x axis, and on the y axis when $y is given, then writes the combined transform.
-// @param {Number|Length|String} $x - A $spacings key (4 gives var(--nu-space-4)), a negated key (-4 gives calc(-1 * token)), a fraction key (25p, -25p), a length, percentage, calc() or var()
-// @param {Number|Length|String|Null} $y [null] - Same values as $x; when null, --nu-translate-y is left unchanged
-// @example
-// .tooltip {
-//   @include translate(-50p, 2);
-// }
-// @note A single argument moves the x axis only.
-// @see translate-x, translate-y
+/// Moves the element on the x axis, and on the y axis when $y is given, then writes the combined transform.
+///
+/// A single argument moves the x axis only.
+/// @param {Number|Length|String} $x - A $spacings key (4 gives var(--wu-space-4)), a negated key (-4 gives calc(-1 * token)), a fraction key (25p, -25p), a length, percentage, calc() or var()
+/// @param {Number|Length|String|Null} $y [null] - Same values as $x; when null, --wu-translate-y is left unchanged
+/// @example scss
+///   .tooltip {
+///     @include translate(-50p, 2);
+///   }
+/// @see {mixin} translate-x
+/// @see {mixin} translate-y
 @mixin translate($x, $y: null) {
     // Always set the x value
-    --nu-translate-x: #{-translate("translate", $x)};
+    --#{config-constants.$prefix}-translate-x: #{-translate("translate", $x)};
 
     // Only set y if provided
     @if $y {
-        --nu-translate-y: #{-translate("translate", $y)};
+        --#{config-constants.$prefix}-translate-y: #{-translate("translate", $y)};
     }
 
     @include apply-transform;
 }
 
-// Scale keys: 150 is 1.5, as in .scale-150
+/// Scale keys: 150 is 1.5, as in .scale-150
+/// @type Map
 $scale-values: (
     "0": 0,
     "50": 0.5,
@@ -246,109 +263,110 @@ $scale-values: (
     @return -angle("rotate", $value);
 }
 
-// @mixin scale-x
-// @description Scales the element horizontally by setting --nu-scale-x and writing the combined transform.
-// @param {Number|Percentage|String} $value - A $scale-values key (0, 50, 75, 90, 95, 100, 105, 110, 125, 150; 150 gives 1.5) a factor such as 1.5, a percentage, calc() or var(); any other word raises an error
-// @example
-// .thumb {
-//   @include scale-x(110);
-// }
-// @note Keys win over factors, so scale(100) is 1 and scale(50) is 0.5.
-// @see apply-transform
+/// Scales the element horizontally by setting --wu-scale-x and writing the combined transform.
+///
+/// Keys win over factors, so scale(100) is 1 and scale(50) is 0.5.
+/// @param {Number|Percentage|String} $value - A $scale-values key (0, 50, 75, 90, 95, 100, 105, 110, 125, 150; 150 gives 1.5) a factor such as 1.5, a percentage, calc() or var(); any other word raises an error
+/// @example scss
+///   .thumb {
+///     @include scale-x(110);
+///   }
+/// @see {mixin} apply-transform
 @mixin scale-x($value) {
-    --nu-scale-x: #{-scale("scale-x", $value)};
+    --#{config-constants.$prefix}-scale-x: #{-scale("scale-x", $value)};
     @include apply-transform;
 }
 
-// @mixin scale-y
-// @description Scales the element vertically by setting --nu-scale-y and writing the combined transform.
-// @param {Number|Percentage|String} $value - A $scale-values key (0, 50, 75, 90, 95, 100, 105, 110, 125, 150; 150 gives 1.5) a factor such as 1.5, a percentage, calc() or var(); any other word raises an error
-// @example
-// .thumb {
-//   @include scale-y(1.5);
-// }
-// @note Keys win over factors, so scale(100) is 1 and scale(50) is 0.5.
-// @see apply-transform
+/// Scales the element vertically by setting --wu-scale-y and writing the combined transform.
+///
+/// Keys win over factors, so scale(100) is 1 and scale(50) is 0.5.
+/// @param {Number|Percentage|String} $value - A $scale-values key (0, 50, 75, 90, 95, 100, 105, 110, 125, 150; 150 gives 1.5) a factor such as 1.5, a percentage, calc() or var(); any other word raises an error
+/// @example scss
+///   .thumb {
+///     @include scale-y(1.5);
+///   }
+/// @see {mixin} apply-transform
 @mixin scale-y($value) {
-    --nu-scale-y: #{-scale("scale-y", $value)};
+    --#{config-constants.$prefix}-scale-y: #{-scale("scale-y", $value)};
     @include apply-transform;
 }
 
-// @mixin scale
-// @description Scales the element on both axes by setting --nu-scale-x and --nu-scale-y and writing the combined transform.
-// @param {Number|Percentage|String} $value - A $scale-values key (0, 50, 75, 90, 95, 100, 105, 110, 125, 150; 150 gives 1.5) a factor such as 1.5, a percentage, calc() or var(); any other word raises an error
-// @example
-// .thumb {
-//   @include scale(105);
-// }
-// @example
-// .card {
-//   @include apply(scale(105) hover, transition-transform);
-// }
-// @note Keys win over factors, so scale(100) is 1 and scale(50) is 0.5.
-// @see apply-transform
+/// Scales the element on both axes by setting --wu-scale-x and --wu-scale-y and writing the combined transform.
+///
+/// Keys win over factors, so scale(100) is 1 and scale(50) is 0.5.
+/// @param {Number|Percentage|String} $value - A $scale-values key (0, 50, 75, 90, 95, 100, 105, 110, 125, 150; 150 gives 1.5) a factor such as 1.5, a percentage, calc() or var(); any other word raises an error
+/// @example scss
+///   .thumb {
+///     @include scale(105);
+///   }
+/// @example scss
+///   .card {
+///     @include apply(scale(105) hover, transition-transform);
+///   }
+/// @see {mixin} apply-transform
 @mixin scale($value) {
     $factor: -scale("scale", $value);
 
-    --nu-scale-x: #{$factor};
-    --nu-scale-y: #{$factor};
+    --#{config-constants.$prefix}-scale-x: #{$factor};
+    --#{config-constants.$prefix}-scale-y: #{$factor};
     @include apply-transform;
 }
 
-// @mixin rotate
-// @description Rotates the element by setting --nu-rotate and writing the combined transform.
-// @param {Number|String} $value - A $rotation-values key (0, 45, 90, 180, 270; 45 gives 45deg as in .rotate-45), a negated key (-45), an angle with a unit (30deg, 0.25turn), calc() or var()
-// @example
-// .chevron {
-//   @include apply(rotate(180) hover);
-// }
-// @note 0 is written 0deg. Another unitless number, such as 30, and any other word raise an error.
-// @see apply-transform
+/// Rotates the element by setting --wu-rotate and writing the combined transform.
+///
+/// 0 is written 0deg. Another unitless number, such as 30, and any other word raise an error.
+/// @param {Number|String} $value - A $rotation-values key (0, 45, 90, 180, 270; 45 gives 45deg as in .rotate-45), a negated key (-45), an angle with a unit (30deg, 0.25turn), calc() or var()
+/// @example scss
+///   .chevron {
+///     @include apply(rotate(180) hover);
+///   }
+/// @see {mixin} apply-transform
 @mixin rotate($value) {
-    --nu-rotate: #{-rotation($value)};
+    --#{config-constants.$prefix}-rotate: #{-rotation($value)};
     @include apply-transform;
 }
 
-// @mixin skew-x
-// @description Skews the element along the x axis by setting --nu-skew-x and writing the combined transform.
-// @param {Number|String} $value - An angle with a unit (6deg), calc(), var() or 0 (written 0deg)
-// @example
-// .ribbon {
-//   @include skew-x(6deg);
-// }
-// @note A unitless non-zero number or any other word raises an error.
-// @see apply-transform
+/// Skews the element along the x axis by setting --wu-skew-x and writing the combined transform.
+///
+/// A unitless non-zero number or any other word raises an error.
+/// @param {Number|String} $value - An angle with a unit (6deg), calc(), var() or 0 (written 0deg)
+/// @example scss
+///   .ribbon {
+///     @include skew-x(6deg);
+///   }
+/// @see {mixin} apply-transform
 @mixin skew-x($value) {
-    --nu-skew-x: #{-angle("skew-x", $value)};
+    --#{config-constants.$prefix}-skew-x: #{-angle("skew-x", $value)};
     @include apply-transform;
 }
 
-// @mixin skew-y
-// @description Skews the element along the y axis by setting --nu-skew-y and writing the combined transform.
-// @param {Number|String} $value - An angle with a unit (6deg), calc(), var() or 0 (written 0deg)
-// @example
-// .ribbon {
-//   @include skew-y(-3deg);
-// }
-// @note A unitless non-zero number or any other word raises an error.
-// @see apply-transform
+/// Skews the element along the y axis by setting --wu-skew-y and writing the combined transform.
+///
+/// A unitless non-zero number or any other word raises an error.
+/// @param {Number|String} $value - An angle with a unit (6deg), calc(), var() or 0 (written 0deg)
+/// @example scss
+///   .ribbon {
+///     @include skew-y(-3deg);
+///   }
+/// @see {mixin} apply-transform
 @mixin skew-y($value) {
-    --nu-skew-y: #{-angle("skew-y", $value)};
+    --#{config-constants.$prefix}-skew-y: #{-angle("skew-y", $value)};
     @include apply-transform;
 }
 
-// @mixin origin
-// @description Sets transform-origin from an $origin-values key (top-left gives top left, matching .origin-top-left) or a transform-origin value.
-// @param {String|Length|List} $value - An $origin-values key (center, top, top-right, right, bottom-right, bottom, bottom-left, left, top-left) or a transform-origin value of position keywords, lengths, percentages, calc() or var(), such as top left or 50% 100%; anything else raises an error
-// @example
-// .menu {
-//   @include origin(top-left); // transform-origin: top left
-// }
-// @example
-// .badge {
-//   @include origin(50% 100%);
-// }
-// @see rotate, scale
+/// Sets transform-origin from an $origin-values key (top-left gives top left, matching .origin-top-left) or a transform-origin value.
+/// @param {String|Length|List} $value - An $origin-values key (center, top, top-right, right, bottom-right, bottom, bottom-left, left, top-left) or a transform-origin value of position keywords, lengths, percentages, calc() or var(), such as top left or 50% 100%; anything else raises an error
+/// @example scss
+///   .menu {
+///     @include origin(top-left); // transform-origin: top left
+///   }
+/// @example scss
+///   .badge {
+///     @include origin(50% 100%);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin transform-origin on MDN
+/// @see {mixin} rotate
+/// @see {mixin} scale
 @mixin origin($value) {
     @if meta.type-of($value) == "string" and map.has-key($origin-values, string.unquote($value)) {
         $value: map.get($origin-values, string.unquote($value));
@@ -399,7 +417,8 @@ $-origin-words: (left, center, right, top, bottom, inherit, initial, unset, reve
     @return $out;
 }
 
-// Rotation hover utilities
+/// Rotation keys: key to angle, as in .rotate-45
+/// @type Map
 $rotation-values: (
     "0": 0deg,
     "45": 45deg,
@@ -408,7 +427,8 @@ $rotation-values: (
     "270": 270deg,
 );
 
-// Separate map for negative rotations
+/// Negative rotation keys: key to negated angle, as in .-rotate-45
+/// @type Map
 $negative-rotation-values: (
     "45": -45deg,
     "90": -90deg,
@@ -416,7 +436,8 @@ $negative-rotation-values: (
     "270": -270deg,
 );
 
-// Origin hover utilities
+/// Origin keys: key to transform-origin value, as in .origin-top-left
+/// @type Map
 $origin-values: (
     "center": center,
     "top": top,
@@ -437,6 +458,9 @@ $-translate-spacing-keys: ();
         $-translate-spacing-keys: list.append($-translate-spacing-keys, $key);
     }
 }
+
+/// Translate class keys: the configured spacing keys of the v1 set, then the fraction keys
+/// @type List
 $translate-keys: list.join($-translate-spacing-keys, map.keys($translate-fractions));
 
 // CSS output of this module; index.scss includes it, the mixins entry does not
@@ -445,7 +469,7 @@ $translate-keys: list.join($-translate-spacing-keys, map.keys($translate-fractio
     // and so unset ones take their initial value, as transform and absolute-center() read them without fallbacks.
     // Registered by every index.scss compile, independent of feature flags, because the mixins need them too
     @each $name, $syntax, $initial in (translate-x "<length-percentage>" 0, translate-y "<length-percentage>" 0, translate-z "<length>" 0, scale-x "<number> | <percentage>" 1, scale-y "<number> | <percentage>" 1, rotate "<angle>" 0deg, skew-x "<angle>" 0deg, skew-y "<angle>" 0deg) {
-        @property --nu-#{$name} {
+        @property --#{config-constants.$prefix}-#{$name} {
             syntax: $syntax;
             inherits: false;
             initial-value: $initial;

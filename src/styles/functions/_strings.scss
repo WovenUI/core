@@ -1,19 +1,23 @@
+////
+//// @group functions
+//// String helpers: replace, unquote, trim and split.
+////
+
 @use "sass:string";
 @use "sass:math";
 @use "sass:map";
 @use "sass:list";
 @use "sass:meta";
 
-// @function str-replace
-// @description Replaces every occurrence of $search in $string.
-// @param {String} $string - Source string
-// @param {String} $search - Substring to find
-// @param {String} $replace [" "] - Replacement string
-// @return {String} - The string with all occurrences replaced
-// @example
-// .icon::before {
-//   content: str-replace("arrow_left", "_", "-");
-// }
+/// Replaces every occurrence of $search in $string.
+/// @param {String} $string - Source string
+/// @param {String} $search - Substring to find
+/// @param {String} $replace [" "] - Replacement string
+/// @return {String} - The string with all occurrences replaced
+/// @example scss
+///   .icon::before {
+///     content: str-replace("arrow_left", "_", "-");
+///   }
 @function str-replace($string, $search, $replace: " ") {
     $index: string.index($string, $search);
     @if $index {
@@ -22,14 +26,13 @@
     @return $string;
 }
 
-// @function strip-quotes
-// @description Removes one pair of matching single or double quote characters around a string; other values pass through.
-// @param {Any} $string - Value to unquote
-// @return {Any} - The string without its surrounding quote characters
-// @example
-// .label::after {
-//   content: strip-quotes("'new'");
-// }
+/// Removes one pair of matching single or double quote characters around a string; other values pass through.
+/// @param {Any} $string - Value to unquote
+/// @return {Any} - The string without its surrounding quote characters
+/// @example scss
+///   .label::after {
+///     content: strip-quotes("'new'");
+///   }
 @function strip-quotes($string) {
     @if meta.type-of($string) == "string" {
         @if string.slice($string, 1, 1) == '"' and string.slice($string, -1) == '"' {
@@ -42,14 +45,13 @@
     @return $string;
 }
 
-// @function str-trim
-// @description Removes leading and trailing spaces from a string.
-// @param {String} $string - String to trim
-// @return {String} - The trimmed string
-// @example
-// .label::after {
-//   content: str-trim("  new  ");
-// }
+/// Removes leading and trailing spaces from a string.
+/// @param {String} $string - String to trim
+/// @return {String} - The trimmed string
+/// @example scss
+///   .label::after {
+///     content: str-trim("  new  ");
+///   }
 @function str-trim($string) {
     @while string.length($string) > 0 and string.slice($string, 1, 1) == " " {
         $string: string.slice($string, 2);
@@ -62,17 +64,16 @@
     @return $string;
 }
 
-// @function split
-// @description Splits a string on a delimiter, ignoring delimiters inside parentheses, and trims each part.
-// @param {String} $string - String to split
-// @param {String} $delimiter - Single character delimiter
-// @return {List} - Comma separated list of unquoted parts
-// @example
-// @use "sass:list";
-// $parts: split("1rem, rgb(0, 0, 0), md", ",");
-// .card {
-//   padding: list.nth($parts, 1);
-// }
+/// Splits a string on a delimiter, ignoring delimiters inside parentheses, and trims each part.
+/// @param {String} $string - String to split
+/// @param {String} $delimiter - Single character delimiter
+/// @return {List} - Comma separated list of unquoted parts
+/// @example scss
+///   @use "sass:list";
+///   $parts: split("1rem, rgb(0, 0, 0), md", ",");
+///   .card {
+///     padding: list.nth($parts, 1);
+///   }
 @function split($string, $delimiter) {
     @if not string.index($string, "(") and not string.index($string, ")") {
         @return -split-flat($string, $delimiter);

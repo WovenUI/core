@@ -1,3 +1,21 @@
+////
+//// @group container-queries
+//// Container query mixins that take a breakpoint name or a length.
+////
+//// ```scss
+//// .sidebar {
+////   @include container-type;
+////   @include container-name(sidebar);
+//// }
+////
+//// .item {
+////   @include container-up(md, sidebar) {
+////     font-size: 1.25rem;
+////   }
+//// }
+//// ```
+////
+
 @use "sass:list";
 @use "sass:math";
 @use "sass:meta";
@@ -9,85 +27,72 @@
 @use "../functions/breakpoints" as fn-breakpoints;
 @use "../functions/math" as fn-math;
 
-// Container Query Mixins
-// Usage:
-// .container {
-//   container-type: inline-size;
-//   container-name: sidebar;
-// }
-// .item {
-//   @include container-up('md', 'sidebar') {
-//     // Styles for 'md' and up within 'sidebar' container
-//   }
-// }
-
-// @mixin container-up
-// @description Applies styles when the container is at least the given breakpoint width (min-width container query).
-// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints (xs, sm, md, lg, xl, 2xl) or a length such as 400px; a unitless number that is not a name raises an error
-// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
-// @content Styles to apply at and above the breakpoint
-// @example
-// .card-title {
-//   @include container-up(md, sidebar) {
-//     font-size: 1.25rem;
-//   }
-// }
-// @see container-down, container-between, container-only
+/// Applies styles when the container is at least the given breakpoint width (min-width container query).
+/// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints (xs, sm, md, lg, xl, 2xl) or a length such as 400px; a unitless number that is not a name raises an error
+/// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
+/// @content Styles to apply at and above the breakpoint
+/// @example scss
+///   .card-title {
+///     @include container-up(md, sidebar) {
+///       font-size: 1.25rem;
+///     }
+///   }
+/// @see {mixin} container-down
+/// @see {mixin} container-between
+/// @see {mixin} container-only
 @mixin container-up($breakpoint, $containerName: null) {
     @container #{$containerName} (min-width: #{fn-breakpoints.get-breakpoint-value($breakpoint)}) {
         @content;
     }
 }
 
-// @mixin container-down
-// @description Applies styles when the container is narrower than the given breakpoint (max-width of the breakpoint minus 0.02px).
-// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints or a length
-// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
-// @content Styles to apply below the breakpoint
-// @example
-// .card-actions {
-//   @include container-down(sm) {
-//     flex-direction: column;
-//   }
-// }
-// @see container-up
+/// Applies styles when the container is narrower than the given breakpoint (max-width of the breakpoint minus 0.02px).
+/// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints or a length
+/// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
+/// @content Styles to apply below the breakpoint
+/// @example scss
+///   .card-actions {
+///     @include container-down(sm) {
+///       flex-direction: column;
+///     }
+///   }
+/// @see {mixin} container-up
 @mixin container-down($breakpoint, $containerName: null) {
     @container #{$containerName} (max-width: #{fn-breakpoints.breakpoint-max($breakpoint)}) {
         @content;
     }
 }
 
-// @mixin container-between
-// @description Applies styles when the container width is from the lower breakpoint up to just below the upper breakpoint (upper minus 0.02px).
-// @param {String|Number} $lower - Lower breakpoint name or length (inclusive)
-// @param {String|Number} $upper - Upper breakpoint name or length (exclusive)
-// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
-// @content Styles to apply inside the range
-// @example
-// .card-grid {
-//   @include container-between(sm, lg, main) {
-//     grid-template-columns: repeat(2, 1fr);
-//   }
-// }
-// @see container-up, container-down
+/// Applies styles when the container width is from the lower breakpoint up to just below the upper breakpoint (upper minus 0.02px).
+/// @param {String|Number} $lower - Lower breakpoint name or length (inclusive)
+/// @param {String|Number} $upper - Upper breakpoint name or length (exclusive)
+/// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
+/// @content Styles to apply inside the range
+/// @example scss
+///   .card-grid {
+///     @include container-between(sm, lg, main) {
+///       grid-template-columns: repeat(2, 1fr);
+///     }
+///   }
+/// @see {mixin} container-up
+/// @see {mixin} container-down
 @mixin container-between($lower, $upper, $containerName: null) {
     @container #{$containerName} (min-width: #{fn-breakpoints.get-breakpoint-value($lower)}) and (max-width: #{fn-breakpoints.breakpoint-max($upper)}) {
         @content;
     }
 }
 
-// @mixin container-only
-// @description Applies styles only while the container is between the given breakpoint and the next larger one (minus 0.02px); the largest breakpoint has no upper limit.
-// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints or a length in the breakpoint unit (px by default)
-// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
-// @content Styles to apply within that breakpoint range
-// @example
-// .card-media {
-//   @include container-only(md, card) {
-//     aspect-ratio: 4 / 3;
-//   }
-// }
-// @see media-only
+/// Applies styles only while the container is between the given breakpoint and the next larger one (minus 0.02px); the largest breakpoint has no upper limit.
+/// @param {String|Number} $breakpoint - Breakpoint name from $breakpoints or a length in the breakpoint unit (px by default)
+/// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
+/// @content Styles to apply within that breakpoint range
+/// @example scss
+///   .card-media {
+///     @include container-only(md, card) {
+///       aspect-ratio: 4 / 3;
+///     }
+///   }
+/// @see {mixin} media-only
 @mixin container-only($breakpoint, $containerName: null) {
     $min: fn-breakpoints.get-breakpoint-value($breakpoint);
     $next-breakpoint: null;
@@ -109,24 +114,23 @@
     }
 }
 
-// @mixin container-query
-// @description Applies styles when the container is at least the given width; a breakpoint name or a length resolves like container-up(), and calc() is used as is.
-// @param {String|Length|Calculation} $size - Breakpoint name from $breakpoints (xs, sm, md, lg, xl, 2xl), a length such as 400px or 30rem, or calc(); any other word or a unitless number raises an error
-// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
-// @content Styles to apply at and above the size
-// @example
-// .widget {
-//   @include container-query(400px, sidebar) {
-//     display: grid;
-//   }
-// }
-// @example
-// .widget-title {
-//   @include container-query(md) {
-//     font-size: 1.25rem;
-//   }
-// }
-// @see container-up
+/// Applies styles when the container is at least the given width; a breakpoint name or a length resolves like container-up(), and calc() is used as is.
+/// @param {String|Length|Calculation} $size - Breakpoint name from $breakpoints (xs, sm, md, lg, xl, 2xl), a length such as 400px or 30rem, or calc(); any other word or a unitless number raises an error
+/// @param {String|Null} $containerName [null] - Container name to query; null queries the nearest container
+/// @content Styles to apply at and above the size
+/// @example scss
+///   .widget {
+///     @include container-query(400px, sidebar) {
+///       display: grid;
+///     }
+///   }
+/// @example scss
+///   .widget-title {
+///     @include container-query(md) {
+///       font-size: 1.25rem;
+///     }
+///   }
+/// @see {mixin} container-up
 @mixin container-query($size, $containerName: null) {
     $type: meta.type-of($size);
     @if $type == "number" or ($type == "string" and not string.index($size, "(")) {
@@ -137,27 +141,27 @@
     }
 }
 
-// @mixin container-type
-// @description Sets container-type so the element becomes a query container.
-// @param {String} $type [inline-size] - Container type (inline-size, size or normal)
-// @example
-// .sidebar {
-//   @include container-type;
-// }
-// @see container-name
+/// Sets container-type so the element becomes a query container.
+/// @param {String} $type [inline-size] - Container type (inline-size, size or normal)
+/// @example scss
+///   .sidebar {
+///     @include container-type;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/container-type container-type on MDN
+/// @see {mixin} container-name
 @mixin container-type($type: inline-size) {
     container-type: fn-math.css-arg($type);
 }
 
-// @mixin container-name
-// @description Sets container-name so container queries can target this container by name.
-// @param {String} $name - Container name (quotes are removed)
-// @example
-// .sidebar {
-//   @include container-type;
-//   @include container-name(sidebar);
-// }
-// @see container-type
+/// Sets container-name so container queries can target this container by name.
+/// @param {String} $name - Container name (quotes are removed)
+/// @example scss
+///   .sidebar {
+///     @include container-type;
+///     @include container-name(sidebar);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/container-name container-name on MDN
+/// @see {mixin} container-type
 @mixin container-name($name) {
     container-name: #{string.unquote($name)};
 }

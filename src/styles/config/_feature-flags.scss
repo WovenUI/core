@@ -1,6 +1,10 @@
-// Configuration: Feature flags
-// Control which features are enabled in the framework
+////
+//// @group config
+//// Feature flags and framework global settings.
+////
 
+/// Feature flags: feature name to boolean; a flag set to false removes that feature's classes (theme also removes all tokens, base removes the base layer), and a feature missing from the map counts as on.
+/// @type Map
 $feature-flags: (
     "alignments": true,
     "animations": true,
@@ -26,9 +30,22 @@ $feature-flags: (
     "z-index": true,
 ) !default;
 
-// Framework global settings
+/// Generates the utility classes when true; tokens and mixins work either way.
+/// @type Boolean
 $generate-utility-classes: false !default;
+
+/// Emits the dark theme token blocks and the prefers-color-scheme fallback when true.
+/// @type Boolean
 $enable-dark-mode: true !default;
+
+/// Emits the debugger overlay styles (.WovenUI-Debugger-Wrapper and its children) when true.
+/// @type Boolean
 $enable-debugger: false !default;
+
+/// Unit that fix-units() adds to a unitless value.
+/// @type String
 $default-unit: rem !default;
+
+/// Selector prefixed to every generated class rule; for example .app scopes every class under .app.
+/// @type String
 $parent-selector: "" !default;

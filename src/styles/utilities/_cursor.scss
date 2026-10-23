@@ -1,3 +1,14 @@
+////
+//// @group cursor
+//// Cursor utilities.
+////
+//// Classes:
+////
+//// - cursor-{value}: Sets the cursor (cursor-pointer, cursor-not-allowed, cursor-grab, cursor-wait)
+////
+//// The mixin also accepts url(), image-set() and var() values.
+////
+
 @use "sass:list";
 @use "sass:meta";
 @use "sass:string";
@@ -7,13 +18,13 @@
 // CSS cursor keywords and CSS-wide keywords
 $-cursor-keywords: (auto, default, none, context-menu, help, pointer, progress, wait, cell, crosshair, text, vertical-text, alias, copy, move, no-drop, not-allowed, grab, grabbing, all-scroll, col-resize, row-resize, n-resize, e-resize, s-resize, w-resize, ne-resize, nw-resize, se-resize, sw-resize, ew-resize, ns-resize, nesw-resize, nwse-resize, zoom-in, zoom-out, inherit, initial, unset, revert, revert-layer);
 
-// @mixin cursor
-// @description Sets the cursor property to a CSS cursor keyword, or to a value holding a function such as url() or var(); any other word raises an error.
-// @param {String|List} $cursor-value - A cursor keyword (pointer, not-allowed, grab), or a value with url(), image-set() or var(), such as url(hand.svg), pointer
-// @example
-// .card-link {
-//   @include cursor(pointer);
-// }
+/// Sets the cursor property to a CSS cursor keyword, or to a value holding a function such as url() or var(); any other word raises an error.
+/// @param {String|List} $cursor-value - A cursor keyword (pointer, not-allowed, grab), or a value with url(), image-set() or var(), such as url(hand.svg), pointer
+/// @example scss
+///   .card-link {
+///     @include cursor(pointer);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/cursor cursor on MDN
 @mixin cursor($cursor-value) {
     $text: string.unquote("#{$cursor-value}");
     @if not list.index($-cursor-keywords, $text) and not string.index($text, "(") {

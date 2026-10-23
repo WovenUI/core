@@ -1,4 +1,18 @@
-// _transitions.scss
+////
+//// @group transitions
+//// Transition utilities: property, duration, easing and delay.
+////
+//// Classes:
+////
+//// - transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration, $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order
+//// - transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow and transform get the same :where() defaults as .transition
+//// - duration-{time}: Set transition duration
+//// - ease-{type}: Set transition timing function
+//// - delay-{time}: Set transition delay
+////
+//// Responsive: every class supports the @breakpoint suffix.
+////
+
 @use "sass:list";
 @use "sass:map";
 @use "sass:math";
@@ -11,39 +25,34 @@
 @use "../functions/css-vars" as fn-css-vars;
 @use "../functions/math" as fn-math;
 
-// Transition Utilities
-// - .transition: Sets transition-property to all with the default duration and easing tokens ($transition-default-duration,
-//   $transition-default-ease); the defaults sit in :where(), so .duration-{time} and .ease-{type} override them in any order
-// - .transition-{property}: Transition specific properties (none, colors, opacity, shadow, transform); colors, opacity, shadow
-//   and transform get the same :where() defaults as .transition
-// - .duration-{time}: Set transition duration
-// - .ease-{type}: Set transition timing function
-// - .delay-{time}: Set transition delay
-
-// @mixin transition-none
-// @description Disables transitions by setting transition-property to none.
-// @example
-// .no-motion {
-//   @include transition-none;
-// }
-// @see duration, ease, delay
+/// Disables transitions by setting transition-property to none.
+/// @example scss
+///   .no-motion {
+///     @include transition-none;
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/transition-property transition-property on MDN
+/// @see {mixin} duration
+/// @see {mixin} ease
+/// @see {mixin} delay
 @mixin transition-none {
     transition-property: none;
 }
 
-// @mixin transition
-// @description Transitions every animatable property with the default duration and easing tokens ($transition-default-duration, 200; $transition-default-ease, in-out).
-// @output transition-property: all; transition-duration: var(--nu-duration-200); transition-timing-function: var(--nu-ease-in-out)
-// @example
-// .card {
-//   @include transition;
-// }
-// @example
-// .panel {
-//   @include apply(transition, duration(300));
-// }
-// @note Include duration() or ease() after it to override a default.
-// @see duration, ease, delay
+/// Transitions every animatable property with the default duration and easing tokens ($transition-default-duration, 200; $transition-default-ease, in-out).
+///
+/// Include duration() or ease() after it to override a default.
+/// @output transition-property: all; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// @example scss
+///   .card {
+///     @include transition;
+///   }
+/// @example scss
+///   .panel {
+///     @include apply(transition, duration(300));
+///   }
+/// @see {mixin} duration
+/// @see {mixin} ease
+/// @see {mixin} delay
 @mixin transition {
     transition-property: all;
 
@@ -59,56 +68,60 @@
 // Properties of transition-colors and .transition-colors
 $-color-properties: color, background-color, border-color, text-decoration-color, fill, stroke;
 
-// @mixin transition-colors
-// @description Transitions color properties (color, background-color, border-color, text-decoration-color, fill, stroke) with the default duration and easing tokens, like transition.
-// @output transition-property: color, background-color, ...; transition-duration: var(--nu-duration-200); transition-timing-function: var(--nu-ease-in-out)
-// @example
-// .button {
-//   @include apply(transition-colors, duration(150), ease(out));
-// }
-// @see duration, ease, delay
+/// Transitions color properties (color, background-color, border-color, text-decoration-color, fill, stroke) with the default duration and easing tokens, like transition.
+/// @output transition-property: color, background-color, ...; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// @example scss
+///   .button {
+///     @include apply(transition-colors, duration(150), ease(out));
+///   }
+/// @see {mixin} duration
+/// @see {mixin} ease
+/// @see {mixin} delay
 @mixin transition-colors {
     transition-property: $-color-properties;
 
     @include -transition-defaults;
 }
 
-// @mixin transition-opacity
-// @description Transitions opacity only, with the default duration and easing tokens, like transition.
-// @output transition-property: opacity; transition-duration: var(--nu-duration-200); transition-timing-function: var(--nu-ease-in-out)
-// @example
-// .button {
-//   @include apply(transition-opacity, duration(150), ease(out));
-// }
-// @see duration, ease, delay
+/// Transitions opacity only, with the default duration and easing tokens, like transition.
+/// @output transition-property: opacity; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// @example scss
+///   .button {
+///     @include apply(transition-opacity, duration(150), ease(out));
+///   }
+/// @see {mixin} duration
+/// @see {mixin} ease
+/// @see {mixin} delay
 @mixin transition-opacity {
     transition-property: opacity;
 
     @include -transition-defaults;
 }
 
-// @mixin transition-shadow
-// @description Transitions box-shadow only, with the default duration and easing tokens, like transition.
-// @output transition-property: box-shadow; transition-duration: var(--nu-duration-200); transition-timing-function: var(--nu-ease-in-out)
-// @example
-// .button {
-//   @include apply(transition-shadow, duration(150), ease(out));
-// }
-// @see duration, ease, delay
+/// Transitions box-shadow only, with the default duration and easing tokens, like transition.
+/// @output transition-property: box-shadow; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// @example scss
+///   .button {
+///     @include apply(transition-shadow, duration(150), ease(out));
+///   }
+/// @see {mixin} duration
+/// @see {mixin} ease
+/// @see {mixin} delay
 @mixin transition-shadow {
     transition-property: box-shadow;
 
     @include -transition-defaults;
 }
 
-// @mixin transition-transform
-// @description Transitions transform only, with the default duration and easing tokens, like transition.
-// @output transition-property: transform; transition-duration: var(--nu-duration-200); transition-timing-function: var(--nu-ease-in-out)
-// @example
-// .button {
-//   @include apply(transition-transform, duration(150), ease(out));
-// }
-// @see duration, ease, delay
+/// Transitions transform only, with the default duration and easing tokens, like transition.
+/// @output transition-property: transform; transition-duration: var(--wu-duration-200); transition-timing-function: var(--wu-ease-in-out)
+/// @example scss
+///   .button {
+///     @include apply(transition-transform, duration(150), ease(out));
+///   }
+/// @see {mixin} duration
+/// @see {mixin} ease
+/// @see {mixin} delay
 @mixin transition-transform {
     transition-property: transform;
 
@@ -137,19 +150,21 @@ $-color-properties: color, background-color, border-color, text-decoration-color
     @error "Unknown #{$label}: #{$value}. Use a key (#{map.keys($map)}), a time in s or ms, calc() or var().";
 }
 
-// @mixin duration
-// @description Sets transition-duration from a $durations key, emitted as var(--nu-duration-*), or a raw time.
-// @param {Number|Duration|String} $time - A $durations key (0, 75, 100, 150, 200, 300, 500, 700, 1000), a time in s or ms, calc() or var()
-// @example
-// .panel {
-//   @include duration(300); // var(--nu-duration-300)
-// }
-// @example
-// .toast {
-//   @include apply(transition-opacity, duration(250ms));
-// }
-// @note A unitless number that is not a key, a negative time, or a time in another unit raises an error.
-// @see ease, delay
+/// Sets transition-duration from a $durations key, emitted as var(--wu-duration-*), or a raw time.
+///
+/// A unitless number that is not a key, a negative time, or a time in another unit raises an error.
+/// @param {Number|Duration|String} $time - A $durations key (0, 75, 100, 150, 200, 300, 500, 700, 1000), a time in s or ms, calc() or var()
+/// @example scss
+///   .panel {
+///     @include duration(300); // var(--wu-duration-300)
+///   }
+/// @example scss
+///   .toast {
+///     @include apply(transition-opacity, duration(250ms));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/transition-duration transition-duration on MDN
+/// @see {mixin} ease
+/// @see {mixin} delay
 @mixin duration($time) {
     transition-duration: -duration($time);
 }
@@ -193,19 +208,24 @@ $-timing-keywords: (linear, ease, ease-in, ease-out, ease-in-out, step-start, st
     @error "Unknown timing function: #{$name}. Use a key (#{map.keys(config-transitions.$timing-functions)}), cubic-bezier(), steps(), linear(), var() or a keyword (#{$-timing-keywords}).";
 }
 
-// @mixin ease
-// @description Sets transition-timing-function from a $timing-functions key, emitted as var(--nu-ease-*), or a raw timing function.
-// @param {String} $name - A $timing-functions key (linear, in, out, in-out), cubic-bezier(), steps(), linear(), var() or a CSS keyword (ease, ease-in, ease-out, ease-in-out, step-start, step-end)
-// @example
-// .menu {
-//   @include ease(out); // var(--nu-ease-out)
-// }
-// @example
-// .sheet {
-//   @include apply(transition-transform, duration(300), ease(cubic-bezier(0.2, 0, 0, 1)));
-// }
-// @note Keys win over keywords, so ease(linear) gives var(--nu-ease-linear); any other value raises an error.
-// @see ease-in, ease-out, ease-in-out, ease-linear, duration
+/// Sets transition-timing-function from a $timing-functions key, emitted as var(--wu-ease-*), or a raw timing function.
+///
+/// Keys win over keywords, so ease(linear) gives var(--wu-ease-linear); any other value raises an error.
+/// @param {String} $name - A $timing-functions key (linear, in, out, in-out), cubic-bezier(), steps(), linear(), var() or a CSS keyword (ease, ease-in, ease-out, ease-in-out, step-start, step-end)
+/// @example scss
+///   .menu {
+///     @include ease(out); // var(--wu-ease-out)
+///   }
+/// @example scss
+///   .sheet {
+///     @include apply(transition-transform, duration(300), ease(cubic-bezier(0.2, 0, 0, 1)));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/transition-timing-function transition-timing-function on MDN
+/// @see {mixin} ease-in
+/// @see {mixin} ease-out
+/// @see {mixin} ease-in-out
+/// @see {mixin} ease-linear
+/// @see {mixin} duration
 @mixin ease($name) {
     $token: fn-css-vars.scale-var("ease", config-transitions.$timing-functions, $name);
     @if not $token {
@@ -215,59 +235,56 @@ $-timing-keywords: (linear, ease, ease-in, ease-out, ease-in-out, step-start, st
     transition-timing-function: $token;
 }
 
-// @mixin ease-linear
-// @description Sets transition-timing-function to the linear key, var(--nu-ease-linear).
-// @example
-// .fade {
-//   @include apply(transition-opacity, ease-linear);
-// }
-// @see ease
+/// Sets transition-timing-function to the linear key, var(--wu-ease-linear).
+/// @example scss
+///   .fade {
+///     @include apply(transition-opacity, ease-linear);
+///   }
+/// @see {mixin} ease
 @mixin ease-linear {
     @include ease("linear");
 }
 
-// @mixin ease-in
-// @description Sets transition-timing-function to the in key, var(--nu-ease-in).
-// @example
-// .fade {
-//   @include apply(transition-opacity, ease-in);
-// }
-// @see ease
+/// Sets transition-timing-function to the in key, var(--wu-ease-in).
+/// @example scss
+///   .fade {
+///     @include apply(transition-opacity, ease-in);
+///   }
+/// @see {mixin} ease
 @mixin ease-in {
     @include ease("in");
 }
 
-// @mixin ease-out
-// @description Sets transition-timing-function to the out key, var(--nu-ease-out).
-// @example
-// .fade {
-//   @include apply(transition-opacity, ease-out);
-// }
-// @see ease
+/// Sets transition-timing-function to the out key, var(--wu-ease-out).
+/// @example scss
+///   .fade {
+///     @include apply(transition-opacity, ease-out);
+///   }
+/// @see {mixin} ease
 @mixin ease-out {
     @include ease("out");
 }
 
-// @mixin ease-in-out
-// @description Sets transition-timing-function to the in-out key, var(--nu-ease-in-out).
-// @example
-// .fade {
-//   @include apply(transition-opacity, ease-in-out);
-// }
-// @see ease
+/// Sets transition-timing-function to the in-out key, var(--wu-ease-in-out).
+/// @example scss
+///   .fade {
+///     @include apply(transition-opacity, ease-in-out);
+///   }
+/// @see {mixin} ease
 @mixin ease-in-out {
     @include ease("in-out");
 }
 
-// @mixin delay
-// @description Sets transition-delay from a $delays key or a raw time; delays are not tokens, so a key gives its configured time.
-// @param {Number|Duration|String} $time - A $delays key (0, 75, 100, 150, 200, 300, 500, 700, 1000; 150 gives 150ms), a time in s or ms, calc() or var()
-// @example
-// .tooltip {
-//   @include delay(300); // transition-delay: 300ms
-// }
-// @note A unitless number that is not a key raises an error.
-// @see duration
+/// Sets transition-delay from a $delays key or a raw time; delays are not tokens, so a key gives its configured time.
+///
+/// A unitless number that is not a key raises an error.
+/// @param {Number|Duration|String} $time - A $delays key (0, 75, 100, 150, 200, 300, 500, 700, 1000; 150 gives 150ms), a time in s or ms, calc() or var()
+/// @example scss
+///   .tooltip {
+///     @include delay(300); // transition-delay: 300ms
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/transition-delay transition-delay on MDN
+/// @see {mixin} duration
 @mixin delay($time) {
     transition-delay: -time($time, config-transitions.$delays, "delay", $allow-negative: true);
 }

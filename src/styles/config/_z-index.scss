@@ -1,7 +1,12 @@
-// Configuration: Z-index
-// Z-index values and named stacking levels
-// $z-indexes keys emit raw values (.z-10 is z-index: 10); only the named $z-index-levels are tokens (--nu-z-modal)
+////
+//// @group config
+//// Z-index values and named stacking levels.
+////
+//// $z-indexes keys emit raw values (.z-10 is z-index: 10); only the named $z-index-levels are tokens (--wu-z-modal).
+////
 
+/// Numbered z-index keys: key to raw z-index value, as in .z-10.
+/// @type Map
 $z-indexes: (
     "auto": auto,
     "0": 0,
@@ -20,6 +25,8 @@ $z-indexes: (
     "1000": 1000,
 ) !default;
 
+/// Named stacking levels: name to z-index value, emitted as --wu-z-{name} tokens.
+/// @type Map
 $z-index-levels: (
     "base": 0,
     "hover": 10,

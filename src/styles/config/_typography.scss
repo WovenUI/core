@@ -1,7 +1,14 @@
-// Configuration: Typography
-// Font families, sizes, and weights
+////
+//// @group config
+//// Font families, sizes and weights.
+////
 
+/// Font size of the html element.
+/// @type Length
 $base-size: 1rem !default;
+
+/// Font family stack, emitted as the --wu-font-family token.
+/// @type List|String
 $font-family:
     system-ui,
     -apple-system,
@@ -13,6 +20,8 @@ $font-family:
     "Cantarell",
     sans-serif !default;
 
+/// Font size scale: key to size, emitted as --wu-font-size-{key} tokens.
+/// @type Map
 $font-sizes: (
     "xs": 0.75rem /* 12px */,
     "sm": 0.875rem /* 14px */,
@@ -25,6 +34,8 @@ $font-sizes: (
     "4xl": 2.5rem /* 40px */,
 ) !default;
 
+/// Font weight scale: name to weight, emitted as --wu-font-weight-{key} tokens.
+/// @type Map
 $font-weights: (
     "thin": 100,
     "extralight": 200,
@@ -37,6 +48,8 @@ $font-weights: (
     "black": 900,
 ) !default;
 
+/// Line height scale: name to line height, emitted as --wu-line-height-{key} tokens.
+/// @type Map
 $line-heights: (
     "none": 1,
     "tight": 1.25,

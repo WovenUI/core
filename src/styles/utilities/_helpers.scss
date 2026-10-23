@@ -10,7 +10,7 @@
 // CSS output of this module; index.scss includes it, the mixins entry does not
 @mixin -emit {
     @if config-flags.$enable-debugger {
-        .NuvoUI-Debugger-Wrapper {
+        .WovenUI-Debugger-Wrapper {
             color: #fff;
             font-family: Arial, sans-serif;
             position: fixed;
@@ -38,8 +38,8 @@
                 text-align: right;
             }
 
-            .NuvoUI-Debugger-Main,
-            .NuvoUI-Debugger {
+            .WovenUI-Debugger-Main,
+            .WovenUI-Debugger {
                 padding: 10px;
                 background-color: rgb(0 0 0 / 80%);
                 border-radius: 5px;
@@ -48,7 +48,7 @@
                 pointer-events: none;
             }
 
-            .NuvoUI-Debugger-Main {
+            .WovenUI-Debugger-Main {
                 $breakpoint-keys: map.keys(config-breakpoint.$breakpoints);
                 $total: list.length($breakpoint-keys);
 
@@ -97,7 +97,7 @@
                 }
             }
 
-            .NuvoUI-Debugger {
+            .WovenUI-Debugger {
                 margin-top: 10px;
 
                 &::before,
@@ -117,7 +117,7 @@
                 }
             }
 
-            .NuvoUI-Debugger-Close {
+            .WovenUI-Debugger-Close {
                 color: #fff;
                 cursor: pointer;
                 font-size: 14px;

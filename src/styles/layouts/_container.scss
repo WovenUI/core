@@ -1,3 +1,13 @@
+////
+//// @group container
+//// Centered, full-width containers whose max-width steps up at each breakpoint.
+////
+//// Classes:
+////
+//// - container: Full width, centered, with block padding and a max-width per breakpoint
+//// - container.flex/container.grid: The same container with display flex or grid (needs the flex or grid feature flag)
+////
+
 @use "sass:list";
 @use "sass:meta";
 @use "sass:string";
@@ -7,28 +17,28 @@
 @use "../functions/css-vars" as fn-css-vars;
 @use "../functions/feature-flags" as fn-flags;
 
-// @mixin container-base
-// @description Makes an element full width and centers it on the inline axis (margin-inline: auto).
-// @example
-// .page {
-//   @include container-base;
-//   @include max-width(1200px);
-// }
-// @see container
+/// Makes an element full width and centers it on the inline axis (margin-inline: auto).
+/// @example scss
+///   .page {
+///     @include container-base;
+///     @include max-width(1200px);
+///   }
+/// @see {mixin} container
 @mixin container-base {
     width: 100%;
     margin-inline: auto;
 }
 
-// @mixin container-padding
-// @description Sets padding-top and padding-bottom to the same spacing value.
-// @param {Number|Length} $padding - A `$spacings` key (4 gives var(--nu-space-4)) or a value with units, passed through raw
-// @example
-// .section {
-//   @include container-padding(8); // padding-top and padding-bottom: var(--nu-space-8)
-// }
-// @note A unitless number that is not a spacing key, or a negative key, raises `@error`.
-// @see container, py
+/// Sets padding-top and padding-bottom to the same spacing value.
+///
+/// A unitless number that is not a spacing key, or a negative key, raises `@error`.
+/// @param {Number|Length} $padding - A `$spacings` key (4 gives var(--wu-space-4)) or a value with units, passed through raw
+/// @example scss
+///   .section {
+///     @include container-padding(8); // padding-top and padding-bottom: var(--wu-space-8)
+///   }
+/// @see {mixin} container
+/// @see {mixin} py
 @mixin container-padding($padding) {
     $value: fn-css-vars.scale-value("space", config-spacing.$spacings, $padding, $label: "container-padding");
 
@@ -39,19 +49,20 @@
 // Display values accepted by container()
 $-container-displays: (block, flex, grid, inline-block, inline-flex, inline-grid, flow-root, inherit, initial, unset, revert, revert-layer);
 
-// @mixin container
-// @description Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).
-// @param {String} $display [block] - Display value: block, flex, grid, inline-block, inline-flex, inline-grid, flow-root, a CSS-wide keyword or var(); anything else raises an error
-// @example
-// .page {
-//   @include container;
-// }
-// .page-grid {
-//   @include container(grid);
-//   @include cols(12);
-// }
-// @note 100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).
-// @see container-base, container-padding
+/// Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).
+///
+/// 100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).
+/// @param {String} $display [block] - Display value: block, flex, grid, inline-block, inline-flex, inline-grid, flow-root, a CSS-wide keyword or var(); anything else raises an error
+/// @example scss
+///   .page {
+///     @include container;
+///   }
+///   .page-grid {
+///     @include container(grid);
+///     @include cols(12);
+///   }
+/// @see {mixin} container-base
+/// @see {mixin} container-padding
 @mixin container($display: block) {
     $text: string.unquote("#{$display}");
     @if not list.index($-container-displays, $text) and not fn-css-vars.is-css-var($display) {

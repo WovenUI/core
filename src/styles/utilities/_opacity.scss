@@ -1,68 +1,79 @@
-// Section: Presentation
-// Module: Opacity
+////
+//// @group opacity
+//// Controls element transparency with customizable opacity values and interactive states.
+////
+//// ```html
+//// <!-- Basic opacity -->
+//// <div class="opacity-50">This element has 50% opacity</div>
+//// <!-- Responsive opacity -->
+//// <div class="opacity-100 opacity-50@md">
+////   100% opacity by default, 50% on medium screens and up
+//// </div>
+//// <!-- Interactive states -->
+//// <div class="opacity-50 hover:opacity-100">
+////   50% opacity, becomes fully visible on hover
+//// </div>
+//// <button class="opacity-70 focus:opacity-100">
+////   70% opacity, fully visible when focused
+//// </button>
+//// <div class="opacity-75 active:opacity-100">
+////   75% opacity, fully visible when clicked/active
+//// </div>
+//// <!-- Group hover effect -->
+//// <div class="group">
+////   <h3>Parent element with "group" class</h3>
+////   <div class="opacity-0 group-hover:opacity-100">
+////     Hidden by default, visible when parent is hovered
+////   </div>
+//// </div>
+//// <!-- With transition -->
+//// <div class="opacity-50 hover:opacity-100 transition-opacity">
+////   Smooth opacity transition on hover
+//// </div>
+//// ```
+////
+//// Base:
+////
+//// - opacity-{value}: Sets element opacity (0-100%)
+//// - Values: the $opacities keys (0, 5, 10, 20, 25, 30, 33, 40, 50, 60, 66, 70, 75, 80, 90, 100 by default)
+////
+//// Interactive states:
+////
+//// - hover:opacity-{value}: Changes opacity on mouse hover
+//// - focus:opacity-{value}: Changes opacity when element receives focus
+//// - active:opacity-{value}: Changes opacity when element is active/pressed
+//// - group-hover:opacity-{value}: Changes opacity when parent with .group class is hovered
+////
+//// Animation:
+////
+//// - transition-opacity: Adds smooth transition when opacity changes
+////
+//// Responsive: all opacity classes support responsive variants using the @breakpoint suffix:
+////
+//// - opacity-50@sm: 50% opacity on small screens and up
+//// - hover:opacity-100@md: Full opacity on hover for medium screens and up
+////
+//// Available breakpoints: xs, sm, md, lg, xl, 2xl
+////
+//// Customization: opacity values are defined in the $opacities map (config/_opacity.scss) and emitted as --wu-opacity-{key} tokens.
+////
+//// Transition timing can be customized via CSS variables.
+////
+//// See also the transitions utilities (utilities/_transitions.scss).
+////
 
 @use "sass:list";
 @use "sass:map";
 @use "sass:math";
 @use "sass:meta";
 @use "sass:string";
+@use "../config/constants" as config-constants;
 @use "../config/feature-flags" as config-flags;
 @use "../config/breakpoints" as config-breakpoint;
 @use "../config/opacity" as config-opacity;
 @use "../functions/css-vars" as fn-css-vars;
 @use "../functions/feature-flags" as fn-flags;
 @use "../functions/math" as fn-math;
-
-// @component Opacity
-// @description Controls element transparency with customizable opacity values and interactive states
-// @example
-// <!-- Basic opacity -->
-// <div class="opacity-50">This element has 50% opacity</div>
-// <!-- Responsive opacity -->
-// <div class="opacity-100 opacity-50@md">
-//   100% opacity by default, 50% on medium screens and up
-// </div>
-// <!-- Interactive states -->
-// <div class="opacity-50 hover:opacity-100">
-//   50% opacity, becomes fully visible on hover
-// </div>
-// <button class="opacity-70 focus:opacity-100">
-//   70% opacity, fully visible when focused
-// </button>
-// <div class="opacity-75 active:opacity-100">
-//   75% opacity, fully visible when clicked/active
-// </div>
-// <!-- Group hover effect -->
-// <div class="group">
-//   <h3>Parent element with "group" class</h3>
-//   <div class="opacity-0 group-hover:opacity-100">
-//     Hidden by default, visible when parent is hovered
-//   </div>
-// </div>
-// <!-- With transition -->
-// <div class="opacity-50 hover:opacity-100 transition-opacity">
-//   Smooth opacity transition on hover
-// </div>
-//  @classes
-// Base:
-//  - opacity-{value}: Sets element opacity (0-100%)
-//   Values: the $opacities keys (0, 5, 10, 20, 25, 30, 33, 40, 50, 60, 66, 70, 75, 80, 90, 100 by default)
-// Interactive States:
-//  - hover:opacity-{value}: Changes opacity on mouse hover
-//  - focus:opacity-{value}: Changes opacity when element receives focus
-//  - active:opacity-{value}: Changes opacity when element is active/pressed
-//  - group-hover:opacity-{value}: Changes opacity when parent with .group class is hovered
-// Animation:
-//  - transition-opacity: Adds smooth transition when opacity changes
-//  @responsive
-// All opacity classes support responsive variants using @breakpoint suffix:
-//  - opacity-50@sm: 50% opacity on small screens and up
-//  - hover:opacity-100@md: Full opacity on hover for medium screens and up
-// Available breakpoints: xs, sm, md, lg, xl, 2xl
-//  @customization
-// Opacity values are defined in the $opacities map (config/_opacity.scss) and emitted as --nu-opacity-{key} tokens
-// Transition timing can be customized via CSS variables
-//  @see transitions
 
 $-opacity-keywords: ("inherit", "initial", "unset", "revert", "revert-layer");
 
@@ -82,7 +93,7 @@ $-opacity-cache: ();
     @return $result;
 }
 
-// A $opacities key gives its token (var(--nu-opacity-50)); %, calc(), var() and CSS-wide keywords pass through; else @error
+// A $opacities key gives its token (var(--wu-opacity-50)); %, calc(), var() and CSS-wide keywords pass through; else @error
 @function -resolve-opacity($value) {
     $type: meta.type-of($value);
     @if fn-css-vars.is-css-function($value) or fn-css-vars.is-css-var($value) or list.index($-opacity-keywords, "#{$value}") {
@@ -106,19 +117,19 @@ $-opacity-cache: ();
             }
         }
     }
-    @error "opacity(#{$value}): use a $opacities key (#{map.keys(config-opacity.$opacities)}) such as 50 for var(--nu-opacity-50), a percentage (50%), calc() or var().";
+    @error "opacity(#{$value}): use a $opacities key (#{map.keys(config-opacity.$opacities)}) such as 50 for var(--#{config-constants.$prefix}-opacity-50), a percentage (50%), calc() or var().";
 }
 
-// @mixin opacity
-// @description Sets opacity from a $opacities key, emitted as var(--nu-opacity-*) as in .opacity-50, or passes a percentage, calc(), var() or CSS-wide keyword through; a bare 0.5 raises an error.
-// @param {Number|Percentage|String} $value - $opacities key (0, 5, 10 ... 100), percentage, calc(), var() or CSS-wide keyword
-// @example
-// .badge-muted {
-//   @include opacity(50); // opacity: var(--nu-opacity-50), 0.5 by default
-// }
-// .ghost {
-//   @include apply(opacity(75) hover);
-// }
+/// Sets opacity from a $opacities key, emitted as var(--wu-opacity-*) as in .opacity-50, or passes a percentage, calc(), var() or CSS-wide keyword through; a bare 0.5 raises an error.
+/// @param {Number|Percentage|String} $value - $opacities key (0, 5, 10 ... 100), percentage, calc(), var() or CSS-wide keyword
+/// @example scss
+///   .badge-muted {
+///     @include opacity(50); // opacity: var(--wu-opacity-50), 0.5 by default
+///   }
+///   .ghost {
+///     @include apply(opacity(75) hover);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/opacity opacity on MDN
 @mixin opacity($value) {
     opacity: -opacity($value);
 }
