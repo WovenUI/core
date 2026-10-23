@@ -1,8 +1,8 @@
-# NuvoUI LLM Guide v2
+# WovenUI LLM Guide v2
 
-**For @nuvoui/core 2.x.**
+**For @wovenui/core 2.2 and later.**
 
-**Purpose**: Drop this file into a project so an AI assistant writes correct NuvoUI 2.x code.
+**Purpose**: Drop this file into a project so an AI assistant writes correct WovenUI 2.x code.
 **Source of truth**: `core/src/styles` (SCSS). When this guide and the source disagree, the source wins.
 **Companion docs in the repository**: `core/docs/TOKENS.md` (every token and value, generated), `core/docs/MIGRATION-v2.md` (1.x to 2.x), `core/CHANGELOG.md`.
 
@@ -10,7 +10,7 @@
 
 ## Table of Contents
 
-1. [What NuvoUI Is](#what-nuvoui-is)
+1. [What WovenUI Is](#what-wovenui-is)
 2. [Install and Configure](#install-and-configure)
 3. [The Token System](#the-token-system)
 4. [token() vs get-color() vs var()](#token-vs-get-color-vs-var)
@@ -26,21 +26,21 @@
 
 ---
 
-## What NuvoUI Is
+## What WovenUI Is
 
-NuvoUI core is a **human-readable, utility-first SCSS framework** and the foundation layer of the NuvoUI design system.
+WovenUI core is a **human-readable, utility-first SCSS framework** and the foundation layer of the WovenUI design system.
 
 ### Philosophy
 
 1. **Human-readable names**: `between` not `justify-between`, `x-center` not `items-center`, `z-modal` not `z-50`, `bg-surface` not `bg-white`.
 2. **SCSS only, no JavaScript**: real Sass modules (`@use`), compiled by Dart Sass. No runtime, no HTML scanning, no PostCSS plugin.
 3. **`apply()` is the core feature**: every utility is also a mixin, called through `@include apply(...)` with state and breakpoint modifiers.
-4. **Design system foundations**: colors, spacing, radii, type, shadows, z-index and motion are design tokens emitted as `--nu-*` CSS custom properties. Classes and mixins output those tokens, so everything follows the active theme.
+4. **Design system foundations**: colors, spacing, radii, type, shadows, z-index and motion are design tokens emitted as `--wu-*` CSS custom properties. Classes and mixins output those tokens, so everything follows the active theme.
 5. **Config-driven**: every utility class is generated from a configuration map. Custom values are written in SCSS (`p(1.5rem)`), never in HTML.
 
 ### Package layers
 
-- `@nuvoui/core`: foundations (this guide). SCSS only.
+- `@wovenui/core`: foundations (this guide). SCSS only.
 - Component packages build on core and use component variables named with `__` or `--` (see [Naming grammar](#naming-grammar)).
 
 ### Three ways to style
@@ -51,7 +51,7 @@ NuvoUI core is a **human-readable, utility-first SCSS framework** and the founda
 ```
 
 ```scss
-@use "@nuvoui/core" as *;
+@use "@wovenui/core" as *;
 
 // 2. apply(): classes as mixins, plus custom values, states and breakpoints
 .card {
@@ -60,14 +60,14 @@ NuvoUI core is a **human-readable, utility-first SCSS framework** and the founda
 ```
 
 ```scss
-@use "@nuvoui/core" as nuvo;
+@use "@wovenui/core" as woven;
 
 // 3. Plain SCSS with tokens and functions
 .card {
-    padding: nuvo.token(space-4);
-    background: nuvo.token(bg-surface);
-    @include nuvo.media-up(md) {
-        padding: nuvo.token(space-6);
+    padding: woven.token(space-4);
+    background: woven.token(bg-surface);
+    @include woven.media-up(md) {
+        padding: woven.token(space-6);
     }
 }
 ```
@@ -76,19 +76,19 @@ NuvoUI core is a **human-readable, utility-first SCSS framework** and the founda
 
 ## Install and Configure
 
-Requires Dart Sass `>=1.79.0 <2` (peer dependency). Without a bundler that reads the package `sass` export, load it as `@use "pkg:@nuvoui/core"` with the Node package importer.
+Requires Dart Sass `>=1.79.0 <2` (peer dependency). Without a bundler that reads the package `sass` export, load it as `@use "pkg:@wovenui/core"` with the Node package importer.
 
 ```html
 <!-- Prebuilt CSS: every utility class, default configuration -->
-<link rel="stylesheet" href="node_modules/@nuvoui/core/dist/nuvoui.min.css">
+<link rel="stylesheet" href="node_modules/@wovenui/core/dist/wovenui.min.css">
 ```
 
 ### SCSS entry and `with()`
 
-`@use "@nuvoui/core"` resolves to `src/styles/index.scss`. Configure once, in the first `@use` of the module, with `with()`.
+`@use "@wovenui/core"` resolves to `src/styles/index.scss`. Configure once, in the first `@use` of the module, with `with()`.
 
 ```scss
-@use "@nuvoui/core" as * with (
+@use "@wovenui/core" as * with (
     $brand: #4361ee,
     $generate-utility-classes: true,
     $breakpoints: (
@@ -105,45 +105,46 @@ What the entry emits:
 | --- | --- |
 | `@layer reset, components` (reset, tooltips) | Always (tooltips follow the `tooltips` flag alone, independent of `$generate-utility-classes`) |
 | `@layer base` (base element styles, `.sr-only`) | `base` feature flag on (default), independent of `$generate-utility-classes` |
-| `@property` registrations (transform variables, `--nu-gap`) | Always, independent of feature flags |
+| `@property` registrations (transform variables, `--wu-gap`) | Always, independent of feature flags |
 | Tokens (`:root` fixed block, light block, dark block, inverse blocks, dark fallback, high-contrast twins when set) | `theme` feature flag on (default), independent of `$generate-utility-classes` |
 | Utility classes | `$generate-utility-classes: true` (default `false` in `index.scss`) and the feature flag on |
 
 Mixin-only projects keep `$generate-utility-classes: false` and still get every token.
 
-Every compiled entry that `@use`s `@nuvoui/core` emits all of the above except the classes (about 42 KB compressed). Load it once, in the global stylesheet.
+Every compiled entry that `@use`s `@wovenui/core` emits all of the above except the classes (about 42 KB compressed). Load it once, in the global stylesheet.
 
 ### Package entries
 
 | Entry | File | Output |
 | --- | --- | --- |
-| `@nuvoui/core` (`sass` condition), `@nuvoui/core/scss` | `src/styles/index.scss` | The API plus the CSS in the table above |
-| `@nuvoui/core/mixins` (`sass` condition) | `src/styles/mixins/index.scss` | The same API (`apply()`, every mixin, `token()`, `get-color()`, variables, maps, `with()` configuration) and no CSS. Mixins used in a rule output their declarations; animation mixins still add their keyframes |
-| `@nuvoui/core/css`, `@nuvoui/core/min.css`, `@nuvoui/core` (`style`, `default`) | `dist/nuvoui.css`, `dist/nuvoui.min.css` | Prebuilt CSS |
+| `@wovenui/core` (`sass` condition), `@wovenui/core/scss` | `src/styles/index.scss` | The API plus the CSS in the table above |
+| `@wovenui/core/mixins` (`sass` condition) | `src/styles/mixins/index.scss` | The same API (`apply()`, every mixin, `token()`, `get-color()`, variables, maps, `with()` configuration) and no CSS. Mixins used in a rule output their declarations; animation mixins still add their keyframes |
+| `@wovenui/core/css`, `@wovenui/core/min.css`, `@wovenui/core` (`style`, `default`) | `dist/wovenui.css`, `dist/wovenui.min.css` | Prebuilt CSS |
+| `@wovenui/core/sassdoc.json` | `dist/sassdoc.json` | SassDoc data of every documented mixin, function and variable, for editor tooling (file paths relative to `src/styles`) |
 
 ### Component styles (CSS modules, Vue, Svelte, Astro)
 
-Each CSS module or component `<style>` block is a separate compile. Load `@nuvoui/core/mixins` there, so tokens and base styles are not repeated per component and a component never re-emits default tokens over the configured ones. Write the configuration once:
+Each CSS module or component `<style>` block is a separate compile. Load `@wovenui/core/mixins` there, so tokens and base styles are not repeated per component and a component never re-emits default tokens over the configured ones. Write the configuration once:
 
 ```scss
-// src/styles/_nuvo.scss
-@forward "@nuvoui/core/mixins" with ($brand: #4361ee);
+// src/styles/_woven.scss
+@forward "@wovenui/core/mixins" with ($brand: #4361ee);
 
 // src/styles/global.scss, loaded once by the app
-@use "nuvo";
-@use "@nuvoui/core"; // tokens, base styles and classes with the same configuration
+@use "woven";
+@use "@wovenui/core"; // tokens, base styles and classes with the same configuration
 
 // Card.module.scss: outputs only .card
-@use "../styles/nuvo" as *;
+@use "../styles/woven" as *;
 
 .card {
     @include apply(p(4), bg(surface), rounded(md), shadow(md) hover, p(6) md);
 }
 ```
 
-`@use "nuvo"` comes before `@use "@nuvoui/core"`: both load the same configured modules, and configuring after `@nuvoui/core` has loaded raises an error. `$generate-utility-classes: true` in the partial gives the classes in the global stylesheet only. The `@property` registrations come from the global stylesheet, so component mixins that read them (transforms, `gap()`, `fill()`) need it on the page.
+`@use "woven"` comes before `@use "@wovenui/core"`: both load the same configured modules, and configuring after `@wovenui/core` has loaded raises an error. `$generate-utility-classes: true` in the partial gives the classes in the global stylesheet only. The `@property` registrations come from the global stylesheet, so component mixins that read them (transforms, `gap()`, `fill()`) need it on the page.
 
-Base layer (`base` flag): `body` sets `bg-base` and `text-regular`; buttons (`button`, `input` of type `submit`, `button`, `reset`) and fields (`input` without a type, text-like types, `textarea`, `select`) are styled from tokens with a `:focus-visible` ring. A `select` with `multiple` or a `size` other than 1 keeps its natural height; a single-line `select` (`size="1"` included) takes `--nu-control-height-md`. Invalid fields use `--nu-danger` (`--nu-border-control` when no `danger` role exists). Removing a key the base layer reads (`$spacings` 1, 2, 4, `$font-sizes` `sm`, `$control-heights` `md` and others) raises an error naming the map.
+Base layer (`base` flag): `body` sets `bg-base` and `text-regular`; buttons (`button`, `input` of type `submit`, `button`, `reset`) and fields (`input` without a type, text-like types, `textarea`, `select`) are styled from tokens with a `:focus-visible` ring. A `select` with `multiple` or a `size` other than 1 keeps its natural height; a single-line `select` (`size="1"` included) takes `--wu-control-height-md`. Invalid fields use `--wu-danger` (`--wu-border-control` when no `danger` role exists). Removing a key the base layer reads (`$spacings` 1, 2, 4, `$font-sizes` `sm`, `$control-heights` `md` and others) raises an error naming the map.
 
 ### Cascade layers
 
@@ -152,40 +153,40 @@ Reset, base and components live in `@layer reset, base, components`. Utility cla
 ### Direct access
 
 ```scss
-@use "@nuvoui/core" as nuvo;
+@use "@wovenui/core" as woven;
 @use "sass:map";
 @use "sass:color";
 
 .footer {
-    padding: map.get(nuvo.$spacings, 4); // 1rem (raw map value)
-    border-color: color.mix(nuvo.$brand, #fff, 50%); // Sass math on the configured color
-    color: nuvo.token(text-muted); // var(--nu-text-muted)
+    padding: map.get(woven.$spacings, 4); // 1rem (raw map value)
+    border-color: color.mix(woven.$brand, #fff, 50%); // Sass math on the configured color
+    color: woven.token(text-muted); // var(--wu-text-muted)
 }
 ```
 
 Exported color variables: `$brand`, `$success`, `$danger`, `$warning`, `$info`. Maps: `$spacings`, `$percentages`, `$opacities`, `$breakpoints`, `$font-sizes`, `$font-weights`, `$line-heights`, `$border-widths`, `$border-radii`, `$shadow-sizes`, `$shadow-colors`, `$z-indexes`, `$z-index-levels`, `$durations`, `$delays`, `$timing-functions`, `$control-heights`, `$control-padding-inline`, `$color-primitives`, `$basic-colors`, `$semantic-colors`, `$shade-stops`, `$position-fractions`, `$grid-item-sizes`, `$container-names`.
 
-Not public (Undefined variable): `$primary`, `$secondary`, `$default-color`, `$theme-tokens`, `$color-names`, `$color-names-with-basic`, `$colors`, `$colors-primitives`, `$color-cache`, `$digit-map`, `$translate-values`, `$negative-translate-values`, `$high-contrast-theme`.
+Not public (Undefined variable): `$primary`, `$secondary`, `$default-color`, `$theme-tokens`, `$color-names`, `$color-names-with-basic`, `$colors`, `$colors-primitives`, `$color-cache`, `$digit-map`, `$translate-values`, `$negative-translate-values`, `$high-contrast-theme`, `$prefix` (the `wu` custom property prefix, fixed).
 
 ---
 
 ## The Token System
 
-Every token is a CSS custom property `--nu-{name}`. Full list with values: `core/docs/TOKENS.md`.
+Every token is a CSS custom property `--wu-{name}`. Full list with values: `core/docs/TOKENS.md`.
 
 ### Tiers
 
 | Tier | Examples | Changes per theme? |
 | --- | --- | --- |
-| **Palette** | `--nu-red-100`, `--nu-brand-700` | No. Fixed shades, stops 50, 100 to 900, 950 |
-| **Basic** | `--nu-black`, `--nu-white`, `--nu-transparent` | No |
-| **Role** | `--nu-brand`, `--nu-danger-subtle`, `--nu-text-red` | Yes. Points at a different stop of its own scale |
-| **Theme** | `--nu-bg-surface`, `--nu-text-muted`, `--nu-border-regular` | Yes |
-| **Scale** | `--nu-space-4`, `--nu-radius-md`, `--nu-z-modal`, `--nu-font-family` | No |
+| **Palette** | `--wu-red-100`, `--wu-brand-700` | No. Fixed shades, stops 50, 100 to 900, 950 |
+| **Basic** | `--wu-black`, `--wu-white`, `--wu-transparent` | No |
+| **Role** | `--wu-brand`, `--wu-danger-subtle`, `--wu-text-red` | Yes. Points at a different stop of its own scale |
+| **Theme** | `--wu-bg-surface`, `--wu-text-muted`, `--wu-border-regular` | Yes |
+| **Scale** | `--wu-space-4`, `--wu-radius-md`, `--wu-z-modal`, `--wu-font-family` | No |
 
 Palette hues are plain colors with no meaning. Roles (brand, danger, ...) carry meaning and point at palette stops. Brand is a role, not a hue.
 
-Fixed tiers (palette, basic, scale, `--nu-font-family`) are declared once in a `:root`-only block. The light block (`:root, [data-theme="light"]`) holds theme and role tokens only, so a runtime `:root { --nu-font-family: ... }` override also applies inside `data-theme="light"` sections.
+Fixed tiers (palette, basic, scale, `--wu-font-family`) are declared once in a `:root`-only block. The light block (`:root, [data-theme="light"]`) holds theme and role tokens only, so a runtime `:root { --wu-font-family: ... }` override also applies inside `data-theme="light"` sections.
 
 ### Families
 
@@ -197,30 +198,30 @@ Fixed tiers (palette, basic, scale, `--nu-font-family`) are declared once in a `
 | Focus | `border-focus` (color, applied as `outline-color`), `border-focus-width`, `border-focus-offset` |
 | Brand | `brand` (the fill), `brand-hover`, `brand-active`, `brand-subtle`, `brand-border`, `text-brand`, `text-on-brand` |
 | Statuses | same set for `success`, `danger`, `warning`, `info` (`danger`, `danger-hover`, ...) |
-| Error aliases | `error`, `error-hover`, `error-active`, `error-subtle`, `error-border`, `text-error`, `text-on-error`: always the matching danger token (`--nu-error` is `var(--nu-danger)`) |
+| Error aliases | `error`, `error-hover`, `error-active`, `error-subtle`, `error-border`, `text-error`, `text-on-error`: always the matching danger token (`--wu-error` is `var(--wu-danger)`) |
 | Hue roles | `{hue}-subtle`, `{hue}-border`, `text-{hue}` for gray, red, blue, green, yellow, purple, pink |
 | Palette | `{name}-{stop}` for every role and hue |
 | Scales | `space-*`, `radius-*`, `border-width-*`, `font-family` (one token), `font-size-*`, `font-weight-*`, `line-height-*`, `shadow-*`, `opacity-*`, `z-*`, `duration-*`, `ease-*`, `control-height-{sm,md,lg}`, `control-padding-inline-{sm,md,lg}` |
 
-There are no delay tokens and no disabled text token (disabled text uses opacity). `--nu-font-family` is emitted from `$font-family`; base elements read it (the raw Sass value when the `theme` flag is off).
+There are no delay tokens and no disabled text token (disabled text uses opacity). `--wu-font-family` is emitted from `$font-family`; base elements read it (the raw Sass value when the `theme` flag is off).
 
 ### Naming grammar
 
-- **Prefix**: `--nu-` then single hyphens only: `--nu-text-muted`, `--nu-brand-hover`.
-- **Component variables** always contain `__` or `--` after the component name: `--nu-btn--BackgroundColor`, `--nu-sidebar__link--Color`. They can never clash with core tokens. Core's tooltip uses this grammar: `--nu-tooltip--Background`, `--nu-tooltip--Color`, `--nu-tooltip--ZIndex`.
-- **Internal utility variables** also carry `--nu-` but are not tokens (`token()` rejects them): `--nu-border-style`, `--nu-gap`, `--nu-translate-x`, `--nu-scale-x`, `--nu-rotate`, `--nu-skew-x`, `--nu-backdrop-blur` and so on. The transform variables and `--nu-gap` are registered with `@property` (`inherits: false`), so they never leak into descendants, and they are read without `var()` fallbacks: an unset one takes its registered initial value. The registrations are emitted whenever the package loads, independent of feature flags, so the mixins work with the utility classes off.
-- **Classes stay short**: `text-muted`, `bg-danger`. Only the variables carry `--nu-`.
-- **Role state ladder**: `--nu-{role}` (the bare name is the resting fill: `--nu-brand`, `--nu-danger`, `--nu-error`), `-hover`, `-active`, plus `-subtle` (tinted background) and `-border` (soft edge). There is no `--nu-{role}-default`: `token(brand-default)` and a `"brand-default"` theme key raise a rename error pointing at `brand`.
+- **Prefix**: `--wu-` then single hyphens only: `--wu-text-muted`, `--wu-brand-hover`.
+- **Component variables** always contain `__` or `--` after the component name: `--wu-btn--BackgroundColor`, `--wu-sidebar__link--Color`. They can never clash with core tokens. Core's tooltip uses this grammar: `--wu-tooltip--Background`, `--wu-tooltip--Color`, `--wu-tooltip--ZIndex`.
+- **Internal utility variables** also carry `--wu-` but are not tokens (`token()` rejects them): `--wu-border-style`, `--wu-gap`, `--wu-translate-x`, `--wu-scale-x`, `--wu-rotate`, `--wu-skew-x`, `--wu-backdrop-blur` and so on. The transform variables and `--wu-gap` are registered with `@property` (`inherits: false`), so they never leak into descendants, and they are read without `var()` fallbacks: an unset one takes its registered initial value. The registrations are emitted whenever the package loads, independent of feature flags, so the mixins work with the utility classes off.
+- **Classes stay short**: `text-muted`, `bg-danger`. Only the variables carry `--wu-`.
+- **Role state ladder**: `--wu-{role}` (the bare name is the resting fill: `--wu-brand`, `--wu-danger`, `--wu-error`), `-hover`, `-active`, plus `-subtle` (tinted background) and `-border` (soft edge). There is no `--wu-{role}-default`: `token(brand-default)` and a `"brand-default"` theme key raise a rename error pointing at `brand`.
 - **`text-{role}` vs `text-on-{role}`**:
-  - `text-{role}` = role-colored text on a normal page (`--nu-text-danger` for an error message).
-  - `text-on-{role}` = text placed on the role's solid fill (`--nu-text-on-brand` on a `--nu-brand` button).
+  - `text-{role}` = role-colored text on a normal page (`--wu-text-danger` for an error message).
+  - `text-on-{role}` = text placed on the role's solid fill (`--wu-text-on-brand` on a `--wu-brand` button).
   - Built-in `text-on-*` exists only for roles (brand, success, danger, warning, info, error). There is no `text-on-{hue}`.
 - **Word meanings**:
   - `regular` = the normal variant of text and border (`text-regular`, `border-regular`).
   - `base` = the bottom layer of the surface stack (`bg-base`, the page).
   - `default` is not a token word. The resting fill is the bare role name.
   - Past participles for states: `inverted`, `disabled`.
-- **Decimal keys**: `.` becomes `_` in tokens (`--nu-space-0_5`) and is escaped in classes (`.p-0\.5`).
+- **Decimal keys**: `.` becomes `_` in tokens (`--wu-space-0_5`) and is escaped in classes (`.p-0\.5`).
 
 ---
 
@@ -228,28 +229,28 @@ There are no delay tokens and no disabled text token (disabled text uses opacity
 
 | Tool | Returns | Follows theme | Use for |
 | --- | --- | --- | --- |
-| `token(name)` | `var(--nu-name)` | Yes | Any token in plain SCSS. Validated at compile time |
+| `token(name)` | `var(--wu-name)` | Yes | Any token in plain SCSS. Validated at compile time |
 | `get-color(name, stop)` | A real color (`#0058bb`) | No | Sass math (`color.mix`, `color.adjust`), compile-time contrast |
-| `var(--nu-name)` written by hand | Itself | Yes | Allowed, but not validated: a typo fails silently in the browser |
-| Mixins (`bg(brand)`) | `var(--nu-...)` | Yes | Normal styling through `apply()` |
+| `var(--wu-name)` written by hand | Itself | Yes | Allowed, but not validated: a typo fails silently in the browser |
+| Mixins (`bg(brand)`) | `var(--wu-...)` | Yes | Normal styling through `apply()` |
 
 ```scss
-@use "@nuvoui/core" as nuvo;
+@use "@wovenui/core" as woven;
 @use "sass:color";
 
 .notice {
-    background: nuvo.token(warning-subtle);
-    border-inline-start: nuvo.token(border-width-4) solid nuvo.token(warning);
-    color: nuvo.token(text-regular);
+    background: woven.token(warning-subtle);
+    border-inline-start: woven.token(border-width-4) solid woven.token(warning);
+    color: woven.token(text-regular);
 }
 
 .legacy-email-button {
-    background: nuvo.get-color(brand, 700); // fixed color for email clients without custom properties
-    border-color: color.adjust(nuvo.get-color(brand, 700), $lightness: -10%);
+    background: woven.get-color(brand, 700); // fixed color for email clients without custom properties
+    border-color: color.adjust(woven.get-color(brand, 700), $lightness: -10%);
 }
 ```
 
-`token()` rules: pass the name without `--nu-`; unknown names raise an error listing close matches; an old `{role}-default` name raises `token(brand-default): renamed in 2.0, use token(brand)`; `token()` raises an error when the `theme` feature flag is off. Internal variables (`--nu-gap`) and component variables (`--nu-tooltip--Color`) are not tokens.
+`token()` rules: pass the name without `--wu-`; unknown names raise an error listing close matches; an old `{role}-default` name raises `token(brand-default): renamed in 2.0, use token(brand)`; `token()` raises an error when the `theme` feature flag is off. Internal variables (`--wu-gap`) and component variables (`--wu-tooltip--Color`) are not tokens.
 
 `get-color()` rules: role and palette names first (`get-color(red)` is palette red `#ef4444`, not CSS `red`), then any CSS color or named color; stops 50, 100 to 900, 950 only; never returns `var()`; errors on unknown names.
 
@@ -280,7 +281,7 @@ There are no delay tokens and no disabled text token (disabled text uses opacity
 `$high-contrast-light` and `$high-contrast-dark` (both empty by default, nothing emitted until set) apply under `[data-contrast="high"]` on the root, on an element that sets `data-theme`, or on an ancestor of either. The light map applies wherever the theme resolves to light and the dark map wherever it resolves to dark, inverse and nested inverse sections and the OS fallback included. Every theme selector gets a twin compounded with `:is([data-contrast="high"], [data-contrast="high"] *)` (one attribute more specificity), emitted after the theme blocks in the same order, so the winning twin is always the twin of the winning theme block. The light-valued and dark-valued twins carry the same keys: both maps' keys, the `{role}` fill for every `{role}` or `text-on-{role}` either map sets, every `{role}` fill when either map sets `text-regular` or `text-inverted` (text-on is recomputed from the new text colors), and a `text-on-{role}` that `$light-theme` or `$dark-theme` sets explicitly (kept, never recomputed). When a high-contrast map changes a `{role}` fill whose `text-on-{role}` is set explicitly in the base theme, set `text-on-{role}` in the high-contrast map too. A key its own map lacks keeps the base theme value, so a key set in one map never leaks into the other theme. An element without `data-theme` inherits; its own `data-contrast` does not restyle it. `$high-contrast-dark` is ignored when `$enable-dark-mode` is false. `$high-contrast-theme` no longer exists.
 
 ```scss
-@use "@nuvoui/core" as * with (
+@use "@wovenui/core" as * with (
     $high-contrast-light: ("text-muted": #000, "border-control": gray 900),
     $high-contrast-dark: ("text-muted": #fff)
 );
@@ -292,10 +293,10 @@ There are no delay tokens and no disabled text token (disabled text uses opacity
 
 ### Override maps and the `name stop` syntax
 
-`$light-theme`, `$dark-theme`, `$high-contrast-light` and `$high-contrast-dark` hold only the tokens you change; they merge over the built-in defaults. Keys are token names without `--nu-`. A value is any CSS value, or a scale reference: a role or palette name, a space, and a stop. `brand 800` is emitted as `var(--nu-brand-800)`. Keys may be unquoted, even words Sass reads as colors (`tan`); quoted colors (`"#111"`) work like unquoted ones, and a quoted `"#ggg"` raises an error. All bad values are reported in one error. A new custom key goes in both `$light-theme` and `$dark-theme` (only `$light-theme` when dark mode is off).
+`$light-theme`, `$dark-theme`, `$high-contrast-light` and `$high-contrast-dark` hold only the tokens you change; they merge over the built-in defaults. Keys are token names without `--wu-`. A value is any CSS value, or a scale reference: a role or palette name, a space, and a stop. `brand 800` is emitted as `var(--wu-brand-800)`. Keys may be unquoted, even words Sass reads as colors (`tan`); quoted colors (`"#111"`) work like unquoted ones, and a quoted `"#ggg"` raises an error. All bad values are reported in one error. A new custom key goes in both `$light-theme` and `$dark-theme` (only `$light-theme` when dark mode is off).
 
 ```scss
-@use "@nuvoui/core" as * with (
+@use "@wovenui/core" as * with (
     $brand: #1ab5a5,
     $light-theme: (
         "brand": brand 800,
@@ -341,7 +342,7 @@ Light exceptions: `warning` fill 500, hover 600, active 700 (it takes dark `text
 - `high-contrast { ... }`: `@media (forced-colors: active)`. This is the OS forced-colors mode, unrelated to `data-contrast`.
 
 ```scss
-@use "@nuvoui/core" as *;
+@use "@wovenui/core" as *;
 
 .logo {
     @include dark-mode {
@@ -379,7 +380,7 @@ State prefixes generated: `hover:` and `group-hover:` for colors (`bg`, `text`, 
 ### 2. `apply()` format
 
 ```scss
-@use "@nuvoui/core" as *;
+@use "@wovenui/core" as *;
 
 .x {
     @include apply(
@@ -396,7 +397,7 @@ State prefixes generated: `hover:` and `group-hover:` for colors (`bg`, `text`, 
 
 Each item: a mixin name, optionally with arguments, then at most one state and one breakpoint, separated by spaces. Items are separated by commas. States: `hover`, `focus`, `focus-visible`, `focus-within`, `active`, `visited`, `disabled`, `enabled`, `checked`, `required`, `invalid`, `valid`, `placeholder-shown`, `read-only`, `first-child`, `last-child`, `only-child`, `first-of-type`, `last-of-type`, `empty`, `target`, `group-hover` (emits `.group:hover &`). An unknown modifier, or a second state or breakpoint, raises an error.
 
-Namespaced loads work the same: with `@use "@nuvoui/core" as nuvo;`, write `@include nuvo.apply(p(4), font-size(12px), duration(250ms));`. The items reach `apply()` as text; numeric arguments become real numbers, a quoted argument is read as the value it spells (`font-size("1.25rem")` gives `1.25rem`, as with `apply()` and the direct call) and CSS functions such as `clamp()` are accepted, so the namespaced form takes the inputs of `apply()` with `as *` and of the direct `@include`, with three exceptions set by Sass: a map argument cannot be written into a text item (pass the item as a call, `nuvo.apply(nuvo.animate-spin((duration: 2s)))`), `opacity(...)` with anything but a number (`opacity(inherit)`, `opacity("50")`) resolves to the Sass color function, so write `nuvo.apply(nuvo.opacity(inherit))` (or `opacity(50)` for a key), and a color function other than `rgb()` or `rgba()` with a shade (`bg(oklch(...), 600)`) raises an error because only a direct call or `as *` passes it as a color. Items of keys and words are cached; items with raw values (`p(13px)`) go in size-capped caches, so repeated raw values are parsed once and compile time stays linear in the number of unique values.
+Namespaced loads work the same: with `@use "@wovenui/core" as woven;`, write `@include woven.apply(p(4), font-size(12px), duration(250ms));`. The items reach `apply()` as text; numeric arguments become real numbers, a quoted argument is read as the value it spells (`font-size("1.25rem")` gives `1.25rem`, as with `apply()` and the direct call) and CSS functions such as `clamp()` are accepted, so the namespaced form takes the inputs of `apply()` with `as *` and of the direct `@include`, with three exceptions set by Sass: a map argument cannot be written into a text item (pass the item as a call, `woven.apply(woven.animate-spin((duration: 2s)))`), `opacity(...)` with anything but a number (`opacity(inherit)`, `opacity("50")`) resolves to the Sass color function, so write `woven.apply(woven.opacity(inherit))` (or `opacity(50)` for a key), and a color function other than `rgb()` or `rgba()` with a shade (`bg(oklch(...), 600)`) raises an error because only a direct call or `as *` passes it as a color. Items of keys and words are cached; items with raw values (`p(13px)`) go in size-capped caches, so repeated raw values are parsed once and compile time stays linear in the number of unique values.
 
 ### 3. Modifier order (critical)
 
@@ -405,7 +406,7 @@ Modifiers always come **after** the utility, never before it. State and breakpoi
 Item order does not change the result. `apply()` emits items without a modifier first, then state items, then each breakpoint from the smallest up with its own state items. `apply(flex md, hide)` and `apply(hide, flex md)` both hide the element below `md` and make it flex from `md` up. States follow the LVHA order: first-child, last-child, only-child, first-of-type, last-of-type, empty, target, visited, checked, placeholder-shown, required, valid, invalid, read-only, group-hover, focus-within, hover, focus, focus-visible, active, enabled, disabled, so `focus` beats `hover` and `disabled` beats every interactive state.
 
 ```scss
-@use "@nuvoui/core" as *;
+@use "@wovenui/core" as *;
 
 .ok {
     @include apply(bg(gray, 100) hover lg);
@@ -429,7 +430,7 @@ Never write `hover:` or a breakpoint before the utility inside `apply()`. Never 
 ```
 
 ```scss
-@use "@nuvoui/core" as *;
+@use "@wovenui/core" as *;
 
 .layout {
     @include apply(flex, col, row md);
@@ -438,10 +439,10 @@ Never write `hover:` or a breakpoint before the utility inside `apply()`. Never 
 
 ### 5. Numbers are keys
 
-A unitless number in a scale mixin is a **configuration key**, never a raw value. `p(4)` is spacing key 4 = `var(--nu-space-4)` = 1rem, the same as `.p-4`. A unitless number that is not a key raises an error. Write a unit for any custom value.
+A unitless number in a scale mixin is a **configuration key**, never a raw value. `p(4)` is spacing key 4 = `var(--wu-space-4)` = 1rem, the same as `.p-4`. A unitless number that is not a key raises an error. Write a unit for any custom value.
 
 ```scss
-@use "@nuvoui/core" as *;
+@use "@wovenui/core" as *;
 
 .box {
     @include apply(p(4), m(-2), width(300px), height(50vh), rounded(12px), border(3px));
@@ -480,13 +481,13 @@ Generated only with `$generate-utility-classes: true`. Responsive variants use `
 
 | Pattern | Value |
 | --- | --- |
-| `.bg-{role}`, `.border-{role}` | `--nu-{role}` (flips) |
-| `.text-{role}` | `--nu-text-{role}` (flips) |
-| `.text-on-{role}` | `--nu-text-on-{role}` |
-| `.bg-{role}-subtle`, `.bg-{hue}-subtle` | `--nu-{name}-subtle` |
-| `.bg-{hue}`, `.border-{hue}` | `--nu-{hue}-500` (fixed) |
-| `.text-{hue}` | `--nu-text-{hue}` (flips) |
-| `.bg-{name}-{stop}`, `.text-{name}-{stop}`, `.border-{name}-{stop}` | `--nu-{name}-{stop}` (fixed), stops 50 to 950 |
+| `.bg-{role}`, `.border-{role}` | `--wu-{role}` (flips) |
+| `.text-{role}` | `--wu-text-{role}` (flips) |
+| `.text-on-{role}` | `--wu-text-on-{role}` |
+| `.bg-{role}-subtle`, `.bg-{hue}-subtle` | `--wu-{name}-subtle` |
+| `.bg-{hue}`, `.border-{hue}` | `--wu-{hue}-500` (fixed) |
+| `.text-{hue}` | `--wu-text-{hue}` (flips) |
+| `.bg-{name}-{stop}`, `.text-{name}-{stop}`, `.border-{name}-{stop}` | `--wu-{name}-{stop}` (fixed), stops 50 to 950 |
 | `.bg-error`, `.text-error`, `.border-error`, `.bg-error-subtle`, `.text-on-error` | danger aliases |
 | `.bg-{word}` | base, surface, alternate, raised, hover, selected, disabled |
 | `.text-{word}` | regular, muted, subtle, inverted, link, link-hover |
@@ -511,7 +512,7 @@ All mixins below work inside `apply()` unless marked **standalone**. (L) marks l
 
 ### Display and visibility
 
-`block`, `inline`, `inline-block`, `flex`, `inline-flex`, `grid`, `inline-grid`, `table`, `table-row`, `table-cell`, `contents`, `hide` (display none), `show` (display revert: the element's natural display), `visible`, `invisible`, `collapse`
+`block`, `inline`, `inline-block`, `flex`, `inline-flex`, `grid`, `inline-grid`, `table`, `table-row`, `table-cell`, `contents`, `hide` (display none), `hidden` (an exact alias of `hide`, classes `.hidden` and `.hidden@md` included), `show` (display revert: the element's natural display), `visible`, `invisible`, `collapse`
 
 Overflow: `overflow-hidden`, `overflow-visible`, `overflow-scroll`, `overflow-auto`, `overflow-x-hidden`, `overflow-y-hidden`, `overflow-x-scroll`, `overflow-y-scroll`, `overflow-x-auto`, `overflow-y-auto`
 
@@ -539,22 +540,22 @@ Axis rule: no prefix = main axis; `x-` = cross axis. `x` does not mean horizonta
 
 ### Container
 
-`container-base` (full width, `margin-inline: auto`), `container([$display])` (responsive max widths, breakpoint minus 100px, `calc(40em - 100px)` for em or rem breakpoints; `block`, `flex` or `grid`), `container-padding($padding)` (block padding; a spacing key gives its token like `py()`: `container-padding(4)` is `var(--nu-space-4)`, `container-padding(1rem)` stays raw)
+`container-base` (full width, `margin-inline: auto`), `container([$display])` (responsive max widths, breakpoint minus 100px, `calc(40em - 100px)` for em or rem breakpoints; `block`, `flex` or `grid`), `container-padding($padding)` (block padding; a spacing key gives its token like `py()`: `container-padding(4)` is `var(--wu-space-4)`, `container-padding(1rem)` stays raw)
 
 ### Spacing
 
-Values: a `$spacings` key gives `var(--nu-space-{key})`; values with units, `calc()`, `var()` and the CSS keywords valid for the property (`auto` for margin and sizing, `normal` for gap) pass through; `0` is allowed. Any other word raises an error.
+Values: a `$spacings` key gives `var(--wu-space-{key})`; values with units, `calc()`, `var()` and the CSS keywords valid for the property (`auto` for margin and sizing, `normal` for gap) pass through; `0` is allowed. Any other word raises an error.
 
 - Padding: `p`, `px` (L), `py` (L), `pt`, `pr`, `pb`, `pl`, `ps` (L), `pe` (L). No negative keys or negative raw lengths (`p(-1rem)`), no `auto`.
-- Margin: `m`, `mx` (L), `my` (L), `mt`, `mr`, `mb`, `ml`, `ms` (L), `me` (L). Negative keys allowed: `m(-4)` gives `calc(-1 * var(--nu-space-4))`.
+- Margin: `m`, `mx` (L), `my` (L), `mt`, `mr`, `mb`, `ml`, `ms` (L), `me` (L). Negative keys allowed: `m(-4)` gives `calc(-1 * var(--wu-space-4))`.
 - Auto margins: `ml-auto`, `mr-auto`, `ms-auto` (L), `me-auto` (L), `mx-auto` (L, `margin-inline: auto`). The classes come after the `.m-*` classes of the same breakpoint, so `mx-auto m-4` keeps the centring.
-- Gap: `gap`, `gap-x`, `gap-y`. No negative keys; `gap(normal)` is allowed. `gap` and `gap-x` also set `--nu-gap` on direct children (`& > *`), which `fill($size)` reads, so a nested flex container does not inherit an outer gap.
+- Gap: `gap`, `gap-x`, `gap-y`. No negative keys; `gap(normal)` is allowed. `gap` and `gap-x` also set `--wu-gap` on direct children (`& > *`), which `fill($size)` reads, so a nested flex container does not inherit an outer gap.
 - Between children: `space-x` (L, `margin-inline-start`), `space-y` (L, `margin-block-start`). Negative keys allowed.
 - Inset: `inset`, `inset-x`, `inset-y`, `inset-auto`, `inset-x-auto`, `inset-y-auto`. Negative keys allowed. `inset-x()` / `.inset-x-*` and `.border-x` are physical (left and right), unlike `mx`, `px` and `space-x`, which are logical; use `inset-start()` / `inset-end()` where the direction matters.
 
 ### Sizing
 
-`width`, `height`, `min-width`, `min-height`, `max-width`, `max-height`: spacing keys, percentage keys (`width(50p)` is `50%`, `width(33p)` is `33.333%`), breakpoint names for the width mixins only (`width(lg)` is `1024px`, as `.w-lg`), or raw values with a CSS length unit (`width(4)` is `var(--nu-space-4)`; `width(300px)`, `width(50%)`, `width(auto)`, `height(fit-content)` pass through). No negative keys. A number followed by other text (`width(3xl)`) raises an error.
+`width`, `height`, `min-width`, `min-height`, `max-width`, `max-height`: spacing keys, percentage keys (`width(50p)` is `50%`, `width(33p)` is `33.333%`), breakpoint names for the width mixins only (`width(lg)` is `1024px`, as `.w-lg`), or raw values with a CSS length unit (`width(4)` is `var(--wu-space-4)`; `width(300px)`, `width(50%)`, `width(auto)`, `height(fit-content)` pass through). No negative keys. A number followed by other text (`width(3xl)`) raises an error.
 
 Percent: `width-percent($n)`, `height-percent($n)`, `min-width-percent($n)`, `min-height-percent($n)`, `max-width-percent($n)`, `max-height-percent($n)` (`width-percent(50)` is `50%`; the keys 33 and 66 are exact thirds, `33.333%` and `66.667%`, as are `.w-33p` and `.w-66p`; `width-percent(33%)` stays `33%`). Percentage width and height classes have `hover:` and `group-hover:` forms with and without a breakpoint (`.hover:w-50p`, `.hover:w-50p@md`).
 
@@ -568,22 +569,22 @@ Keywords: `w-auto`, `w-full`, `w-screen`, `w-min`, `w-max`, `w-fit`, `h-auto`, `
 ### Color
 
 - `bg($color, [$stop])`: role (`brand`), role state (`danger-hover`, `brand-subtle`), hue (`red`, fixed 500), theme word (`surface`, `alternate`, `raised`, ...), name with stop (`bg(red, 300)`), error alias (`error`), basic (`white`), raw color (hex, CSS color name, or a color function: `rgb()`, `hsl()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()`, `color-mix()`, `light-dark()`) or `var()`. Without a stop a color function passes through on every path; with a stop the value must be one Sass reads as a color (hex, `rgb()`, a CSS color name, or a color function in a direct call or `as *` load), so `color-mix()` and `light-dark()` take no stop. With the `theme` flag off, color names raise an error saying so (no tokens are emitted); pass a color value. In a namespaced load Sass evaluates `hwb(0 0% 0%)` or `rgb(255, 0, 0)` first, and a result that prints as a palette name (`red`) resolves as the palette color.
-- `text-color($color, [$stop])`: role (`brand` gives `--nu-text-brand`), hue (`red` gives `--nu-text-red`, flips), theme word (`regular`, `muted`, `subtle`, `inverted`, `link`, `link-hover`), `on-{role}`, name with stop, raw color, CSS keyword (`inherit`, `currentcolor`).
+- `text-color($color, [$stop])`: role (`brand` gives `--wu-text-brand`), hue (`red` gives `--wu-text-red`, flips), theme word (`regular`, `muted`, `subtle`, `inverted`, `link`, `link-hover`), `on-{role}`, name with stop, raw color, CSS keyword (`inherit`, `currentcolor`).
 - `border-color($color, [$stop])`: role, hue, theme word (`regular`, `strong`, `control`, `control-hover`), name with stop, raw color.
-- `text-on-color($color, [$stop])`: a role gives `var(--nu-text-on-{role})`; anything else is computed at compile time (higher-contrast theme text color).
+- `text-on-color($color, [$stop])`: a role gives `var(--wu-text-on-{role})`; anything else is computed at compile time (higher-contrast theme text color).
 - `adaptive-contrast($color)` **standalone recommended**: sets background and a compile-time contrast text color; under `prefers-contrast: more` the background moves away from the text color (darker under light text, lighter under dark text), so the ratio rises. Needs a real color.
-- `gradient($direction, $colors...)`: color names resolve like `bg()` (`gradient(to right, brand, purple 80%)` gives `var(--nu-brand)` and `var(--nu-purple-500) 80%`); color values and positions are written as passed; an unknown word raises the `bg()` error.
+- `gradient($direction, $colors...)`: color names resolve like `bg()` (`gradient(to right, brand, purple 80%)` gives `var(--wu-brand)` and `var(--wu-purple-500) 80%`); color values and positions are written as passed; an unknown word raises the `bg()` error.
 
 ### Borders
 
-- Width: `border($width, [$style: solid], [$color])` (color defaults to `--nu-border-regular`), `border-top`, `border-right`, `border-bottom`, `border-left`, `border-start` (L), `border-end` (L) each `($width, [$style: solid], [$color])`, color resolved like `border()`. Width is a `$border-widths` key (0, 1, 2, 4, 8 give `var(--nu-border-width-{key})`) or a value with a unit. Width 0 sets only the width.
-- `border-all($width, $style, $color)` (same output as `border()` with all three arguments), `border-style($style)` (sets `--nu-border-style` for borders on the same element; `solid`, `dashed`, `dotted`, `double`, `none`, a CSS-wide keyword or `var()`), `border-color($color, [$stop])`
+- Width: `border($width, [$style: solid], [$color])` (color defaults to `--wu-border-regular`), `border-top`, `border-right`, `border-bottom`, `border-left`, `border-start` (L), `border-end` (L) each `($width, [$style: solid], [$color])`, color resolved like `border()`. Width is a `$border-widths` key (0, 1, 2, 4, 8 give `var(--wu-border-width-{key})`) or a value with a unit. Width 0 sets only the width.
+- `border-all($width, $style, $color)` (same output as `border()` with all three arguments), `border-style($style)` (sets `--wu-border-style` for borders on the same element; `solid`, `dashed`, `dotted`, `double`, `none`, a CSS-wide keyword or `var()`), `border-color($color, [$stop])`
 - Radius: `rounded([$key])` (default `md`), `rounded-t`, `rounded-r`, `rounded-b`, `rounded-l`, `rounded-tl`, `rounded-tr`, `rounded-br`, `rounded-bl`, `rounded-s` (L), `rounded-e` (L), `rounded-ss` (L), `rounded-se` (L), `rounded-es` (L), `rounded-ee` (L). Keys: xs, sm, md, lg, xl, 2xl, full, none, or a value with a unit.
-- `pill`: fully rounded, `var(--nu-radius-full)`
+- `pill`: fully rounded, `var(--wu-radius-full)`
 
 ### Shadows
 
-- `shadow([$size: md], [$color: default])`: config keys, or `shadow(none)` (`box-shadow: none`, as `.shadow-none`). Sizes: sm, md, lg, xl, hero, monster. Colors: default, dark, darker, darkest. Default color outputs `var(--nu-shadow-{size})`.
+- `shadow([$size: md], [$color: default])`: config keys, or `shadow(none)` (`box-shadow: none`, as `.shadow-none`). Sizes: sm, md, lg, xl, hero, monster. Colors: default, dark, darker, darkest. Default color outputs `var(--wu-shadow-{size})`.
 - `shadow-inset([$size], [$color])`, `elevation($level)` (1 to 5; any other level raises an error)
 - `shadow-base($x, $y, $blur, $spread, $color)`: raw custom shadow
 
@@ -604,7 +605,7 @@ Keywords: `w-auto`, `w-full`, `w-screen`, `w-min`, `w-max`, `w-fit`, `h-auto`, `
 
 ### Opacity and cursor
 
-`opacity($value)`: a `$opacities` key gives its token (`opacity(50)` gives `var(--nu-opacity-50)`, 0.5 by default, as `.opacity-50`); a percentage (`50%`), `calc()`, `var()` or a CSS-wide keyword passes through; `opacity(0.5)` raises an error. `cursor($value)`
+`opacity($value)`: a `$opacities` key gives its token (`opacity(50)` gives `var(--wu-opacity-50)`, 0.5 by default, as `.opacity-50`); a percentage (`50%`), `calc()`, `var()` or a CSS-wide keyword passes through; `opacity(0.5)` raises an error. `cursor($value)`
 
 ### Vertical alignment
 
@@ -612,22 +613,22 @@ Keywords: `w-auto`, `w-full`, `w-screen`, `w-min`, `w-max`, `w-fit`, `h-auto`, `
 
 ### Transforms
 
-`translate($x, [$y])`, `translate-x($v)`, `translate-y($v)`, `translate-z($v)`, `scale($v)`, `scale-x($v)`, `scale-y($v)`, `rotate($angle)`, `skew-x($angle)`, `skew-y($angle)`, `origin($value)` (an `$origin-values` key such as `top-left` gives `top left`, like `.origin-top-left`; otherwise one to three position keywords, lengths, percentages, `calc()` or `var()`; a quoted value reads as unquoted (`origin("top left")`), and `calc()` and `var()` parts stay whole in a namespaced `nu.apply(origin(calc(10px + 5%) var(--y)))`; anything else raises an error), `apply-transform`.
+`translate($x, [$y])`, `translate-x($v)`, `translate-y($v)`, `translate-z($v)`, `scale($v)`, `scale-x($v)`, `scale-y($v)`, `rotate($angle)`, `skew-x($angle)`, `skew-y($angle)`, `origin($value)` (an `$origin-values` key such as `top-left` gives `top left`, like `.origin-top-left`; otherwise one to three position keywords, lengths, percentages, `calc()` or `var()`; a quoted value reads as unquoted (`origin("top left")`), and `calc()` and `var()` parts stay whole in a namespaced `woven.apply(origin(calc(10px + 5%) var(--y)))`; anything else raises an error), `apply-transform`.
 
-- Translate: a unitless number is a spacing key (`translate-x(4)` gives `var(--nu-space-4)`, `translate-x(-4)` gives `calc(-1 * var(--nu-space-4))`); fraction keys `25p`, `33p`, `50p`, `66p`, `75p`, `100p` (and `-25p`) give percentages; values with units pass through (`translate-x(1rem)`). A number that is not a key (`translate-x(7)`) raises an error. Classes exist for keys 0 to 20 and the fractions (`.translate-x-4`, `.-translate-y-50p`).
+- Translate: a unitless number is a spacing key (`translate-x(4)` gives `var(--wu-space-4)`, `translate-x(-4)` gives `calc(-1 * var(--wu-space-4))`); fraction keys `25p`, `33p`, `50p`, `66p`, `75p`, `100p` (and `-25p`) give percentages; values with units pass through (`translate-x(1rem)`). A number that is not a key (`translate-x(7)`) raises an error. Classes exist for keys 0 to 20 and the fractions (`.translate-x-4`, `.-translate-y-50p`).
 - Scale: a class key gives its factor (`scale(150)` is `1.5`, as `.scale-150`); other values pass through as factors (`scale(1.5)`).
 - Rotate: `rotate(45)` is the `$rotation-values` key (45deg, as `.rotate-45`; keys 0, 45, 90, 180, 270, negated for `-45`); other angles need a unit (`rotate(30deg)`). Skew has no keys: write a unit (`skew-x(6deg)`). 0 is written `0deg`; any other unitless number or word raises an error.
 
 ### Transitions
 
 - Property: `transition` (all, plus the default duration and easing tokens from `$transition-default-duration` (`200`) and `$transition-default-ease` (`in-out`); the `.transition` class keeps them in `:where()`), `transition-none`, `transition-colors`, `transition-opacity`, `transition-shadow`, `transition-transform` (the last four also set the default duration and easing, in `:where()` for the classes)
-- `duration($value)`: `$durations` key (`duration(200)` gives `var(--nu-duration-200)`) or a time (`427ms`)
+- `duration($value)`: `$durations` key (`duration(200)` gives `var(--wu-duration-200)`) or a time (`427ms`)
 - `delay($value)`: `$delays` key (raw value, no token) or a time
 - `ease($name)`: `$timing-functions` key (`linear`, `in`, `out`, `in-out`), a CSS keyword, `cubic-bezier()`, `steps()`, `linear()` or `var()`. Shortcuts: `ease-linear`, `ease-in`, `ease-out`, `ease-in-out`
 
 ### Z-index
 
-`z-index($value)`: level name (`modal` gives `var(--nu-z-modal)`), numbered key (`10`), integer, `auto`, `calc()` or `var()`. Shortcuts: `z-base`, `z-hover`, `z-dropdown`, `z-sticky`, `z-fixed`, `z-overlay`, `z-drawer`, `z-modal`, `z-popover`, `z-tooltip`, `z-toast`, `z-max`, `z-auto`. `z-index-utilities` is a class generator, **standalone**.
+`z-index($value)`: level name (`modal` gives `var(--wu-z-modal)`), numbered key (`10`), integer, `auto`, `calc()` or `var()`. Shortcuts: `z-base`, `z-hover`, `z-dropdown`, `z-sticky`, `z-fixed`, `z-overlay`, `z-drawer`, `z-modal`, `z-popover`, `z-tooltip`, `z-toast`, `z-max`, `z-auto`. `z-index-utilities` is a class generator, **standalone**.
 
 ### Backdrop filters
 
@@ -639,7 +640,7 @@ Keywords: `w-auto`, `w-full`, `w-screen`, `w-min`, `w-max`, `w-fit`, `h-auto`, `
 
 ### Animations (standalone)
 
-`animate-bounce([$props])`, `animate-pulse([$props])`, `animate-spin([$props])`, `animate-ping([$props])`, `animate-fade([$props])`, `animate-shake([$props])`, `hover-ready` (all properties, default duration and easing tokens), `ensure-keyframes($name)`. `$props` is a map (`(duration: 2s, iteration: 3)`); an unknown key raises an error listing the valid keys, an unknown `animate-fade` type raises an error, and `animate-shake` intensity and `animate-bounce` offsets are lengths (a unitless number other than 0, `calc()` or `var()` raises an error); `animate-ping` scale is a unitless number. Quoted map values work like unquoted ones (`(duration: "2s")`). Keyframes are emitted once, at the stylesheet root (outside `@media`, `@supports`, `@container` and `@scope`), so an animation used first inside a breakpoint still runs below it. Inside `apply()` with `as *` they take a map (`apply(animate-spin((duration: 2s)))`); in a namespaced load pass the item as a call (`nu.apply(nu.animate-spin((duration: 2s)))`). `.hover-ready` keeps its duration and easing in `:where()`, so `.duration-*` and `.ease-*` override them. Classes: `.animate-pulse`, `.animate-spin`, `.animate-ping`, `.animate-fade-in`, `.animate-fade-out`, `.animate-fade-in-up`, `.animate-fade-in-down`, `.animate-shake`, `.hover-ready`.
+`animate-bounce([$props])`, `animate-pulse([$props])`, `animate-spin([$props])`, `animate-ping([$props])`, `animate-fade([$props])`, `animate-shake([$props])`, `hover-ready` (all properties, default duration and easing tokens), `ensure-keyframes($name)`. `$props` is a map (`(duration: 2s, iteration: 3)`); an unknown key raises an error listing the valid keys, an unknown `animate-fade` type raises an error, and `animate-shake` intensity and `animate-bounce` offsets are lengths (a unitless number other than 0, `calc()` or `var()` raises an error); `animate-ping` scale is a unitless number. Quoted map values work like unquoted ones (`(duration: "2s")`). Keyframes are emitted once, at the stylesheet root (outside `@media`, `@supports`, `@container` and `@scope`), so an animation used first inside a breakpoint still runs below it. Inside `apply()` with `as *` they take a map (`apply(animate-spin((duration: 2s)))`); in a namespaced load pass the item as a call (`woven.apply(woven.animate-spin((duration: 2s)))`). `.hover-ready` keeps its duration and easing in `:where()`, so `.duration-*` and `.ease-*` override them. Classes: `.animate-pulse`, `.animate-spin`, `.animate-ping`, `.animate-fade-in`, `.animate-fade-out`, `.animate-fade-in-up`, `.animate-fade-in-down`, `.animate-shake`, `.hover-ready`.
 
 ### Media and container queries (standalone, take a content block)
 
@@ -650,7 +651,7 @@ Keywords: `w-auto`, `w-full`, `w-screen`, `w-min`, `w-max`, `w-fit`, `h-auto`, `
 
 ### Theme and components
 
-`dark-theme` (emits dark token declarations), `tooltip-variables` (tooltip defaults: `--nu-tooltip--Background`, `--nu-tooltip--Color`, `--nu-tooltip--ShadowColor`, `--nu-tooltip--ZIndex`, `--nu-tooltip--TransitionDuration`, `--nu-tooltip--TransitionTimingFunction`, `--nu-tooltip--TransitionDelay`, `--nu-tooltip--FontSize`, `--nu-tooltip--FontWeight`, `--nu-tooltip--TextTransform`, `--nu-tooltip--WidthSmall`, `--nu-tooltip--WidthMedium`, `--nu-tooltip--WidthLarge`, `--nu-tooltip--BorderRadius`; tooltips show on hover and `:focus-visible`; every theme block re-declares `--nu-tooltip--Background` and `--nu-tooltip--Color`, so a tooltip inside a `data-theme` section takes that section's colors)
+`dark-theme` (emits dark token declarations), `tooltip-variables` (tooltip defaults: `--wu-tooltip--Background`, `--wu-tooltip--Color`, `--wu-tooltip--ShadowColor`, `--wu-tooltip--ZIndex`, `--wu-tooltip--TransitionDuration`, `--wu-tooltip--TransitionTimingFunction`, `--wu-tooltip--TransitionDelay`, `--wu-tooltip--FontSize`, `--wu-tooltip--FontWeight`, `--wu-tooltip--TextTransform`, `--wu-tooltip--WidthSmall`, `--wu-tooltip--WidthMedium`, `--wu-tooltip--WidthLarge`, `--wu-tooltip--BorderRadius`; tooltips show on hover and `:focus-visible`; every theme block re-declares `--wu-tooltip--Background` and `--wu-tooltip--Color`, so a tooltip inside a `data-theme` section takes that section's colors)
 
 ### Functions
 
@@ -674,7 +675,7 @@ $base-size: 1rem; // html font-size
 $column-count: 12;
 ```
 
-Feature flags (`$feature-flags`, all `true`): alignments, animations, backdrops, base, borders, container, container-queries, cursors, displays, flex, grid, opacity, position, shadows, sizing, spacing, tooltips, theme, transforms, transitions, typography (was `config-typo`), z-index. A flag missing from the map counts as on. Each flag owns its classes (`.flex` and `.grid` belong to `flex` and `grid`; `displays: false` keeps them). `base` controls the base element layer and works without `$generate-utility-classes`; the reset has no flag. Turning a flag off removes its classes; `theme` off also removes all tokens and `--nu-font-family` (base elements use the `$font-family` value), makes scale mixins output raw values (`p(4)` is `1rem`), and makes color names in `bg()`, `text-color()`, `border-color()` (`bg(brand)`, `bg(red, 600)`, `text-color(muted)`) and `token()` raise an error saying the flag is off. `black`, `white` and `transparent` are emitted as plain colors, `text-on-color()` is computed at compile time, and `border()` without a color sets no `border-color` (the border takes `currentcolor`).
+Feature flags (`$feature-flags`, all `true`): alignments, animations, backdrops, base, borders, container, container-queries, cursors, displays, flex, grid, opacity, position, shadows, sizing, spacing, tooltips, theme, transforms, transitions, typography (was `config-typo`), z-index. A flag missing from the map counts as on. Each flag owns its classes (`.flex` and `.grid` belong to `flex` and `grid`; `displays: false` keeps them). `base` controls the base element layer and works without `$generate-utility-classes`; the reset has no flag. Turning a flag off removes its classes; `theme` off also removes all tokens and `--wu-font-family` (base elements use the `$font-family` value), makes scale mixins output raw values (`p(4)` is `1rem`), and makes color names in `bg()`, `text-color()`, `border-color()` (`bg(brand)`, `bg(red, 600)`, `text-color(muted)`) and `token()` raise an error saying the flag is off. `black`, `white` and `transparent` are emitted as plain colors, `text-on-color()` is computed at compile time, and `border()` without a color sets no `border-color` (the border takes `currentcolor`).
 
 ### Colors
 
@@ -745,7 +746,7 @@ Built-in theme defaults (light / dark; `core/docs/TOKENS.md` is generated from t
 
 ## Validation and Errors
 
-NuvoUI 2 fails at compile time instead of emitting broken CSS. Every message names the valid options.
+WovenUI 2 fails at compile time instead of emitting broken CSS. Every message names the valid options.
 
 | Input | Result |
 | --- | --- |
@@ -767,7 +768,7 @@ NuvoUI 2 fails at compile time instead of emitting broken CSS. Every message nam
 | `get-color(nope)` | Error: unknown color |
 | `token(text-mutd)` | Error: unknown token, close matches: text-muted |
 | `token(brand-default)`, `token(danger-default)` | Error: renamed in 2.0, use `token(brand)` |
-| `token(--nu-text-muted)` | Error: pass the name without the prefix |
+| `token(--wu-text-muted)` | Error: pass the name without the prefix |
 | `leading(foo)`, `ease(bounce)`, `duration(fast)`, `z-index(top)`, `font(heavy)` | Error: unknown value (lists keys) |
 | `opacity(0.5)`, `tracking(2)`, `elevation(7)`, `border-style(groove)` | Error: unknown value (lists what is accepted) |
 | `translate-x(7)` | Error: not a spacing key |
@@ -817,14 +818,14 @@ NuvoUI 2 fails at compile time instead of emitting broken CSS. Every message nam
 4. **Raw numbers as lengths**: `p(16)` is key 16 (4rem), not 16px. Write `p(16px)` for pixels.
 5. **Hard-coded colors for themed UI**: `bg(#fff)` will not flip in dark mode. Use `bg(surface)`.
 6. **Palette shades for themed text**: `text-color(gray, 600)` is fixed. Use `text-color(muted)`.
-7. **Hand-written `var(--nu-...)`** where `token()` works: typos are not caught.
+7. **Hand-written `var(--wu-...)`** where `token()` works: typos are not caught.
 8. **`get-color()` for theme-aware styling**: it returns a fixed color. Use mixins or `token()`.
 9. **Alpha syntax**: there is no `bg-danger@10` or opacity color syntax. Use `bg-danger-subtle`.
 10. **`text-on-{hue}`**: only roles have it. For text on a palette fill use `text-on-color(red, 700)`.
 11. **Setting `error-*` tokens**: they follow danger. Override `danger-*`.
-12. **`-default` role names**: `--nu-brand-default`, `token(brand-default)`, `bg(brand-default)`, a `"brand-default"` theme key. The fill is the bare name: `--nu-brand`, `token(brand)`, `bg(brand)`, `"brand"`.
+12. **`-default` role names**: `--wu-brand-default`, `token(brand-default)`, `bg(brand-default)`, a `"brand-default"` theme key. The fill is the bare name: `--wu-brand`, `token(brand)`, `bg(brand)`, `"brand"`.
 13. **Custom theme token in one map only**: a new key must be in both `$light-theme` and `$dark-theme` (only `$light-theme` when `$enable-dark-mode` is false).
-14. **Animation options in namespaced apply()**: `nu.apply(animate-spin((duration: 2s)))` fails, because Sass cannot write a map into a plain-text item. Pass the item as a call: `nu.apply(nu.animate-spin((duration: 2s)))`, or `@include nu.animate-spin(...)` directly. With `as *`, `apply(animate-spin((duration: 2s)))` works.
+14. **Animation options in namespaced apply()**: `woven.apply(animate-spin((duration: 2s)))` fails, because Sass cannot write a map into a plain-text item. Pass the item as a call: `woven.apply(woven.animate-spin((duration: 2s)))`, or `@include woven.animate-spin(...)` directly. With `as *`, `apply(animate-spin((duration: 2s)))` works.
 15. **Grid templates**: `cols-custom(1fr auto 1fr)` and `cols-custom("1fr_auto_1fr")` give the same track list. A comma inside the template (`repeat(2, 1fr)`) needs quotes: `cols-custom("repeat(2, 1fr) 200px")`.
 
 ---
@@ -836,16 +837,16 @@ NuvoUI 2 fails at compile time instead of emitting broken CSS. Every message nam
 | `bg-primary`, `text-primary`, `bg(primary)` | `bg-brand`, `text-brand`, `bg(brand)` | `primary` is not a color in core |
 | `$primary` | `$brand` | |
 | `bg-secondary`, `$secondary` | a palette hue: `bg-purple`, `$color-primitives` | No secondary role |
-| `--primary`, `--primary-500` | `--nu-brand`, `--nu-brand-500` | Every token has `--nu-` |
-| `--text-color`, `.text-color` | `--nu-text-regular`, `.text-regular` | |
-| `--border-base`, `.border-base` | `--nu-border-regular`, `.border-regular` | |
-| `--bg-surface` | `--nu-bg-surface` | |
-| `--link-color` | `--nu-text-link` | |
-| `--nu-text-default`, `--nu-text-normal` | `--nu-text-regular` | `default` is not a token word |
-| `--nu-brand-default`, `--nu-danger-default`, `bg(brand-default)` | `--nu-brand`, `--nu-danger`, `bg(brand)` | The fill is the bare role name |
-| `--nu-brand-text` | `--nu-text-brand` | |
-| `--nu-status-danger` | `--nu-danger` | No `status-` prefix |
-| `--nu-brand-1000`, `bg(red, 450)` | stops 50, 100 to 900, 950 | |
+| `--primary`, `--primary-500` | `--wu-brand`, `--wu-brand-500` | Every token has `--wu-` |
+| `--text-color`, `.text-color` | `--wu-text-regular`, `.text-regular` | |
+| `--border-base`, `.border-base` | `--wu-border-regular`, `.border-regular` | |
+| `--bg-surface` | `--wu-bg-surface` | |
+| `--link-color` | `--wu-text-link` | |
+| `--wu-text-default`, `--wu-text-normal` | `--wu-text-regular` | `default` is not a token word |
+| `--wu-brand-default`, `--wu-danger-default`, `bg(brand-default)` | `--wu-brand`, `--wu-danger`, `bg(brand)` | The fill is the bare role name |
+| `--wu-brand-text` | `--wu-text-brand` | |
+| `--wu-status-danger` | `--wu-danger` | No `status-` prefix |
+| `--wu-brand-1000`, `bg(red, 450)` | stops 50, 100 to 900, 950 | |
 | `.text-on-red-700` | `text-on-color(red, 700)` mixin | Per-shade classes removed |
 | `.text-on-blue` | `.text-on-brand` etc. (roles only) | |
 | `bg-danger@10`, `bg-danger/10` | `bg-danger-subtle` | |
@@ -878,19 +879,19 @@ NuvoUI 2 fails at compile time instead of emitting broken CSS. Every message nam
 | `shadow(0 4px 20px ...)` | `shadow-base(0, 4px, 20px, 0, ...)` | `shadow()` takes keys |
 | `z-index(9999)` for modals | `z-modal` | Named levels |
 | `[data-theme="system"]` for auto dark | omit `data-theme` | Tokens and the `dark-mode` mixin follow the OS only on `:root:not([data-theme])`; `system` is not read |
-| `--flex-gap`, `--translate-x`, `--border-style` | `--nu-gap`, `--nu-translate-x`, `--nu-border-style` | Internal variables carry `--nu-` |
-| `--tooltip-bg`, `--tooltip-text-color` | `--nu-tooltip--Background`, `--nu-tooltip--Color` | Component grammar |
+| `--flex-gap`, `--translate-x`, `--border-style` | `--wu-gap`, `--wu-translate-x`, `--wu-border-style` | Internal variables carry `--wu-` |
+| `--tooltip-bg`, `--tooltip-text-color` | `--wu-tooltip--Background`, `--wu-tooltip--Color` | Component grammar |
 | `opacity(0.5)` | `opacity(50)` | Keys, as `.opacity-50` |
 | `scale(1.5)` only | `scale(150)` or `scale(1.5)` | Both give 1.5 |
 | `luminance()`, `to-color()` | not public | |
-| `@import "@nuvoui/core"` | `@use "@nuvoui/core"` | Sass modules |
+| `@import "@wovenui/core"` | `@use "@wovenui/core"` | Sass modules |
 
 ---
 
 ## Common Patterns
 
 ```scss
-@use "@nuvoui/core" as *;
+@use "@wovenui/core" as *;
 
 // Card on the page
 .card {

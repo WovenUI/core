@@ -1,20 +1,19 @@
-# NuvoUI Core
+# WovenUI Core
 
-The foundation layer of the NuvoUI design system: design tokens, utility classes and SCSS mixins, written in Sass.
+The foundation layer of the WovenUI design system: design tokens, utility classes and SCSS mixins, written in Sass.
 
-NuvoUI is a utility-first framework for Sass projects and an alternative to Tailwind CSS. Use the classes in markup, or the same utilities as mixins through `apply()` in your stylesheets. See the [comparison with Tailwind CSS](https://nuvoui.io/vs/tailwind/) and the [setup guides](https://nuvoui.io/guides/).
+WovenUI is a utility-first framework for Sass projects and an alternative to Tailwind CSS. Use the classes in markup, or the same utilities as mixins through `apply()` in your stylesheets. See the [comparison with Tailwind CSS](https://wovenui.com/vs/tailwind/) and the [setup guides](https://wovenui.com/guides/).
 
-[![GitHub stars](https://img.shields.io/github/stars/NuvoUI/core?style=flat-square&color=FFB000)](https://github.com/NuvoUI/core)
-[![GitHub forks](https://img.shields.io/github/forks/NuvoUI/core?style=flat-square&color=FFB000)](https://github.com/NuvoUI/core)
-[![npm version](https://img.shields.io/npm/v/@nuvoui/core?style=flat-square&color=FF6F00)](https://www.npmjs.com/package/@nuvoui/core)
+[![GitHub stars](https://img.shields.io/github/stars/WovenUI/core?style=flat-square&color=FFB000)](https://github.com/WovenUI/core)
+[![GitHub forks](https://img.shields.io/github/forks/WovenUI/core?style=flat-square&color=FFB000)](https://github.com/WovenUI/core)
+[![npm version](https://img.shields.io/npm/v/@wovenui/core?style=flat-square&color=FF6F00)](https://www.npmjs.com/package/@wovenui/core)
 [![Discord](https://img.shields.io/discord/1307989034638905345?style=flat-square&label=Discord&color=5865F2)](https://discord.gg/dhxxKTK5Zx)
-[![Twitter](https://img.shields.io/badge/Twitter-@NuvoUI-1DA1F2?style=flat-square)](https://x.com/NuvoUI)
 
 ## Overview
 
-`@nuvoui/core` provides:
+`@wovenui/core` provides:
 
-- **Design tokens** emitted as CSS custom properties with the `--nu-` prefix, with light and dark themes built from one token model.
+- **Design tokens** emitted as CSS custom properties with the `--wu-` prefix, with light and dark themes built from one token model.
 - **Utility classes** with human-readable names (`between`, `x-center`), responsive suffixes (`p-4@md`) and state prefixes (`hover:`, `focus:`, `active:`, `group-hover:`).
 - **SCSS mixins** through `@include apply(...)`, which output the same tokens as the classes, so styles written in SCSS follow the active theme.
 - **Base styles** for plain HTML elements, including buttons and form controls built on tokens.
@@ -30,11 +29,11 @@ Version 2.0 is a breaking release. Projects upgrading from 1.x should read the [
 ## Installation
 
 ```bash
-npm install @nuvoui/core sass
+npm install @wovenui/core sass
 # or
-pnpm add @nuvoui/core sass
+pnpm add @wovenui/core sass
 # or
-yarn add @nuvoui/core sass
+yarn add @wovenui/core sass
 ```
 
 ## Usage
@@ -42,7 +41,7 @@ yarn add @nuvoui/core sass
 ### SCSS
 
 ```scss
-@use "@nuvoui/core" as * with (
+@use "@wovenui/core" as * with (
     $brand: #4361ee,
     $light-theme: (
         "brand": brand 800,
@@ -56,14 +55,14 @@ yarn add @nuvoui/core sass
 ```
 
 - `$brand` sets the main color role. `$success`, `$danger`, `$warning` and `$info` set the status roles.
-- `$light-theme`, `$dark-theme`, `$high-contrast-light` and `$high-contrast-dark` hold overrides only. Keys are token names without `--nu-`. A value is a CSS value or a scale reference written as a name and a stop (`brand 800`), emitted as `var(--nu-brand-800)`. Unknown keys and malformed references raise compile errors.
+- `$light-theme`, `$dark-theme`, `$high-contrast-light` and `$high-contrast-dark` hold overrides only. Keys are token names without `--wu-`. A value is a CSS value or a scale reference written as a name and a stop (`brand 800`), emitted as `var(--wu-brand-800)`. Unknown keys and malformed references raise compile errors.
 - Tokens and base styles are emitted by default. Utility classes are emitted only with `$generate-utility-classes: true`; mixin-only projects can leave it off.
-- Every compiled entry that `@use`s `@nuvoui/core` emits the tokens, reset, base layer, tooltips and `@property` registrations (about 42 KB with `--style=compressed`, under 6 KB gzipped). Load it once, in the global stylesheet; component styles load `@nuvoui/core/mixins` (see [Component styles](#component-styles)).
+- Every compiled entry that `@use`s `@wovenui/core` emits the tokens, reset, base layer, tooltips and `@property` registrations (about 42 KB with `--style=compressed`, under 6 KB gzipped). Load it once, in the global stylesheet; component styles load `@wovenui/core/mixins` (see [Component styles](#component-styles)).
 
-`@use "@nuvoui/core"` resolves through the package `sass` export in bundlers that support it, such as Vite, Next.js (Turbopack and webpack), Astro and webpack `sass-loader`. With the Dart Sass command line or JavaScript API, use the Node package importer:
+`@use "@wovenui/core"` resolves through the package `sass` export in bundlers that support it, such as Vite, Next.js (Turbopack and webpack), Astro and webpack `sass-loader`. With the Dart Sass command line or JavaScript API, use the Node package importer:
 
 ```scss
-@use "pkg:@nuvoui/core" as *;
+@use "pkg:@wovenui/core" as *;
 ```
 
 ```bash
@@ -72,46 +71,46 @@ sass --pkg-importer=node src/app.scss dist/app.css
 
 ### Component styles
 
-`@nuvoui/core/mixins` is the same API as `@nuvoui/core` (`apply()`, every mixin, `token()`, `get-color()`, the variables and the same `with()` configuration) with no CSS output. Use it in CSS modules, Vue and Svelte `<style>` blocks and any other per-component compile, so the tokens and base styles are not repeated in every component and a component never resets the configured brand. Write the configuration once in a partial:
+`@wovenui/core/mixins` is the same API as `@wovenui/core` (`apply()`, every mixin, `token()`, `get-color()`, the variables and the same `with()` configuration) with no CSS output. Use it in CSS modules, Vue and Svelte `<style>` blocks and any other per-component compile, so the tokens and base styles are not repeated in every component and a component never resets the configured brand. Write the configuration once in a partial:
 
 ```scss
-// src/styles/_nuvo.scss
-@forward "@nuvoui/core/mixins" with ($brand: #4361ee);
+// src/styles/_woven.scss
+@forward "@wovenui/core/mixins" with ($brand: #4361ee);
 
 // src/styles/global.scss, loaded once by the app: tokens, base styles and classes with the same configuration
-@use "nuvo";
-@use "@nuvoui/core";
+@use "woven";
+@use "@wovenui/core";
 
 // Card.module.scss: outputs only .card
-@use "../styles/nuvo" as *;
+@use "../styles/woven" as *;
 
 .card {
     @include apply(p(4), bg(surface), rounded(md), shadow(md) hover, p(6) md);
 }
 ```
 
-In `global.scss`, `@use "nuvo"` must come before `@use "@nuvoui/core"`: both load the same configured modules, and configuring them after `@nuvoui/core` has loaded raises an error. Put `$generate-utility-classes: true` in the partial to get the classes in the global stylesheet; component compiles still output nothing extra.
+In `global.scss`, `@use "woven"` must come before `@use "@wovenui/core"`: both load the same configured modules, and configuring them after `@wovenui/core` has loaded raises an error. Put `$generate-utility-classes: true` in the partial to get the classes in the global stylesheet; component compiles still output nothing extra.
 
 ### Prebuilt CSS
 
-`npm run build` compiles the default configuration with every utility class to `dist/nuvoui.css` and `dist/nuvoui.min.css`, the files the package `style` and `./css` exports point at:
+`npm run build` compiles the default configuration with every utility class to `dist/wovenui.css` and `dist/wovenui.min.css`, the files the package `style` and `./css` exports point at:
 
 ```html
-<link rel="stylesheet" href="node_modules/@nuvoui/core/dist/nuvoui.min.css">
+<link rel="stylesheet" href="node_modules/@wovenui/core/dist/wovenui.min.css">
 ```
 
 ## Design tokens
 
-Every token is a CSS custom property named `--nu-{name}` with single hyphens (`--nu-text-muted`, `--nu-space-4`). Tokens fall into two groups:
+Every token is a CSS custom property named `--wu-{name}` with single hyphens (`--wu-text-muted`, `--wu-space-4`). Tokens fall into two groups:
 
 | Tier                     | Examples                                                                                                                      | Behavior                                                                      |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Palette, basic and scale | `--nu-red-500`, `--nu-white`, `--nu-space-4`, `--nu-radius-md`, `--nu-font-size-lg`, `--nu-font-family`                    | Fixed. The same value in every theme. Emitted on `:root` only.                |
-| Theme and role           | `--nu-bg-surface`, `--nu-text-muted`, `--nu-border-regular`, `--nu-brand`, `--nu-danger-subtle`, `--nu-text-on-brand`         | Flip per theme. The dark theme points roles at other stops of the same scale. |
+| Palette, basic and scale | `--wu-red-500`, `--wu-white`, `--wu-space-4`, `--wu-radius-md`, `--wu-font-size-lg`, `--wu-font-family`                    | Fixed. The same value in every theme. Emitted on `:root` only.                |
+| Theme and role           | `--wu-bg-surface`, `--wu-text-muted`, `--wu-border-regular`, `--wu-brand`, `--wu-danger-subtle`, `--wu-text-on-brand`         | Flip per theme. The dark theme points roles at other stops of the same scale. |
 
-Roles are `brand`, `success`, `danger`, `warning` and `info`. The bare name is the fill (`--nu-brand`), with `-hover`, `-active`, `-subtle` and `-border`, plus `--nu-text-{role}` and `--nu-text-on-{role}`. `--nu-error` and the other `--nu-error-*` tokens alias `--nu-danger-*`.
+Roles are `brand`, `success`, `danger`, `warning` and `info`. The bare name is the fill (`--wu-brand`), with `-hover`, `-active`, `-subtle` and `-border`, plus `--wu-text-{role}` and `--wu-text-on-{role}`. `--wu-error` and the other `--wu-error-*` tokens alias `--wu-danger-*`.
 
-Fixed tokens are declared on `:root` only, and the light block (`:root, [data-theme="light"]`) holds the theme tokens, so a runtime override on `:root` (for example `:root { --nu-font-family: "Inter", sans-serif; }`) also applies inside `data-theme="light"` sections.
+Fixed tokens are declared on `:root` only, and the light block (`:root, [data-theme="light"]`) holds the theme tokens, so a runtime override on `:root` (for example `:root { --wu-font-family: "Inter", sans-serif; }`) also applies inside `data-theme="light"` sections.
 
 Themes are selected with the `data-theme` attribute:
 
@@ -161,7 +160,7 @@ The full token list with light and dark values is in the [token reference](docs/
 `apply()` takes mixin calls separated by commas. A state and a breakpoint follow the call, in either order.
 
 ```scss
-@use "@nuvoui/core" as *;
+@use "@wovenui/core" as *;
 
 .card {
     @include apply(bg(surface), text-color(regular), border(1), rounded(md), p(4), shadow(md));
@@ -173,13 +172,13 @@ The full token list with light and dark values is in the [token reference](docs/
 }
 ```
 
-- A unitless number is a configuration key: `p(4)` outputs `padding: var(--nu-space-4)`, the same value as the `.p-4` class. A number that is not a key raises an error. Values with units pass through: `p(1.5rem)`.
-- Color mixins take the class words and output tokens: `bg(brand)` gives `var(--nu-brand)`, `text-color(muted)` gives `var(--nu-text-muted)`.
-- With a namespaced load (`@use "@nuvoui/core" as nu`), write `nu.apply(...)`. One item needs the namespace inside it: Sass reads a bare `opacity(inherit)` or `opacity("50")` as its built-in color function, so write `nu.apply(nu.opacity(inherit))` (`opacity(50)` works as it is).
+- A unitless number is a configuration key: `p(4)` outputs `padding: var(--wu-space-4)`, the same value as the `.p-4` class. A number that is not a key raises an error. Values with units pass through: `p(1.5rem)`.
+- Color mixins take the class words and output tokens: `bg(brand)` gives `var(--wu-brand)`, `text-color(muted)` gives `var(--wu-text-muted)`.
+- With a namespaced load (`@use "@wovenui/core" as woven`), write `woven.apply(...)`. One item needs the namespace inside it: Sass reads a bare `opacity(inherit)` or `opacity("50")` as its built-in color function, so write `woven.apply(woven.opacity(inherit))` (`opacity(50)` works as it is).
 
 ## Performance
 
-`apply()` compile time, measured with Dart Sass 1.103.1 (the `sass` npm package) on Node 24, Apple M2 Pro, median of three runs, `@use "@nuvoui/core" as *`:
+`apply()` compile time, measured with Dart Sass 1.103.1 (the `sass` npm package) on Node 24, Apple M2 Pro, median of three runs, `@use "@wovenui/core" as *`:
 
 | Stylesheet | Time | Output |
 | --- | --- | --- |
@@ -200,31 +199,31 @@ The full token list with light and dark values is in the [token reference](docs/
 - The package load is a fixed cost per compiled entry. Compile one entry that imports your partials.
 - `pnpm test:perf` guards `apply()` against the last release, including the namespaced path, where parsed items go into size-capped caches.
 
-Method and discussion: [We Tried to Break Our Own SCSS Compiler](https://dev.to/nuvoui/we-tried-to-break-our-own-scss-compiler-here-are-the-numbers-1boj). Run the loop in the [playground](https://nuvoui.io/playground/).
+Run the loop in the [playground](https://wovenui.com/playground/).
 
 ## `token()`
 
-`token($name)` returns `var(--nu-{name})` and raises an error with close matches for an unknown name. Use it for tokens in hand-written CSS properties.
+`token($name)` returns `var(--wu-{name})` and raises an error with close matches for an unknown name. Use it for tokens in hand-written CSS properties.
 
 ```scss
-@use "@nuvoui/core" as nu;
+@use "@wovenui/core" as woven;
 
 .panel {
-    background: nu.token(bg-raised);
-    box-shadow: nu.token(shadow-md);
-    outline: nu.token(border-focus-width) solid nu.token(border-focus);
-    outline-offset: nu.token(border-focus-offset);
+    background: woven.token(bg-raised);
+    box-shadow: woven.token(shadow-md);
+    outline: woven.token(border-focus-width) solid woven.token(border-focus);
+    outline-offset: woven.token(border-focus-offset);
 }
 ```
 
-`get-color($name, $stop)` returns a real color value for Sass math, for example `color.mix(nu.get-color(brand, 600), #fff, 80%)`.
+`get-color($name, $stop)` returns a real color value for Sass math, for example `color.mix(woven.get-color(brand, 600), #fff, 80%)`.
 
 ## Documentation
 
-- [Migration guide from 1.x](docs/MIGRATION-v2.md)
+- [Migration guide](docs/MIGRATION-v2.md)
 - [Token reference](docs/TOKENS.md)
 - [Changelog](CHANGELOG.md)
-- [Documentation site](https://nuvoui.io/)
+- [Documentation site](https://wovenui.com/)
 
 ## Browser support
 
@@ -232,9 +231,8 @@ Current versions of evergreen browsers. The output relies on CSS custom properti
 
 ## Community and support
 
-- [X @NuvoUI](https://x.com/NuvoUi)
-- [GitHub Issues](https://github.com/NuvoUI/core/issues)
+- [GitHub Issues](https://github.com/WovenUI/core/issues)
 
 ## License
 
-NuvoUI is open source under the [MIT License](https://github.com/NuvoUI/core/blob/main/LICENSE).
+WovenUI is open source under the [MIT License](https://github.com/WovenUI/core/blob/main/LICENSE).

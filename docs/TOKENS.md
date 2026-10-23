@@ -1,4 +1,4 @@
-# @nuvoui/core design tokens
+# @wovenui/core design tokens
 
 <!-- Generated file. Do not edit by hand. -->
 
@@ -15,7 +15,7 @@ Values are shown as emitted. A value that references another token is shown as t
 
 The default values may still be tuned in a 2.x release (contrast and palette steps are under review). Read tokens through `token()` so a rename fails at compile time.
 
-Read a token in SCSS with `token(name)`, which returns `var(--nu-name)` and raises an error for an unknown name.
+Read a token in SCSS with `token(name)`, which returns `var(--wu-name)` and raises an error for an unknown name.
 
 ## Surfaces
 
@@ -23,13 +23,13 @@ Backgrounds of the surface stack and shared interaction states. Classes: `.bg-{w
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-bg-base` | `#fbfafc` | `#1a1a1a` | theme (flips) |
-| `--nu-bg-surface` | `#fff` | `#2e2e2e` | theme (flips) |
-| `--nu-bg-alternate` | `--nu-gray-100` (`#e3e6ec`) | `#242424` | theme (flips) |
-| `--nu-bg-raised` | `#fff` | `#3a3a3a` | theme (flips) |
-| `--nu-bg-hover` | `--nu-gray-100` (`#e3e6ec`) | `#3a3a3a` | theme (flips) |
-| `--nu-bg-selected` | `--nu-brand-50` (`#ebf3ff`) | `--nu-brand-950` (`#002352`) | theme (flips) |
-| `--nu-bg-disabled` | `--nu-gray-100` (`#e3e6ec`) | `#333` | theme (flips) |
+| `--wu-bg-base` | `#fbfafc` | `#1a1a1a` | theme (flips) |
+| `--wu-bg-surface` | `#fff` | `#2e2e2e` | theme (flips) |
+| `--wu-bg-alternate` | `--wu-gray-100` (`#e3e6ec`) | `#242424` | theme (flips) |
+| `--wu-bg-raised` | `#fff` | `#3a3a3a` | theme (flips) |
+| `--wu-bg-hover` | `--wu-gray-100` (`#e3e6ec`) | `#3a3a3a` | theme (flips) |
+| `--wu-bg-selected` | `--wu-brand-50` (`#ebf3ff`) | `--wu-brand-950` (`#002352`) | theme (flips) |
+| `--wu-bg-disabled` | `--wu-gray-100` (`#e3e6ec`) | `#333` | theme (flips) |
 
 ## Text
 
@@ -37,12 +37,12 @@ Text colors for a normal page. Classes: `.text-{word}` (for example `.text-muted
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-text-regular` | `#1a1a1a` | `#f1f1f1` | theme (flips) |
-| `--nu-text-muted` | `#666` | `#a8a8a8` | theme (flips) |
-| `--nu-text-subtle` | `#949494` | `#6e6e6e` | theme (flips) |
-| `--nu-text-inverted` | `#f1f1f1` | `#1a1a1a` | theme (flips) |
-| `--nu-text-link` | `--nu-brand-700` (`#0058bb`) | `--nu-brand-300` (`#91beff`) | theme (flips) |
-| `--nu-text-link-hover` | `--nu-brand-800` (`#004494`) | `--nu-brand-200` (`#bad7ff`) | theme (flips) |
+| `--wu-text-regular` | `#1a1a1a` | `#f1f1f1` | theme (flips) |
+| `--wu-text-muted` | `#666` | `#a8a8a8` | theme (flips) |
+| `--wu-text-subtle` | `#949494` | `#6e6e6e` | theme (flips) |
+| `--wu-text-inverted` | `#f1f1f1` | `#1a1a1a` | theme (flips) |
+| `--wu-text-link` | `--wu-brand-700` (`#0058bb`) | `--wu-brand-300` (`#91beff`) | theme (flips) |
+| `--wu-text-link-hover` | `--wu-brand-800` (`#004494`) | `--wu-brand-200` (`#bad7ff`) | theme (flips) |
 
 ## Borders
 
@@ -50,10 +50,10 @@ Border colors. `border-control` is the darker edge for form controls (WCAG 1.4.1
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-border-regular` | `#d3d5d9` | `#474747` | theme (flips) |
-| `--nu-border-strong` | `--nu-gray-400` (`#8d94a1`) | `--nu-gray-500` (`#6b7280`) | theme (flips) |
-| `--nu-border-control` | `--nu-gray-500` (`#6b7280`) | `--nu-gray-400` (`#8d94a1`) | theme (flips) |
-| `--nu-border-control-hover` | `--nu-gray-600` (`#5d6471`) | `--nu-gray-300` (`#adb4c0`) | theme (flips) |
+| `--wu-border-regular` | `#d3d5d9` | `#474747` | theme (flips) |
+| `--wu-border-strong` | `--wu-gray-400` (`#8d94a1`) | `--wu-gray-500` (`#6b7280`) | theme (flips) |
+| `--wu-border-control` | `--wu-gray-500` (`#6b7280`) | `--wu-gray-400` (`#8d94a1`) | theme (flips) |
+| `--wu-border-control-hover` | `--wu-gray-600` (`#5d6471`) | `--wu-gray-300` (`#adb4c0`) | theme (flips) |
 
 ## Focus
 
@@ -61,9 +61,9 @@ Focus ring, applied through `outline-color`, `outline-width` and `outline-offset
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-border-focus` | `--nu-brand-600` (`#006be0`) | `--nu-brand-400` (`#5ca0ff`) | theme (flips) |
-| `--nu-border-focus-width` | `2px` | `2px` | theme (flips) |
-| `--nu-border-focus-offset` | `2px` | `2px` | theme (flips) |
+| `--wu-border-focus` | `--wu-brand-600` (`#006be0`) | `--wu-brand-400` (`#5ca0ff`) | theme (flips) |
+| `--wu-border-focus-width` | `2px` | `2px` | theme (flips) |
+| `--wu-border-focus-offset` | `2px` | `2px` | theme (flips) |
 
 ## Brand
 
@@ -71,13 +71,13 @@ The bare role name (`brand`) is the solid fill, `-hover` and `-active` its state
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-brand` | `--nu-brand-700` (`#0058bb`) | `--nu-brand-400` (`#5ca0ff`) | role (flips) |
-| `--nu-brand-hover` | `--nu-brand-800` (`#004494`) | `--nu-brand-300` (`#91beff`) | role (flips) |
-| `--nu-brand-active` | `--nu-brand-900` (`#003270`) | `--nu-brand-200` (`#bad7ff`) | role (flips) |
-| `--nu-brand-subtle` | `--nu-brand-50` (`#ebf3ff`) | `--nu-brand-950` (`#002352`) | role (flips) |
-| `--nu-brand-border` | `--nu-brand-200` (`#bad7ff`) | `--nu-brand-800` (`#004494`) | role (flips) |
-| `--nu-text-brand` | `--nu-brand-700` (`#0058bb`) | `--nu-brand-300` (`#91beff`) | role (flips) |
-| `--nu-text-on-brand` | `#f1f1f1` | `#1a1a1a` | role (flips) |
+| `--wu-brand` | `--wu-brand-700` (`#0058bb`) | `--wu-brand-400` (`#5ca0ff`) | role (flips) |
+| `--wu-brand-hover` | `--wu-brand-800` (`#004494`) | `--wu-brand-300` (`#91beff`) | role (flips) |
+| `--wu-brand-active` | `--wu-brand-900` (`#003270`) | `--wu-brand-200` (`#bad7ff`) | role (flips) |
+| `--wu-brand-subtle` | `--wu-brand-50` (`#ebf3ff`) | `--wu-brand-950` (`#002352`) | role (flips) |
+| `--wu-brand-border` | `--wu-brand-200` (`#bad7ff`) | `--wu-brand-800` (`#004494`) | role (flips) |
+| `--wu-text-brand` | `--wu-brand-700` (`#0058bb`) | `--wu-brand-300` (`#91beff`) | role (flips) |
+| `--wu-text-on-brand` | `#f1f1f1` | `#1a1a1a` | role (flips) |
 
 ## Statuses
 
@@ -85,48 +85,48 @@ Same set as brand for each status role: `success`, `danger`, `warning`, `info`. 
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-success` | `--nu-success-700` (`#007a28`) | `--nu-success-400` (`#54c365`) | role (flips) |
-| `--nu-success-hover` | `--nu-success-800` (`#005e1d`) | `--nu-success-300` (`#7fdb89`) | role (flips) |
-| `--nu-success-active` | `--nu-success-900` (`#004513`) | `--nu-success-200` (`#a8ecae`) | role (flips) |
-| `--nu-success-subtle` | `--nu-success-50` (`#e5fae6`) | `--nu-success-950` (`#00300b`) | role (flips) |
-| `--nu-success-border` | `--nu-success-200` (`#a8ecae`) | `--nu-success-800` (`#005e1d`) | role (flips) |
-| `--nu-text-success` | `--nu-success-800` (`#005e1d`) | `--nu-success-300` (`#7fdb89`) | role (flips) |
-| `--nu-text-on-success` | `#f1f1f1` | `#1a1a1a` | role (flips) |
-| `--nu-danger` | `--nu-danger-700` (`#ab0728`) | `--nu-danger-400` (`#fd6066`) | role (flips) |
-| `--nu-danger-hover` | `--nu-danger-800` (`#88001c`) | `--nu-danger-300` (`#ff9997`) | role (flips) |
-| `--nu-danger-active` | `--nu-danger-900` (`#670013`) | `--nu-danger-200` (`#ffc1bf`) | role (flips) |
-| `--nu-danger-subtle` | `--nu-danger-50` (`#ffeeed`) | `--nu-danger-950` (`#4c000b`) | role (flips) |
-| `--nu-danger-border` | `--nu-danger-200` (`#ffc1bf`) | `--nu-danger-800` (`#88001c`) | role (flips) |
-| `--nu-text-danger` | `--nu-danger-700` (`#ab0728`) | `--nu-danger-300` (`#ff9997`) | role (flips) |
-| `--nu-text-on-danger` | `#f1f1f1` | `#1a1a1a` | role (flips) |
-| `--nu-warning` | `--nu-warning-500` (`#ffc107`) | `--nu-warning-400` (`#ffd16c`) | role (flips) |
-| `--nu-warning-hover` | `--nu-warning-600` (`#dca600`) | `--nu-warning-300` (`#ffdf9c`) | role (flips) |
-| `--nu-warning-active` | `--nu-warning-700` (`#b28600`) | `--nu-warning-200` (`#ffeabe`) | role (flips) |
-| `--nu-warning-subtle` | `--nu-warning-50` (`#fff6e5`) | `--nu-warning-950` (`#3d2b00`) | role (flips) |
-| `--nu-warning-border` | `--nu-warning-200` (`#ffeabe`) | `--nu-warning-800` (`#866300`) | role (flips) |
-| `--nu-text-warning` | `--nu-warning-800` (`#866300`) | `--nu-warning-300` (`#ffdf9c`) | role (flips) |
-| `--nu-text-on-warning` | `#1a1a1a` | `#1a1a1a` | role (flips) |
-| `--nu-info` | `--nu-info-700` (`#007485`) | `--nu-info-400` (`#4cbdd2`) | role (flips) |
-| `--nu-info-hover` | `--nu-info-800` (`#005a67`) | `--nu-info-300` (`#79d4e6`) | role (flips) |
-| `--nu-info-active` | `--nu-info-900` (`#00414c`) | `--nu-info-200` (`#a4e6f4`) | role (flips) |
-| `--nu-info-subtle` | `--nu-info-50` (`#e4f8fc`) | `--nu-info-950` (`#002d35`) | role (flips) |
-| `--nu-info-border` | `--nu-info-200` (`#a4e6f4`) | `--nu-info-800` (`#005a67`) | role (flips) |
-| `--nu-text-info` | `--nu-info-800` (`#005a67`) | `--nu-info-300` (`#79d4e6`) | role (flips) |
-| `--nu-text-on-info` | `#f1f1f1` | `#1a1a1a` | role (flips) |
+| `--wu-success` | `--wu-success-700` (`#007a28`) | `--wu-success-400` (`#54c365`) | role (flips) |
+| `--wu-success-hover` | `--wu-success-800` (`#005e1d`) | `--wu-success-300` (`#7fdb89`) | role (flips) |
+| `--wu-success-active` | `--wu-success-900` (`#004513`) | `--wu-success-200` (`#a8ecae`) | role (flips) |
+| `--wu-success-subtle` | `--wu-success-50` (`#e5fae6`) | `--wu-success-950` (`#00300b`) | role (flips) |
+| `--wu-success-border` | `--wu-success-200` (`#a8ecae`) | `--wu-success-800` (`#005e1d`) | role (flips) |
+| `--wu-text-success` | `--wu-success-800` (`#005e1d`) | `--wu-success-300` (`#7fdb89`) | role (flips) |
+| `--wu-text-on-success` | `#f1f1f1` | `#1a1a1a` | role (flips) |
+| `--wu-danger` | `--wu-danger-700` (`#ab0728`) | `--wu-danger-400` (`#fd6066`) | role (flips) |
+| `--wu-danger-hover` | `--wu-danger-800` (`#88001c`) | `--wu-danger-300` (`#ff9997`) | role (flips) |
+| `--wu-danger-active` | `--wu-danger-900` (`#670013`) | `--wu-danger-200` (`#ffc1bf`) | role (flips) |
+| `--wu-danger-subtle` | `--wu-danger-50` (`#ffeeed`) | `--wu-danger-950` (`#4c000b`) | role (flips) |
+| `--wu-danger-border` | `--wu-danger-200` (`#ffc1bf`) | `--wu-danger-800` (`#88001c`) | role (flips) |
+| `--wu-text-danger` | `--wu-danger-700` (`#ab0728`) | `--wu-danger-300` (`#ff9997`) | role (flips) |
+| `--wu-text-on-danger` | `#f1f1f1` | `#1a1a1a` | role (flips) |
+| `--wu-warning` | `--wu-warning-500` (`#ffc107`) | `--wu-warning-400` (`#ffd16c`) | role (flips) |
+| `--wu-warning-hover` | `--wu-warning-600` (`#dca600`) | `--wu-warning-300` (`#ffdf9c`) | role (flips) |
+| `--wu-warning-active` | `--wu-warning-700` (`#b28600`) | `--wu-warning-200` (`#ffeabe`) | role (flips) |
+| `--wu-warning-subtle` | `--wu-warning-50` (`#fff6e5`) | `--wu-warning-950` (`#3d2b00`) | role (flips) |
+| `--wu-warning-border` | `--wu-warning-200` (`#ffeabe`) | `--wu-warning-800` (`#866300`) | role (flips) |
+| `--wu-text-warning` | `--wu-warning-800` (`#866300`) | `--wu-warning-300` (`#ffdf9c`) | role (flips) |
+| `--wu-text-on-warning` | `#1a1a1a` | `#1a1a1a` | role (flips) |
+| `--wu-info` | `--wu-info-700` (`#007485`) | `--wu-info-400` (`#4cbdd2`) | role (flips) |
+| `--wu-info-hover` | `--wu-info-800` (`#005a67`) | `--wu-info-300` (`#79d4e6`) | role (flips) |
+| `--wu-info-active` | `--wu-info-900` (`#00414c`) | `--wu-info-200` (`#a4e6f4`) | role (flips) |
+| `--wu-info-subtle` | `--wu-info-50` (`#e4f8fc`) | `--wu-info-950` (`#002d35`) | role (flips) |
+| `--wu-info-border` | `--wu-info-200` (`#a4e6f4`) | `--wu-info-800` (`#005a67`) | role (flips) |
+| `--wu-text-info` | `--wu-info-800` (`#005a67`) | `--wu-info-300` (`#79d4e6`) | role (flips) |
+| `--wu-text-on-info` | `#f1f1f1` | `#1a1a1a` | role (flips) |
 
 ## Error aliases
 
-`error` is a second name for `danger`. Every `--nu-error-*` token references the matching `--nu-danger-*` token and cannot be set in a theme map.
+`error` is a second name for `danger`. Every `--wu-error-*` token references the matching `--wu-danger-*` token and cannot be set in a theme map.
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-error` | `--nu-danger` (`#ab0728`) | `--nu-danger` (`#fd6066`) | role (flips) |
-| `--nu-error-hover` | `--nu-danger-hover` (`#88001c`) | `--nu-danger-hover` (`#ff9997`) | role (flips) |
-| `--nu-error-active` | `--nu-danger-active` (`#670013`) | `--nu-danger-active` (`#ffc1bf`) | role (flips) |
-| `--nu-error-subtle` | `--nu-danger-subtle` (`#ffeeed`) | `--nu-danger-subtle` (`#4c000b`) | role (flips) |
-| `--nu-error-border` | `--nu-danger-border` (`#ffc1bf`) | `--nu-danger-border` (`#88001c`) | role (flips) |
-| `--nu-text-error` | `--nu-text-danger` (`#ab0728`) | `--nu-text-danger` (`#ff9997`) | role (flips) |
-| `--nu-text-on-error` | `--nu-text-on-danger` (`#f1f1f1`) | `--nu-text-on-danger` (`#1a1a1a`) | role (flips) |
+| `--wu-error` | `--wu-danger` (`#ab0728`) | `--wu-danger` (`#fd6066`) | role (flips) |
+| `--wu-error-hover` | `--wu-danger-hover` (`#88001c`) | `--wu-danger-hover` (`#ff9997`) | role (flips) |
+| `--wu-error-active` | `--wu-danger-active` (`#670013`) | `--wu-danger-active` (`#ffc1bf`) | role (flips) |
+| `--wu-error-subtle` | `--wu-danger-subtle` (`#ffeeed`) | `--wu-danger-subtle` (`#4c000b`) | role (flips) |
+| `--wu-error-border` | `--wu-danger-border` (`#ffc1bf`) | `--wu-danger-border` (`#88001c`) | role (flips) |
+| `--wu-text-error` | `--wu-text-danger` (`#ab0728`) | `--wu-text-danger` (`#ff9997`) | role (flips) |
+| `--wu-text-on-error` | `--wu-text-on-danger` (`#f1f1f1`) | `--wu-text-on-danger` (`#1a1a1a`) | role (flips) |
 
 ## Hue roles
 
@@ -134,27 +134,27 @@ Decorative roles for each palette hue (no meaning attached). They flip per theme
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-gray-subtle` | `--nu-gray-50` (`#f0f1f5`) | `--nu-gray-950` (`#20232a`) | role (flips) |
-| `--nu-gray-border` | `--nu-gray-200` (`#cacfd9`) | `--nu-gray-800` (`#3c414c`) | role (flips) |
-| `--nu-text-gray` | `--nu-gray-700` (`#4d535f`) | `--nu-gray-300` (`#adb4c0`) | role (flips) |
-| `--nu-red-subtle` | `--nu-red-50` (`#ffefed`) | `--nu-red-950` (`#4f0006`) | role (flips) |
-| `--nu-red-border` | `--nu-red-200` (`#ffc8c3`) | `--nu-red-800` (`#930013`) | role (flips) |
-| `--nu-text-red` | `--nu-red-700` (`#b81822`) | `--nu-red-300` (`#ffa69e`) | role (flips) |
-| `--nu-blue-subtle` | `--nu-blue-50` (`#ecf3ff`) | `--nu-blue-950` (`#012158`) | role (flips) |
-| `--nu-blue-border` | `--nu-blue-200` (`#bfd8ff`) | `--nu-blue-800` (`#0b449c`) | role (flips) |
-| `--nu-text-blue` | `--nu-blue-700` (`#1a5ac1`) | `--nu-blue-300` (`#9ac0ff`) | role (flips) |
-| `--nu-green-subtle` | `--nu-green-50` (`#e4fde7`) | `--nu-green-950` (`#003412`) | role (flips) |
-| `--nu-green-border` | `--nu-green-200` (`#a6f7b6`) | `--nu-green-800` (`#006b2d`) | role (flips) |
-| `--nu-text-green` | `--nu-green-800` (`#006b2d`) | `--nu-green-300` (`#7ceb96`) | role (flips) |
-| `--nu-yellow-subtle` | `--nu-yellow-50` (`#fff5e1`) | `--nu-yellow-950` (`#3a2a00`) | role (flips) |
-| `--nu-yellow-border` | `--nu-yellow-200` (`#ffe4aa`) | `--nu-yellow-800` (`#7c5d00`) | role (flips) |
-| `--nu-text-yellow` | `--nu-yellow-800` (`#7c5d00`) | `--nu-yellow-300` (`#ffd576`) | role (flips) |
-| `--nu-purple-subtle` | `--nu-purple-50` (`#f6f0ff`) | `--nu-purple-950` (`#350658`) | role (flips) |
-| `--nu-purple-border` | `--nu-purple-200` (`#e1cbff`) | `--nu-purple-800` (`#631b9c`) | role (flips) |
-| `--nu-text-purple` | `--nu-purple-700` (`#7e2ec1`) | `--nu-purple-300` (`#d0acff`) | role (flips) |
-| `--nu-pink-subtle` | `--nu-pink-50` (`#ffeef4`) | `--nu-pink-950` (`#4c002b`) | role (flips) |
-| `--nu-pink-border` | `--nu-pink-200` (`#ffc8dc`) | `--nu-pink-800` (`#900455`) | role (flips) |
-| `--nu-text-pink` | `--nu-pink-700` (`#b41c6e`) | `--nu-pink-300` (`#ffa5c9`) | role (flips) |
+| `--wu-gray-subtle` | `--wu-gray-50` (`#f0f1f5`) | `--wu-gray-950` (`#20232a`) | role (flips) |
+| `--wu-gray-border` | `--wu-gray-200` (`#cacfd9`) | `--wu-gray-800` (`#3c414c`) | role (flips) |
+| `--wu-text-gray` | `--wu-gray-700` (`#4d535f`) | `--wu-gray-300` (`#adb4c0`) | role (flips) |
+| `--wu-red-subtle` | `--wu-red-50` (`#ffefed`) | `--wu-red-950` (`#4f0006`) | role (flips) |
+| `--wu-red-border` | `--wu-red-200` (`#ffc8c3`) | `--wu-red-800` (`#930013`) | role (flips) |
+| `--wu-text-red` | `--wu-red-700` (`#b81822`) | `--wu-red-300` (`#ffa69e`) | role (flips) |
+| `--wu-blue-subtle` | `--wu-blue-50` (`#ecf3ff`) | `--wu-blue-950` (`#012158`) | role (flips) |
+| `--wu-blue-border` | `--wu-blue-200` (`#bfd8ff`) | `--wu-blue-800` (`#0b449c`) | role (flips) |
+| `--wu-text-blue` | `--wu-blue-700` (`#1a5ac1`) | `--wu-blue-300` (`#9ac0ff`) | role (flips) |
+| `--wu-green-subtle` | `--wu-green-50` (`#e4fde7`) | `--wu-green-950` (`#003412`) | role (flips) |
+| `--wu-green-border` | `--wu-green-200` (`#a6f7b6`) | `--wu-green-800` (`#006b2d`) | role (flips) |
+| `--wu-text-green` | `--wu-green-800` (`#006b2d`) | `--wu-green-300` (`#7ceb96`) | role (flips) |
+| `--wu-yellow-subtle` | `--wu-yellow-50` (`#fff5e1`) | `--wu-yellow-950` (`#3a2a00`) | role (flips) |
+| `--wu-yellow-border` | `--wu-yellow-200` (`#ffe4aa`) | `--wu-yellow-800` (`#7c5d00`) | role (flips) |
+| `--wu-text-yellow` | `--wu-yellow-800` (`#7c5d00`) | `--wu-yellow-300` (`#ffd576`) | role (flips) |
+| `--wu-purple-subtle` | `--wu-purple-50` (`#f6f0ff`) | `--wu-purple-950` (`#350658`) | role (flips) |
+| `--wu-purple-border` | `--wu-purple-200` (`#e1cbff`) | `--wu-purple-800` (`#631b9c`) | role (flips) |
+| `--wu-text-purple` | `--wu-purple-700` (`#7e2ec1`) | `--wu-purple-300` (`#d0acff`) | role (flips) |
+| `--wu-pink-subtle` | `--wu-pink-50` (`#ffeef4`) | `--wu-pink-950` (`#4c002b`) | role (flips) |
+| `--wu-pink-border` | `--wu-pink-200` (`#ffc8dc`) | `--wu-pink-800` (`#900455`) | role (flips) |
+| `--wu-text-pink` | `--wu-pink-700` (`#b41c6e`) | `--wu-pink-300` (`#ffa5c9`) | role (flips) |
 
 ## Palette
 
@@ -162,138 +162,138 @@ Generated shade scales (stops 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 9
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-brand-50` | `#ebf3ff` |  | palette (fixed) |
-| `--nu-brand-100` | `#dbeaff` |  | palette (fixed) |
-| `--nu-brand-200` | `#bad7ff` |  | palette (fixed) |
-| `--nu-brand-300` | `#91beff` |  | palette (fixed) |
-| `--nu-brand-400` | `#5ca0ff` |  | palette (fixed) |
-| `--nu-brand-500` | `#007bff` |  | palette (fixed) |
-| `--nu-brand-600` | `#006be0` |  | palette (fixed) |
-| `--nu-brand-700` | `#0058bb` |  | palette (fixed) |
-| `--nu-brand-800` | `#004494` |  | palette (fixed) |
-| `--nu-brand-900` | `#003270` |  | palette (fixed) |
-| `--nu-brand-950` | `#002352` |  | palette (fixed) |
-| `--nu-success-50` | `#e5fae6` |  | palette (fixed) |
-| `--nu-success-100` | `#cef7d1` |  | palette (fixed) |
-| `--nu-success-200` | `#a8ecae` |  | palette (fixed) |
-| `--nu-success-300` | `#7fdb89` |  | palette (fixed) |
-| `--nu-success-400` | `#54c365` |  | palette (fixed) |
-| `--nu-success-500` | `#28a745` |  | palette (fixed) |
-| `--nu-success-600` | `#059333` |  | palette (fixed) |
-| `--nu-success-700` | `#007a28` |  | palette (fixed) |
-| `--nu-success-800` | `#005e1d` |  | palette (fixed) |
-| `--nu-success-900` | `#004513` |  | palette (fixed) |
-| `--nu-success-950` | `#00300b` |  | palette (fixed) |
-| `--nu-danger-50` | `#ffeeed` |  | palette (fixed) |
-| `--nu-danger-100` | `#ffdfde` |  | palette (fixed) |
-| `--nu-danger-200` | `#ffc1bf` |  | palette (fixed) |
-| `--nu-danger-300` | `#ff9997` |  | palette (fixed) |
-| `--nu-danger-400` | `#fd6066` |  | palette (fixed) |
-| `--nu-danger-500` | `#dc3545` |  | palette (fixed) |
-| `--nu-danger-600` | `#c72037` |  | palette (fixed) |
-| `--nu-danger-700` | `#ab0728` |  | palette (fixed) |
-| `--nu-danger-800` | `#88001c` |  | palette (fixed) |
-| `--nu-danger-900` | `#670013` |  | palette (fixed) |
-| `--nu-danger-950` | `#4c000b` |  | palette (fixed) |
-| `--nu-warning-50` | `#fff6e5` |  | palette (fixed) |
-| `--nu-warning-100` | `#fff2d8` |  | palette (fixed) |
-| `--nu-warning-200` | `#ffeabe` |  | palette (fixed) |
-| `--nu-warning-300` | `#ffdf9c` |  | palette (fixed) |
-| `--nu-warning-400` | `#ffd16c` |  | palette (fixed) |
-| `--nu-warning-500` | `#ffc107` |  | palette (fixed) |
-| `--nu-warning-600` | `#dca600` |  | palette (fixed) |
-| `--nu-warning-700` | `#b28600` |  | palette (fixed) |
-| `--nu-warning-800` | `#866300` |  | palette (fixed) |
-| `--nu-warning-900` | `#5e4500` |  | palette (fixed) |
-| `--nu-warning-950` | `#3d2b00` |  | palette (fixed) |
-| `--nu-info-50` | `#e4f8fc` |  | palette (fixed) |
-| `--nu-info-100` | `#ccf3fb` |  | palette (fixed) |
-| `--nu-info-200` | `#a4e6f4` |  | palette (fixed) |
-| `--nu-info-300` | `#79d4e6` |  | palette (fixed) |
-| `--nu-info-400` | `#4cbdd2` |  | palette (fixed) |
-| `--nu-info-500` | `#17a2b8` |  | palette (fixed) |
-| `--nu-info-600` | `#008da1` |  | palette (fixed) |
-| `--nu-info-700` | `#007485` |  | palette (fixed) |
-| `--nu-info-800` | `#005a67` |  | palette (fixed) |
-| `--nu-info-900` | `#00414c` |  | palette (fixed) |
-| `--nu-info-950` | `#002d35` |  | palette (fixed) |
-| `--nu-gray-50` | `#f0f1f5` |  | palette (fixed) |
-| `--nu-gray-100` | `#e3e6ec` |  | palette (fixed) |
-| `--nu-gray-200` | `#cacfd9` |  | palette (fixed) |
-| `--nu-gray-300` | `#adb4c0` |  | palette (fixed) |
-| `--nu-gray-400` | `#8d94a1` |  | palette (fixed) |
-| `--nu-gray-500` | `#6b7280` |  | palette (fixed) |
-| `--nu-gray-600` | `#5d6471` |  | palette (fixed) |
-| `--nu-gray-700` | `#4d535f` |  | palette (fixed) |
-| `--nu-gray-800` | `#3c414c` |  | palette (fixed) |
-| `--nu-gray-900` | `#2d3139` |  | palette (fixed) |
-| `--nu-gray-950` | `#20232a` |  | palette (fixed) |
-| `--nu-red-50` | `#ffefed` |  | palette (fixed) |
-| `--nu-red-100` | `#ffe2df` |  | palette (fixed) |
-| `--nu-red-200` | `#ffc8c3` |  | palette (fixed) |
-| `--nu-red-300` | `#ffa69e` |  | palette (fixed) |
-| `--nu-red-400` | `#ff766f` |  | palette (fixed) |
-| `--nu-red-500` | `#ef4444` |  | palette (fixed) |
-| `--nu-red-600` | `#d72f33` |  | palette (fixed) |
-| `--nu-red-700` | `#b81822` |  | palette (fixed) |
-| `--nu-red-800` | `#930013` |  | palette (fixed) |
-| `--nu-red-900` | `#6e000c` |  | palette (fixed) |
-| `--nu-red-950` | `#4f0006` |  | palette (fixed) |
-| `--nu-blue-50` | `#ecf3ff` |  | palette (fixed) |
-| `--nu-blue-100` | `#ddeaff` |  | palette (fixed) |
-| `--nu-blue-200` | `#bfd8ff` |  | palette (fixed) |
-| `--nu-blue-300` | `#9ac0ff` |  | palette (fixed) |
-| `--nu-blue-400` | `#6ba3ff` |  | palette (fixed) |
-| `--nu-blue-500` | `#3b82f6` |  | palette (fixed) |
-| `--nu-blue-600` | `#2a70df` |  | palette (fixed) |
-| `--nu-blue-700` | `#1a5ac1` |  | palette (fixed) |
-| `--nu-blue-800` | `#0b449c` |  | palette (fixed) |
-| `--nu-blue-900` | `#023179` |  | palette (fixed) |
-| `--nu-blue-950` | `#012158` |  | palette (fixed) |
-| `--nu-green-50` | `#e4fde7` |  | palette (fixed) |
-| `--nu-green-100` | `#ccfcd4` |  | palette (fixed) |
-| `--nu-green-200` | `#a6f7b6` |  | palette (fixed) |
-| `--nu-green-300` | `#7ceb96` |  | palette (fixed) |
-| `--nu-green-400` | `#50da78` |  | palette (fixed) |
-| `--nu-green-500` | `#22c55e` |  | palette (fixed) |
-| `--nu-green-600` | `#00ac4d` |  | palette (fixed) |
-| `--nu-green-700` | `#008d3d` |  | palette (fixed) |
-| `--nu-green-800` | `#006b2d` |  | palette (fixed) |
-| `--nu-green-900` | `#004d1e` |  | palette (fixed) |
-| `--nu-green-950` | `#003412` |  | palette (fixed) |
-| `--nu-yellow-50` | `#fff5e1` |  | palette (fixed) |
-| `--nu-yellow-100` | `#fff0cf` |  | palette (fixed) |
-| `--nu-yellow-200` | `#ffe4aa` |  | palette (fixed) |
-| `--nu-yellow-300` | `#ffd576` |  | palette (fixed) |
-| `--nu-yellow-400` | `#f8c43f` |  | palette (fixed) |
-| `--nu-yellow-500` | `#eab308` |  | palette (fixed) |
-| `--nu-yellow-600` | `#ca9a00` |  | palette (fixed) |
-| `--nu-yellow-700` | `#a57d00` |  | palette (fixed) |
-| `--nu-yellow-800` | `#7c5d00` |  | palette (fixed) |
-| `--nu-yellow-900` | `#584100` |  | palette (fixed) |
-| `--nu-yellow-950` | `#3a2a00` |  | palette (fixed) |
-| `--nu-purple-50` | `#f6f0ff` |  | palette (fixed) |
-| `--nu-purple-100` | `#efe4ff` |  | palette (fixed) |
-| `--nu-purple-200` | `#e1cbff` |  | palette (fixed) |
-| `--nu-purple-300` | `#d0acff` |  | palette (fixed) |
-| `--nu-purple-400` | `#bd83ff` |  | palette (fixed) |
-| `--nu-purple-500` | `#a855f7` |  | palette (fixed) |
-| `--nu-purple-600` | `#9542e0` |  | palette (fixed) |
-| `--nu-purple-700` | `#7e2ec1` |  | palette (fixed) |
-| `--nu-purple-800` | `#631b9c` |  | palette (fixed) |
-| `--nu-purple-900` | `#4b0d79` |  | palette (fixed) |
-| `--nu-purple-950` | `#350658` |  | palette (fixed) |
-| `--nu-pink-50` | `#ffeef4` |  | palette (fixed) |
-| `--nu-pink-100` | `#ffe2ec` |  | palette (fixed) |
-| `--nu-pink-200` | `#ffc8dc` |  | palette (fixed) |
-| `--nu-pink-300` | `#ffa5c9` |  | palette (fixed) |
-| `--nu-pink-400` | `#ff74b2` |  | palette (fixed) |
-| `--nu-pink-500` | `#ec4899` |  | palette (fixed) |
-| `--nu-pink-600` | `#d43386` |  | palette (fixed) |
-| `--nu-pink-700` | `#b41c6e` |  | palette (fixed) |
-| `--nu-pink-800` | `#900455` |  | palette (fixed) |
-| `--nu-pink-900` | `#6b003e` |  | palette (fixed) |
-| `--nu-pink-950` | `#4c002b` |  | palette (fixed) |
+| `--wu-brand-50` | `#ebf3ff` |  | palette (fixed) |
+| `--wu-brand-100` | `#dbeaff` |  | palette (fixed) |
+| `--wu-brand-200` | `#bad7ff` |  | palette (fixed) |
+| `--wu-brand-300` | `#91beff` |  | palette (fixed) |
+| `--wu-brand-400` | `#5ca0ff` |  | palette (fixed) |
+| `--wu-brand-500` | `#007bff` |  | palette (fixed) |
+| `--wu-brand-600` | `#006be0` |  | palette (fixed) |
+| `--wu-brand-700` | `#0058bb` |  | palette (fixed) |
+| `--wu-brand-800` | `#004494` |  | palette (fixed) |
+| `--wu-brand-900` | `#003270` |  | palette (fixed) |
+| `--wu-brand-950` | `#002352` |  | palette (fixed) |
+| `--wu-success-50` | `#e5fae6` |  | palette (fixed) |
+| `--wu-success-100` | `#cef7d1` |  | palette (fixed) |
+| `--wu-success-200` | `#a8ecae` |  | palette (fixed) |
+| `--wu-success-300` | `#7fdb89` |  | palette (fixed) |
+| `--wu-success-400` | `#54c365` |  | palette (fixed) |
+| `--wu-success-500` | `#28a745` |  | palette (fixed) |
+| `--wu-success-600` | `#059333` |  | palette (fixed) |
+| `--wu-success-700` | `#007a28` |  | palette (fixed) |
+| `--wu-success-800` | `#005e1d` |  | palette (fixed) |
+| `--wu-success-900` | `#004513` |  | palette (fixed) |
+| `--wu-success-950` | `#00300b` |  | palette (fixed) |
+| `--wu-danger-50` | `#ffeeed` |  | palette (fixed) |
+| `--wu-danger-100` | `#ffdfde` |  | palette (fixed) |
+| `--wu-danger-200` | `#ffc1bf` |  | palette (fixed) |
+| `--wu-danger-300` | `#ff9997` |  | palette (fixed) |
+| `--wu-danger-400` | `#fd6066` |  | palette (fixed) |
+| `--wu-danger-500` | `#dc3545` |  | palette (fixed) |
+| `--wu-danger-600` | `#c72037` |  | palette (fixed) |
+| `--wu-danger-700` | `#ab0728` |  | palette (fixed) |
+| `--wu-danger-800` | `#88001c` |  | palette (fixed) |
+| `--wu-danger-900` | `#670013` |  | palette (fixed) |
+| `--wu-danger-950` | `#4c000b` |  | palette (fixed) |
+| `--wu-warning-50` | `#fff6e5` |  | palette (fixed) |
+| `--wu-warning-100` | `#fff2d8` |  | palette (fixed) |
+| `--wu-warning-200` | `#ffeabe` |  | palette (fixed) |
+| `--wu-warning-300` | `#ffdf9c` |  | palette (fixed) |
+| `--wu-warning-400` | `#ffd16c` |  | palette (fixed) |
+| `--wu-warning-500` | `#ffc107` |  | palette (fixed) |
+| `--wu-warning-600` | `#dca600` |  | palette (fixed) |
+| `--wu-warning-700` | `#b28600` |  | palette (fixed) |
+| `--wu-warning-800` | `#866300` |  | palette (fixed) |
+| `--wu-warning-900` | `#5e4500` |  | palette (fixed) |
+| `--wu-warning-950` | `#3d2b00` |  | palette (fixed) |
+| `--wu-info-50` | `#e4f8fc` |  | palette (fixed) |
+| `--wu-info-100` | `#ccf3fb` |  | palette (fixed) |
+| `--wu-info-200` | `#a4e6f4` |  | palette (fixed) |
+| `--wu-info-300` | `#79d4e6` |  | palette (fixed) |
+| `--wu-info-400` | `#4cbdd2` |  | palette (fixed) |
+| `--wu-info-500` | `#17a2b8` |  | palette (fixed) |
+| `--wu-info-600` | `#008da1` |  | palette (fixed) |
+| `--wu-info-700` | `#007485` |  | palette (fixed) |
+| `--wu-info-800` | `#005a67` |  | palette (fixed) |
+| `--wu-info-900` | `#00414c` |  | palette (fixed) |
+| `--wu-info-950` | `#002d35` |  | palette (fixed) |
+| `--wu-gray-50` | `#f0f1f5` |  | palette (fixed) |
+| `--wu-gray-100` | `#e3e6ec` |  | palette (fixed) |
+| `--wu-gray-200` | `#cacfd9` |  | palette (fixed) |
+| `--wu-gray-300` | `#adb4c0` |  | palette (fixed) |
+| `--wu-gray-400` | `#8d94a1` |  | palette (fixed) |
+| `--wu-gray-500` | `#6b7280` |  | palette (fixed) |
+| `--wu-gray-600` | `#5d6471` |  | palette (fixed) |
+| `--wu-gray-700` | `#4d535f` |  | palette (fixed) |
+| `--wu-gray-800` | `#3c414c` |  | palette (fixed) |
+| `--wu-gray-900` | `#2d3139` |  | palette (fixed) |
+| `--wu-gray-950` | `#20232a` |  | palette (fixed) |
+| `--wu-red-50` | `#ffefed` |  | palette (fixed) |
+| `--wu-red-100` | `#ffe2df` |  | palette (fixed) |
+| `--wu-red-200` | `#ffc8c3` |  | palette (fixed) |
+| `--wu-red-300` | `#ffa69e` |  | palette (fixed) |
+| `--wu-red-400` | `#ff766f` |  | palette (fixed) |
+| `--wu-red-500` | `#ef4444` |  | palette (fixed) |
+| `--wu-red-600` | `#d72f33` |  | palette (fixed) |
+| `--wu-red-700` | `#b81822` |  | palette (fixed) |
+| `--wu-red-800` | `#930013` |  | palette (fixed) |
+| `--wu-red-900` | `#6e000c` |  | palette (fixed) |
+| `--wu-red-950` | `#4f0006` |  | palette (fixed) |
+| `--wu-blue-50` | `#ecf3ff` |  | palette (fixed) |
+| `--wu-blue-100` | `#ddeaff` |  | palette (fixed) |
+| `--wu-blue-200` | `#bfd8ff` |  | palette (fixed) |
+| `--wu-blue-300` | `#9ac0ff` |  | palette (fixed) |
+| `--wu-blue-400` | `#6ba3ff` |  | palette (fixed) |
+| `--wu-blue-500` | `#3b82f6` |  | palette (fixed) |
+| `--wu-blue-600` | `#2a70df` |  | palette (fixed) |
+| `--wu-blue-700` | `#1a5ac1` |  | palette (fixed) |
+| `--wu-blue-800` | `#0b449c` |  | palette (fixed) |
+| `--wu-blue-900` | `#023179` |  | palette (fixed) |
+| `--wu-blue-950` | `#012158` |  | palette (fixed) |
+| `--wu-green-50` | `#e4fde7` |  | palette (fixed) |
+| `--wu-green-100` | `#ccfcd4` |  | palette (fixed) |
+| `--wu-green-200` | `#a6f7b6` |  | palette (fixed) |
+| `--wu-green-300` | `#7ceb96` |  | palette (fixed) |
+| `--wu-green-400` | `#50da78` |  | palette (fixed) |
+| `--wu-green-500` | `#22c55e` |  | palette (fixed) |
+| `--wu-green-600` | `#00ac4d` |  | palette (fixed) |
+| `--wu-green-700` | `#008d3d` |  | palette (fixed) |
+| `--wu-green-800` | `#006b2d` |  | palette (fixed) |
+| `--wu-green-900` | `#004d1e` |  | palette (fixed) |
+| `--wu-green-950` | `#003412` |  | palette (fixed) |
+| `--wu-yellow-50` | `#fff5e1` |  | palette (fixed) |
+| `--wu-yellow-100` | `#fff0cf` |  | palette (fixed) |
+| `--wu-yellow-200` | `#ffe4aa` |  | palette (fixed) |
+| `--wu-yellow-300` | `#ffd576` |  | palette (fixed) |
+| `--wu-yellow-400` | `#f8c43f` |  | palette (fixed) |
+| `--wu-yellow-500` | `#eab308` |  | palette (fixed) |
+| `--wu-yellow-600` | `#ca9a00` |  | palette (fixed) |
+| `--wu-yellow-700` | `#a57d00` |  | palette (fixed) |
+| `--wu-yellow-800` | `#7c5d00` |  | palette (fixed) |
+| `--wu-yellow-900` | `#584100` |  | palette (fixed) |
+| `--wu-yellow-950` | `#3a2a00` |  | palette (fixed) |
+| `--wu-purple-50` | `#f6f0ff` |  | palette (fixed) |
+| `--wu-purple-100` | `#efe4ff` |  | palette (fixed) |
+| `--wu-purple-200` | `#e1cbff` |  | palette (fixed) |
+| `--wu-purple-300` | `#d0acff` |  | palette (fixed) |
+| `--wu-purple-400` | `#bd83ff` |  | palette (fixed) |
+| `--wu-purple-500` | `#a855f7` |  | palette (fixed) |
+| `--wu-purple-600` | `#9542e0` |  | palette (fixed) |
+| `--wu-purple-700` | `#7e2ec1` |  | palette (fixed) |
+| `--wu-purple-800` | `#631b9c` |  | palette (fixed) |
+| `--wu-purple-900` | `#4b0d79` |  | palette (fixed) |
+| `--wu-purple-950` | `#350658` |  | palette (fixed) |
+| `--wu-pink-50` | `#ffeef4` |  | palette (fixed) |
+| `--wu-pink-100` | `#ffe2ec` |  | palette (fixed) |
+| `--wu-pink-200` | `#ffc8dc` |  | palette (fixed) |
+| `--wu-pink-300` | `#ffa5c9` |  | palette (fixed) |
+| `--wu-pink-400` | `#ff74b2` |  | palette (fixed) |
+| `--wu-pink-500` | `#ec4899` |  | palette (fixed) |
+| `--wu-pink-600` | `#d43386` |  | palette (fixed) |
+| `--wu-pink-700` | `#b41c6e` |  | palette (fixed) |
+| `--wu-pink-800` | `#900455` |  | palette (fixed) |
+| `--wu-pink-900` | `#6b003e` |  | palette (fixed) |
+| `--wu-pink-950` | `#4c002b` |  | palette (fixed) |
 
 ## Basic colors
 
@@ -301,189 +301,189 @@ Classes: `.bg-black`, `.text-white`, `.border-transparent` and so on.
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-black` | `#000` |  | basic (fixed) |
-| `--nu-white` | `#fff` |  | basic (fixed) |
-| `--nu-transparent` | `transparent` |  | basic (fixed) |
+| `--wu-black` | `#000` |  | basic (fixed) |
+| `--wu-white` | `#fff` |  | basic (fixed) |
+| `--wu-transparent` | `transparent` |  | basic (fixed) |
 
 ## Non-color scales
 
-Emitted from the configuration maps. Mixins and utility classes output these tokens for configured keys (`p(4)` gives `padding: var(--nu-space-4)`); custom values stay raw. Decimal keys use `_` in token names (`--nu-space-0_5`).
+Emitted from the configuration maps. Mixins and utility classes output these tokens for configured keys (`p(4)` gives `padding: var(--wu-space-4)`); custom values stay raw. Decimal keys use `_` in token names (`--wu-space-0_5`).
 
 ### Spacing
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-space-0` | `0` |  | scale (fixed) |
-| `--nu-space-1` | `0.25rem` |  | scale (fixed) |
-| `--nu-space-2` | `0.5rem` |  | scale (fixed) |
-| `--nu-space-3` | `0.75rem` |  | scale (fixed) |
-| `--nu-space-4` | `1rem` |  | scale (fixed) |
-| `--nu-space-5` | `1.25rem` |  | scale (fixed) |
-| `--nu-space-6` | `1.5rem` |  | scale (fixed) |
-| `--nu-space-8` | `2rem` |  | scale (fixed) |
-| `--nu-space-10` | `2.5rem` |  | scale (fixed) |
-| `--nu-space-12` | `3rem` |  | scale (fixed) |
-| `--nu-space-16` | `4rem` |  | scale (fixed) |
-| `--nu-space-20` | `5rem` |  | scale (fixed) |
-| `--nu-space-24` | `6rem` |  | scale (fixed) |
-| `--nu-space-32` | `8rem` |  | scale (fixed) |
-| `--nu-space-40` | `10rem` |  | scale (fixed) |
-| `--nu-space-48` | `12rem` |  | scale (fixed) |
-| `--nu-space-56` | `14rem` |  | scale (fixed) |
-| `--nu-space-64` | `16rem` |  | scale (fixed) |
+| `--wu-space-0` | `0` |  | scale (fixed) |
+| `--wu-space-1` | `0.25rem` |  | scale (fixed) |
+| `--wu-space-2` | `0.5rem` |  | scale (fixed) |
+| `--wu-space-3` | `0.75rem` |  | scale (fixed) |
+| `--wu-space-4` | `1rem` |  | scale (fixed) |
+| `--wu-space-5` | `1.25rem` |  | scale (fixed) |
+| `--wu-space-6` | `1.5rem` |  | scale (fixed) |
+| `--wu-space-8` | `2rem` |  | scale (fixed) |
+| `--wu-space-10` | `2.5rem` |  | scale (fixed) |
+| `--wu-space-12` | `3rem` |  | scale (fixed) |
+| `--wu-space-16` | `4rem` |  | scale (fixed) |
+| `--wu-space-20` | `5rem` |  | scale (fixed) |
+| `--wu-space-24` | `6rem` |  | scale (fixed) |
+| `--wu-space-32` | `8rem` |  | scale (fixed) |
+| `--wu-space-40` | `10rem` |  | scale (fixed) |
+| `--wu-space-48` | `12rem` |  | scale (fixed) |
+| `--wu-space-56` | `14rem` |  | scale (fixed) |
+| `--wu-space-64` | `16rem` |  | scale (fixed) |
 
 ### Radius
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-radius-xs` | `0.25rem` |  | scale (fixed) |
-| `--nu-radius-sm` | `0.375rem` |  | scale (fixed) |
-| `--nu-radius-md` | `0.5rem` |  | scale (fixed) |
-| `--nu-radius-lg` | `0.75rem` |  | scale (fixed) |
-| `--nu-radius-xl` | `1rem` |  | scale (fixed) |
-| `--nu-radius-2xl` | `1.25rem` |  | scale (fixed) |
-| `--nu-radius-full` | `99in` |  | scale (fixed) |
-| `--nu-radius-none` | `0` |  | scale (fixed) |
+| `--wu-radius-xs` | `0.25rem` |  | scale (fixed) |
+| `--wu-radius-sm` | `0.375rem` |  | scale (fixed) |
+| `--wu-radius-md` | `0.5rem` |  | scale (fixed) |
+| `--wu-radius-lg` | `0.75rem` |  | scale (fixed) |
+| `--wu-radius-xl` | `1rem` |  | scale (fixed) |
+| `--wu-radius-2xl` | `1.25rem` |  | scale (fixed) |
+| `--wu-radius-full` | `99in` |  | scale (fixed) |
+| `--wu-radius-none` | `0` |  | scale (fixed) |
 
 ### Border width
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-border-width-0` | `0px` |  | scale (fixed) |
-| `--nu-border-width-1` | `1px` |  | scale (fixed) |
-| `--nu-border-width-2` | `2px` |  | scale (fixed) |
-| `--nu-border-width-4` | `4px` |  | scale (fixed) |
-| `--nu-border-width-8` | `8px` |  | scale (fixed) |
+| `--wu-border-width-0` | `0px` |  | scale (fixed) |
+| `--wu-border-width-1` | `1px` |  | scale (fixed) |
+| `--wu-border-width-2` | `2px` |  | scale (fixed) |
+| `--wu-border-width-4` | `4px` |  | scale (fixed) |
+| `--wu-border-width-8` | `8px` |  | scale (fixed) |
 
 ### Font family
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-font-family` | `system-ui, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif` |  | scale (fixed) |
+| `--wu-font-family` | `system-ui, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif` |  | scale (fixed) |
 
 ### Font size
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-font-size-xs` | `0.75rem` |  | scale (fixed) |
-| `--nu-font-size-sm` | `0.875rem` |  | scale (fixed) |
-| `--nu-font-size-md` | `1rem` |  | scale (fixed) |
-| `--nu-font-size-base` | `1rem` |  | scale (fixed) |
-| `--nu-font-size-lg` | `1.25rem` |  | scale (fixed) |
-| `--nu-font-size-xl` | `1.5rem` |  | scale (fixed) |
-| `--nu-font-size-2xl` | `1.75rem` |  | scale (fixed) |
-| `--nu-font-size-3xl` | `2rem` |  | scale (fixed) |
-| `--nu-font-size-4xl` | `2.5rem` |  | scale (fixed) |
+| `--wu-font-size-xs` | `0.75rem` |  | scale (fixed) |
+| `--wu-font-size-sm` | `0.875rem` |  | scale (fixed) |
+| `--wu-font-size-md` | `1rem` |  | scale (fixed) |
+| `--wu-font-size-base` | `1rem` |  | scale (fixed) |
+| `--wu-font-size-lg` | `1.25rem` |  | scale (fixed) |
+| `--wu-font-size-xl` | `1.5rem` |  | scale (fixed) |
+| `--wu-font-size-2xl` | `1.75rem` |  | scale (fixed) |
+| `--wu-font-size-3xl` | `2rem` |  | scale (fixed) |
+| `--wu-font-size-4xl` | `2.5rem` |  | scale (fixed) |
 
 ### Font weight
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-font-weight-thin` | `100` |  | scale (fixed) |
-| `--nu-font-weight-extralight` | `200` |  | scale (fixed) |
-| `--nu-font-weight-light` | `300` |  | scale (fixed) |
-| `--nu-font-weight-normal` | `400` |  | scale (fixed) |
-| `--nu-font-weight-medium` | `500` |  | scale (fixed) |
-| `--nu-font-weight-semibold` | `600` |  | scale (fixed) |
-| `--nu-font-weight-bold` | `700` |  | scale (fixed) |
-| `--nu-font-weight-extrabold` | `800` |  | scale (fixed) |
-| `--nu-font-weight-black` | `900` |  | scale (fixed) |
+| `--wu-font-weight-thin` | `100` |  | scale (fixed) |
+| `--wu-font-weight-extralight` | `200` |  | scale (fixed) |
+| `--wu-font-weight-light` | `300` |  | scale (fixed) |
+| `--wu-font-weight-normal` | `400` |  | scale (fixed) |
+| `--wu-font-weight-medium` | `500` |  | scale (fixed) |
+| `--wu-font-weight-semibold` | `600` |  | scale (fixed) |
+| `--wu-font-weight-bold` | `700` |  | scale (fixed) |
+| `--wu-font-weight-extrabold` | `800` |  | scale (fixed) |
+| `--wu-font-weight-black` | `900` |  | scale (fixed) |
 
 ### Line height
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-line-height-none` | `1` |  | scale (fixed) |
-| `--nu-line-height-tight` | `1.25` |  | scale (fixed) |
-| `--nu-line-height-snug` | `1.375` |  | scale (fixed) |
-| `--nu-line-height-normal` | `1.5` |  | scale (fixed) |
-| `--nu-line-height-relaxed` | `1.625` |  | scale (fixed) |
-| `--nu-line-height-loose` | `2` |  | scale (fixed) |
+| `--wu-line-height-none` | `1` |  | scale (fixed) |
+| `--wu-line-height-tight` | `1.25` |  | scale (fixed) |
+| `--wu-line-height-snug` | `1.375` |  | scale (fixed) |
+| `--wu-line-height-normal` | `1.5` |  | scale (fixed) |
+| `--wu-line-height-relaxed` | `1.625` |  | scale (fixed) |
+| `--wu-line-height-loose` | `2` |  | scale (fixed) |
 
 ### Shadow
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-shadow-sm` | `0 1px 2px 0 rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
-| `--nu-shadow-md` | `0 4px 6px -1px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
-| `--nu-shadow-lg` | `0 10px 15px -3px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
-| `--nu-shadow-xl` | `0 20px 25px -5px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
-| `--nu-shadow-hero` | `0 20px 25px 5px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
-| `--nu-shadow-monster` | `0 20px 55px 20px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
+| `--wu-shadow-sm` | `0 1px 2px 0 rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
+| `--wu-shadow-md` | `0 4px 6px -1px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
+| `--wu-shadow-lg` | `0 10px 15px -3px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
+| `--wu-shadow-xl` | `0 20px 25px -5px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
+| `--wu-shadow-hero` | `0 20px 25px 5px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
+| `--wu-shadow-monster` | `0 20px 55px 20px rgba(0, 0, 0, 0.1)` |  | scale (fixed) |
 
 ### Opacity
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-opacity-0` | `0` |  | scale (fixed) |
-| `--nu-opacity-5` | `0.05` |  | scale (fixed) |
-| `--nu-opacity-10` | `0.1` |  | scale (fixed) |
-| `--nu-opacity-20` | `0.2` |  | scale (fixed) |
-| `--nu-opacity-25` | `0.25` |  | scale (fixed) |
-| `--nu-opacity-30` | `0.3` |  | scale (fixed) |
-| `--nu-opacity-33` | `0.33` |  | scale (fixed) |
-| `--nu-opacity-40` | `0.4` |  | scale (fixed) |
-| `--nu-opacity-50` | `0.5` |  | scale (fixed) |
-| `--nu-opacity-60` | `0.6` |  | scale (fixed) |
-| `--nu-opacity-66` | `0.66` |  | scale (fixed) |
-| `--nu-opacity-70` | `0.7` |  | scale (fixed) |
-| `--nu-opacity-75` | `0.75` |  | scale (fixed) |
-| `--nu-opacity-80` | `0.8` |  | scale (fixed) |
-| `--nu-opacity-90` | `0.9` |  | scale (fixed) |
-| `--nu-opacity-100` | `1` |  | scale (fixed) |
+| `--wu-opacity-0` | `0` |  | scale (fixed) |
+| `--wu-opacity-5` | `0.05` |  | scale (fixed) |
+| `--wu-opacity-10` | `0.1` |  | scale (fixed) |
+| `--wu-opacity-20` | `0.2` |  | scale (fixed) |
+| `--wu-opacity-25` | `0.25` |  | scale (fixed) |
+| `--wu-opacity-30` | `0.3` |  | scale (fixed) |
+| `--wu-opacity-33` | `0.33` |  | scale (fixed) |
+| `--wu-opacity-40` | `0.4` |  | scale (fixed) |
+| `--wu-opacity-50` | `0.5` |  | scale (fixed) |
+| `--wu-opacity-60` | `0.6` |  | scale (fixed) |
+| `--wu-opacity-66` | `0.66` |  | scale (fixed) |
+| `--wu-opacity-70` | `0.7` |  | scale (fixed) |
+| `--wu-opacity-75` | `0.75` |  | scale (fixed) |
+| `--wu-opacity-80` | `0.8` |  | scale (fixed) |
+| `--wu-opacity-90` | `0.9` |  | scale (fixed) |
+| `--wu-opacity-100` | `1` |  | scale (fixed) |
 
 ### Z-index levels
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-z-base` | `0` |  | scale (fixed) |
-| `--nu-z-hover` | `10` |  | scale (fixed) |
-| `--nu-z-dropdown` | `100` |  | scale (fixed) |
-| `--nu-z-sticky` | `200` |  | scale (fixed) |
-| `--nu-z-fixed` | `300` |  | scale (fixed) |
-| `--nu-z-overlay` | `400` |  | scale (fixed) |
-| `--nu-z-drawer` | `500` |  | scale (fixed) |
-| `--nu-z-modal` | `600` |  | scale (fixed) |
-| `--nu-z-popover` | `700` |  | scale (fixed) |
-| `--nu-z-tooltip` | `800` |  | scale (fixed) |
-| `--nu-z-toast` | `900` |  | scale (fixed) |
-| `--nu-z-max` | `9999` |  | scale (fixed) |
+| `--wu-z-base` | `0` |  | scale (fixed) |
+| `--wu-z-hover` | `10` |  | scale (fixed) |
+| `--wu-z-dropdown` | `100` |  | scale (fixed) |
+| `--wu-z-sticky` | `200` |  | scale (fixed) |
+| `--wu-z-fixed` | `300` |  | scale (fixed) |
+| `--wu-z-overlay` | `400` |  | scale (fixed) |
+| `--wu-z-drawer` | `500` |  | scale (fixed) |
+| `--wu-z-modal` | `600` |  | scale (fixed) |
+| `--wu-z-popover` | `700` |  | scale (fixed) |
+| `--wu-z-tooltip` | `800` |  | scale (fixed) |
+| `--wu-z-toast` | `900` |  | scale (fixed) |
+| `--wu-z-max` | `9999` |  | scale (fixed) |
 
 ### Duration
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-duration-0` | `0ms` |  | scale (fixed) |
-| `--nu-duration-75` | `75ms` |  | scale (fixed) |
-| `--nu-duration-100` | `100ms` |  | scale (fixed) |
-| `--nu-duration-150` | `150ms` |  | scale (fixed) |
-| `--nu-duration-200` | `200ms` |  | scale (fixed) |
-| `--nu-duration-300` | `300ms` |  | scale (fixed) |
-| `--nu-duration-500` | `500ms` |  | scale (fixed) |
-| `--nu-duration-700` | `700ms` |  | scale (fixed) |
-| `--nu-duration-1000` | `1000ms` |  | scale (fixed) |
+| `--wu-duration-0` | `0ms` |  | scale (fixed) |
+| `--wu-duration-75` | `75ms` |  | scale (fixed) |
+| `--wu-duration-100` | `100ms` |  | scale (fixed) |
+| `--wu-duration-150` | `150ms` |  | scale (fixed) |
+| `--wu-duration-200` | `200ms` |  | scale (fixed) |
+| `--wu-duration-300` | `300ms` |  | scale (fixed) |
+| `--wu-duration-500` | `500ms` |  | scale (fixed) |
+| `--wu-duration-700` | `700ms` |  | scale (fixed) |
+| `--wu-duration-1000` | `1000ms` |  | scale (fixed) |
 
 ### Easing
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-ease-linear` | `linear` |  | scale (fixed) |
-| `--nu-ease-in` | `cubic-bezier(0.4, 0, 1, 1)` |  | scale (fixed) |
-| `--nu-ease-out` | `cubic-bezier(0, 0, 0.2, 1)` |  | scale (fixed) |
-| `--nu-ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` |  | scale (fixed) |
+| `--wu-ease-linear` | `linear` |  | scale (fixed) |
+| `--wu-ease-in` | `cubic-bezier(0.4, 0, 1, 1)` |  | scale (fixed) |
+| `--wu-ease-out` | `cubic-bezier(0, 0, 0.2, 1)` |  | scale (fixed) |
+| `--wu-ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` |  | scale (fixed) |
 
 ### Control height
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-control-height-sm` | `2rem` |  | scale (fixed) |
-| `--nu-control-height-md` | `2.5rem` |  | scale (fixed) |
-| `--nu-control-height-lg` | `3rem` |  | scale (fixed) |
+| `--wu-control-height-sm` | `2rem` |  | scale (fixed) |
+| `--wu-control-height-md` | `2.5rem` |  | scale (fixed) |
+| `--wu-control-height-lg` | `3rem` |  | scale (fixed) |
 
 ### Control inline padding
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--nu-control-padding-inline-sm` | `0.75rem` |  | scale (fixed) |
-| `--nu-control-padding-inline-md` | `1rem` |  | scale (fixed) |
-| `--nu-control-padding-inline-lg` | `1.25rem` |  | scale (fixed) |
+| `--wu-control-padding-inline-sm` | `0.75rem` |  | scale (fixed) |
+| `--wu-control-padding-inline-md` | `1rem` |  | scale (fixed) |
+| `--wu-control-padding-inline-lg` | `1.25rem` |  | scale (fixed) |

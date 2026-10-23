@@ -4,6 +4,8 @@ Version 2.0 turns NuvoUI core into the foundation layer of a design system. Colo
 
 2.0 is a breaking release. There is no compatibility layer for 1.x names: every v1 custom property, color class and several mixin behaviors change. Projects that cannot migrate now should stay on 1.x.
 
+From 2.2.0 the package is `@wovenui/core` and the prefix is `--wu-`. The sections below use the 2.0 and 2.1 names (`@nuvoui/core`, `--nu-`); apply the renames in [From @nuvoui/core 2.x to @wovenui/core 2.2](#from-nuvouicore-2x-to-wovenuicore-22) as well.
+
 Related documents:
 
 - [Token reference](./TOKENS.md): every `--nu-*` token with its light and dark value (generated).
@@ -19,6 +21,7 @@ Related documents:
 6. [Mixins and functions](#mixins-and-functions)
 7. [Theme behavior](#theme-behavior)
 8. [Upgrade checklist](#upgrade-checklist)
+9. [From @nuvoui/core 2.x to @wovenui/core 2.2](#from-nuvouicore-2x-to-wovenuicore-22)
 
 ## Breaking changes at a glance
 
@@ -556,3 +559,24 @@ A removed name raises "Undefined mixin" (direct `@include`) or "Mixin not found"
 10. Add a unit to numeric breakpoints in media and container query mixins (`media-up(800px)`), and check custom `.transition` styles: the class now has a default duration.
 11. Compile. Unknown keys, names, modifiers and removed mixins are reported as Sass errors naming the valid keys or names. A removed function is not (see step 5), so search the compiled CSS for `to-css-var(`, `to-color(` and the other names of step 5.
 12. Review both themes visually: shade values, `bg-alternate`, dark borders and role fills changed.
+
+## From @nuvoui/core 2.x to @wovenui/core 2.2
+
+NuvoUI is renamed WovenUI in 2.2.0. The mixins, functions, configuration variables and token names after the prefix are unchanged; the names below change.
+
+| | `@nuvoui/core` 2.0 and 2.1 | `@wovenui/core` 2.2 |
+| --- | --- | --- |
+| Package | `npm i @nuvoui/core` | `npm i @wovenui/core` |
+| Sass entries | `@use "@nuvoui/core"`, `@nuvoui/core/mixins`, `pkg:@nuvoui/core` | `@use "@wovenui/core"`, `@wovenui/core/mixins`, `pkg:@wovenui/core` |
+| Custom property prefix | `--nu-` (`--nu-brand`, `--nu-gap`, `--nu-tooltip--Background`) | `--wu-` (`--wu-brand`, `--wu-gap`, `--wu-tooltip--Background`) |
+| Prebuilt CSS | `dist/nuvoui.css`, `dist/nuvoui.min.css` | `dist/wovenui.css`, `dist/wovenui.min.css` |
+| Debugger classes | `.NuvoUI-Debugger-*` | `.WovenUI-Debugger-*` |
+| `$default-container-name` default | `nuvoui-container` | `wovenui-container` |
+
+Steps:
+
+1. Replace the dependency: remove `@nuvoui/core` and install `@wovenui/core`.
+2. Replace `@nuvoui/core` with `@wovenui/core` in every `@use`, `@forward` and `<link>` path, and `dist/nuvoui` with `dist/wovenui` in file paths.
+3. Find and replace `--nu-` with `--wu-` in stylesheets, templates and scripts (hand-written `var(--nu-...)`, inline styles, `getPropertyValue("--nu-...")`). The prefix is fixed and not configurable. Calls to `token()` and the keys of `$light-theme`, `$dark-theme` and the high-contrast maps carry no prefix and stay as they are. If a project also uses other packages that still emit `--nu-` names, limit the replacement to core tokens.
+4. Rename `.NuvoUI-Debugger-` to `.WovenUI-Debugger-` in any style that targets the debugger overlay, and update any code that reads `$default-container-name`.
+5. Compile and search the output for `--nu-`: a remaining hand-written `var(--nu-...)` is not reported by Sass and resolves to nothing in the browser.

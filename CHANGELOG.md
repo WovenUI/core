@@ -1,8 +1,25 @@
 # Changelog
 
-All notable changes to `@nuvoui/core` are documented in this file.
+All notable changes to `@wovenui/core` (formerly `@nuvoui/core`) are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.2.0] - 2026-10-23
+
+NuvoUI is renamed WovenUI. See [From @nuvoui/core 2.x to @wovenui/core 2.2](docs/MIGRATION-v2.md#from-nuvouicore-2x-to-wovenuicore-22) for the upgrade steps.
+
+### Changed
+
+- The package is published as `@wovenui/core`. Install it with `npm i @wovenui/core` and load it with `@use "@wovenui/core"` (entries `@wovenui/core/mixins`, `/scss`, `/css` and `/min.css`). The homepage is https://wovenui.com/ and the repository is https://github.com/WovenUI/core.
+- Every custom property uses the `--wu-` prefix instead of `--nu-`: tokens (`--wu-brand`, `--wu-space-4`), internal variables (`--wu-gap`, `--wu-translate-x`, `--wu-border-style`) and the tooltip variables (`--wu-tooltip--Background`). Token names after the prefix are unchanged, so `token()` calls and theme map keys stay the same.
+- The prebuilt stylesheets are `dist/wovenui.css` and `dist/wovenui.min.css` (were `dist/nuvoui.css` and `dist/nuvoui.min.css`).
+- The debugger classes are `.WovenUI-Debugger-*` (were `.NuvoUI-Debugger-*`).
+- `$default-container-name` defaults to `wovenui-container` (was `nuvoui-container`).
+- Doc comments in the source follow the SassDoc standard: `///` blocks on every public mixin, function and `!default` variable, and one `////` poster per file.
+
+### Added
+
+- `@wovenui/core/sassdoc.json` export: the SassDoc data of every documented mixin, function and variable, for editor tooling.
 
 ## [2.1.1] - 2026-10-16
 
