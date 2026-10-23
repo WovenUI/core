@@ -189,7 +189,7 @@
     },
     "usedBy": [
       {
-        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
+        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
         "context": {
           "type": "mixin",
           "name": "container",
@@ -3040,7 +3040,7 @@
     },
     "usedBy": [
       {
-        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
+        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
         "context": {
           "type": "mixin",
           "name": "container",
@@ -4123,7 +4123,7 @@
     ],
     "see": [
       {
-        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
+        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
         "context": {
           "type": "mixin",
           "name": "container",
@@ -4151,7 +4151,7 @@
     },
     "usedBy": [
       {
-        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
+        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
         "context": {
           "type": "mixin",
           "name": "container",
@@ -4194,7 +4194,7 @@
     ],
     "see": [
       {
-        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
+        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
         "context": {
           "type": "mixin",
           "name": "container",
@@ -4243,7 +4243,7 @@
     },
     "usedBy": [
       {
-        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
+        "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
         "context": {
           "type": "mixin",
           "name": "container",
@@ -4257,7 +4257,7 @@
     ]
   },
   {
-    "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
+    "description": "Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only).\n\n100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).\n",
     "commentRange": {
       "start": 52,
       "end": 65

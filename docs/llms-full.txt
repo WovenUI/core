@@ -4,7 +4,7 @@
 
 **Purpose**: Drop this file into a project so an AI assistant writes correct WovenUI 2.x code.
 **Source of truth**: `core/src/styles` (SCSS). When this guide and the source disagree, the source wins.
-**Companion docs in the repository**: `core/docs/TOKENS.md` (every token and value, generated), `core/docs/MIGRATION-v2.md` (1.x to 2.x), `core/CHANGELOG.md`.
+**Companion docs in the repository**: `core/docs/TOKENS.md` (every token and value, generated), `core/CHANGELOG.md`.
 
 ---
 
@@ -166,7 +166,7 @@ Reset, base and components live in `@layer reset, base, components`. Utility cla
 
 Exported color variables: `$brand`, `$success`, `$danger`, `$warning`, `$info`. Maps: `$spacings`, `$percentages`, `$opacities`, `$breakpoints`, `$font-sizes`, `$font-weights`, `$line-heights`, `$border-widths`, `$border-radii`, `$shadow-sizes`, `$shadow-colors`, `$z-indexes`, `$z-index-levels`, `$durations`, `$delays`, `$timing-functions`, `$control-heights`, `$control-padding-inline`, `$color-primitives`, `$basic-colors`, `$semantic-colors`, `$shade-stops`, `$position-fractions`, `$grid-item-sizes`, `$container-names`.
 
-Not public (Undefined variable): `$primary`, `$secondary`, `$default-color`, `$theme-tokens`, `$color-names`, `$color-names-with-basic`, `$colors`, `$colors-primitives`, `$color-cache`, `$digit-map`, `$translate-values`, `$negative-translate-values`, `$high-contrast-theme`, `$prefix` (the `wu` custom property prefix, fixed).
+Not public (Undefined variable): `$primary`, `$secondary`, `$theme-tokens`, `$color-names`, `$color-names-with-basic`, `$colors`, `$colors-primitives`, `$color-cache`, `$digit-map`, `$translate-values`, `$negative-translate-values`, `$high-contrast-theme`, `$prefix` (the `wu` custom property prefix, fixed).
 
 ---
 
@@ -211,7 +211,7 @@ There are no delay tokens and no disabled text token (disabled text uses opacity
 - **Component variables** always contain `__` or `--` after the component name: `--wu-btn--BackgroundColor`, `--wu-sidebar__link--Color`. They can never clash with core tokens. Core's tooltip uses this grammar: `--wu-tooltip--Background`, `--wu-tooltip--Color`, `--wu-tooltip--ZIndex`.
 - **Internal utility variables** also carry `--wu-` but are not tokens (`token()` rejects them): `--wu-border-style`, `--wu-gap`, `--wu-translate-x`, `--wu-scale-x`, `--wu-rotate`, `--wu-skew-x`, `--wu-backdrop-blur`, `--wu-transition-colors`, `--wu-transition-opacity`, `--wu-transition-shadow`, `--wu-transition-transform` and so on. The transform variables and `--wu-gap` are registered with `@property` (`inherits: false`), so they never leak into descendants, and they are read without `var()` fallbacks: an unset one takes its registered initial value. The transition group variables are registered with `syntax: "*"` and `inherits: false` and read with the fallback `--wu-none`, a property name nothing animates. The registrations are emitted whenever the package loads, independent of feature flags, so the mixins work with the utility classes off.
 - **Classes stay short**: `text-muted`, `bg-danger`. Only the variables carry `--wu-`.
-- **Role state ladder**: `--wu-{role}` (the bare name is the resting fill: `--wu-brand`, `--wu-danger`, `--wu-error`), `-hover`, `-active`, plus `-subtle` (tinted background) and `-border` (soft edge). There is no `--wu-{role}-default`: `token(brand-default)` and a `"brand-default"` theme key raise a rename error pointing at `brand`.
+- **Role state ladder**: `--wu-{role}` (the bare name is the resting fill: `--wu-brand`, `--wu-danger`, `--wu-error`), `-hover`, `-active`, plus `-subtle` (tinted background) and `-border` (soft edge). The fill takes no suffix.
 - **`text-{role}` vs `text-on-{role}`**:
   - `text-{role}` = role-colored text on a normal page (`--wu-text-danger` for an error message).
   - `text-on-{role}` = text placed on the role's solid fill (`--wu-text-on-brand` on a `--wu-brand` button).
@@ -250,7 +250,7 @@ There are no delay tokens and no disabled text token (disabled text uses opacity
 }
 ```
 
-`token()` rules: pass the name without `--wu-`; unknown names raise an error listing close matches; an old `{role}-default` name raises `token(brand-default): renamed in 2.0, use token(brand)`; `token()` raises an error when the `theme` feature flag is off. Internal variables (`--wu-gap`) and component variables (`--wu-tooltip--Color`) are not tokens.
+`token()` rules: pass the name without `--wu-`; unknown names raise an error listing close matches; `token()` raises an error when the `theme` feature flag is off. Internal variables (`--wu-gap`) and component variables (`--wu-tooltip--Color`) are not tokens.
 
 `get-color()` rules: role and palette names first (`get-color(red)` is palette red `#ef4444`, not CSS `red`), then any CSS color or named color; stops 50, 100 to 900, 950 only; never returns `var()`; errors on unknown names.
 
@@ -264,7 +264,7 @@ There are no delay tokens and no disabled text token (disabled text uses opacity
 - Dark tokens: `[data-theme="dark"]`, and `:root:not([data-theme])` inside `@media (prefers-color-scheme: dark)`. Omit `data-theme` on the root to follow the OS.
 - Palette shades never change; role and theme tokens are redefined in dark.
 - Set `data-theme` on any element to re-theme its subtree.
-- `data-theme="inverse"`: always the opposite of the page. Dark values on a light page (`[data-theme="inverse"]` shares the dark block); light values under `[data-theme="dark"]` (`[data-theme="dark"] [data-theme="inverse"]`), under the OS fallback (`:root:not([data-theme]) [data-theme="inverse"]` in the dark media query) and inside another inverse section (`[data-theme="inverse"] [data-theme="inverse"]` flips back: light values, or dark values when the outer inverse section has a `[data-theme="dark"]` ancestor or the OS fallback root; a light or dark section between the two inverse sections is not taken into account). One level of nesting is supported; deeper inverse nesting is not. Full theme token set, pure CSS, not emitted when `$enable-dark-mode` is false. Limit: it resolves against the nearest `[data-theme="dark"]` ancestor or the page, so inside a `[data-theme="light"]` section of a dark page it still gives light values; use `data-theme="dark"` there. Replaces the v1 `inverted-*` layer.
+- `data-theme="inverse"`: always the opposite of the page. Dark values on a light page (`[data-theme="inverse"]` shares the dark block); light values under `[data-theme="dark"]` (`[data-theme="dark"] [data-theme="inverse"]`), under the OS fallback (`:root:not([data-theme]) [data-theme="inverse"]` in the dark media query) and inside another inverse section (`[data-theme="inverse"] [data-theme="inverse"]` flips back: light values, or dark values when the outer inverse section has a `[data-theme="dark"]` ancestor or the OS fallback root; a light or dark section between the two inverse sections is not taken into account). One level of nesting is supported; deeper inverse nesting is not. Full theme token set, pure CSS, not emitted when `$enable-dark-mode` is false. Limit: it resolves against the nearest `[data-theme="dark"]` ancestor or the page, so inside a `[data-theme="light"]` section of a dark page it still gives light values; use `data-theme="dark"` there.
 
 ```html
 <html data-theme="dark">
@@ -313,7 +313,6 @@ Rules:
 
 - A new key (here `bg-card`) must be in both `$light-theme` and `$dark-theme`. A new `bg-*`, `text-*` or `border-*` color token gets a utility class (`.bg-card`) and works in mixins (`bg(card)`).
 - Typos, malformed references (`brand600`, `brand-600`, `brand 450`), quoted invalid hex (`"#ggg"`) and unknown scales raise errors.
-- An old `{role}-default` key (`brand-default`, `error-default`) raises an error naming the bare key (`brand`). There is no fallback.
 - A new key must not reuse a palette, basic color or scale token name (`red-500`, `white`, `space-4`, `opacity-50`): the reserved-name error is raised even when the key is in one map only. Role and hue names must not collide: a name in both `$semantic-colors` and `$color-primitives`, the name `error`, a basic color name (`black`), or a name whose generated tokens equal a built-in token (`link` would generate `text-link`) or a scale token (`opacity` would generate `opacity-50`) raises an error. Color map keys may be quoted or unquoted.
 - Extra roles and hues work: a role added to `$semantic-colors` (`"accent": #8b5cf6`) gets a palette, the full role ladder, `text-on-accent` and classes; a hue added to `$color-primitives` (`"teal": #14b8a6`) gets a palette, hue roles and classes.
 - `error`, `error-*`, `text-error` and `text-on-error` cannot be set; override `danger`, `danger-*`.
@@ -518,7 +517,7 @@ All mixins below work inside `apply()` unless marked **standalone**. (L) marks l
 
 Overflow: `overflow-hidden`, `overflow-visible`, `overflow-scroll`, `overflow-auto`, `overflow-x-hidden`, `overflow-y-hidden`, `overflow-x-scroll`, `overflow-y-scroll`, `overflow-x-auto`, `overflow-y-auto`
 
-Removed in 2.0 (unknown mixin errors): `flex-inline` (use `inline-flex`), `grid-inline` (use `inline-grid`), `d-tbl`, `d-tbl-row`, `d-tbl-cell` (use `table`, `table-row`, `table-cell`), `text-size()` (use `font-size()`). `.flex` and `.grid` follow the `flex` and `grid` flags, not `displays`.
+`.flex` and `.grid` follow the `flex` and `grid` flags, not `displays`.
 
 ### Flexbox
 
@@ -679,7 +678,7 @@ $base-size: 1rem; // html font-size
 $column-count: 12;
 ```
 
-Feature flags (`$feature-flags`, all `true`): alignments, animations, backdrops, base, borders, container, container-queries, cursors, displays, flex, grid, opacity, position, shadows, sizing, spacing, tooltips, theme, transforms, transitions, typography (was `config-typo`), z-index. A flag missing from the map counts as on. Each flag owns its classes (`.flex` and `.grid` belong to `flex` and `grid`; `displays: false` keeps them). `base` controls the base element layer and works without `$generate-utility-classes`; the reset has no flag. Turning a flag off removes its classes; `theme` off also removes all tokens and `--wu-font-family` (base elements use the `$font-family` value), makes scale mixins output raw values (`p(4)` is `1rem`), and makes color names in `bg()`, `text-color()`, `border-color()` (`bg(brand)`, `bg(red, 600)`, `text-color(muted)`) and `token()` raise an error saying the flag is off. `black`, `white` and `transparent` are emitted as plain colors, `text-on-color()` is computed at compile time, and `border()` without a color sets no `border-color` (the border takes `currentcolor`).
+Feature flags (`$feature-flags`, all `true`): alignments, animations, backdrops, base, borders, container, container-queries, cursors, displays, flex, grid, opacity, position, shadows, sizing, spacing, tooltips, theme, transforms, transitions, typography, z-index. A flag missing from the map counts as on. Each flag owns its classes (`.flex` and `.grid` belong to `flex` and `grid`; `displays: false` keeps them). `base` controls the base element layer and works without `$generate-utility-classes`; the reset has no flag. Turning a flag off removes its classes; `theme` off also removes all tokens and `--wu-font-family` (base elements use the `$font-family` value), makes scale mixins output raw values (`p(4)` is `1rem`), and makes color names in `bg()`, `text-color()`, `border-color()` (`bg(brand)`, `bg(red, 600)`, `text-color(muted)`) and `token()` raise an error saying the flag is off. `black`, `white` and `transparent` are emitted as plain colors, `text-on-color()` is computed at compile time, and `border()` without a color sets no `border-color` (the border takes `currentcolor`).
 
 ### Colors
 
@@ -764,14 +763,13 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 | `gap(auto)`, `width(foo)` | Error: unknown value (lists keys and the keywords valid for the property) |
 | `width(3xl)`, `top(40p)` | Error: not a sizing key / not a fraction key |
 | `tooltip` removed from `$z-index-levels` (tooltips emitted) | Error: tooltips need the key |
-| `bg(primary)`, `bg(secondary)`, `bg(brand-default)`, `bg(nope)` | Error: unknown color (lists roles, hues and theme words) |
+| `bg(primary)`, `bg(secondary)`, `bg(nope)` | Error: unknown color (lists roles, hues and theme words) |
 | `bg(brand)`, `text-color(muted)`, `token(text-muted)` with the `theme` flag off | Error: the theme feature flag is off (no tokens are emitted); pass a color value |
 | `bg(bg-surface)` | Error: unknown color (the generic message, listing theme words such as `surface`) |
 | `bg(red, 450)`, `get-color(red, 450)` | Error: invalid shade (lists stops) |
 | `get-color(var(--x))` | Error: a CSS variable has no compile-time color |
 | `get-color(nope)` | Error: unknown color |
 | `token(text-mutd)` | Error: unknown token, close matches: text-muted |
-| `token(brand-default)`, `token(danger-default)` | Error: renamed in 2.0, use `token(brand)` |
 | `token(--wu-text-muted)` | Error: pass the name without the prefix |
 | `leading(foo)`, `ease(bounce)`, `duration(fast)`, `z-index(top)`, `font(heavy)` | Error: unknown value (lists keys) |
 | `opacity(0.5)`, `tracking(2)`, `elevation(7)`, `border-style(groove)` | Error: unknown value (lists what is accepted) |
@@ -783,16 +781,13 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 | `shadow(huge)`, `shadow(md, blue)` | Error: size or color not found |
 | `$light-theme: ("bg-surfase": ...)` | Error: unknown tokens |
 | `$light-theme: ("bg-base": brand600)` | Error: malformed scale reference |
-| `$light-theme: ("brand-default": ...)`, also in `$dark-theme` and the high-contrast maps | Error: renamed to `brand` in 2.0, rename the key |
-| `$light-theme: ("error": ...)`, `("error-default": ...)` | Error: error tokens follow danger; set `danger` |
+| `$light-theme: ("error": ...)` | Error: error tokens follow danger; set `danger` |
 | `$light-theme: ("space-4": 2rem)`, `("red-500": ...)` | Error: custom token reuses a palette, basic color or scale token name |
 | `$color-primitives` with a hue also in `$semantic-colors`, or a name `error`, `black`, `link` or `opacity` | Error: name collision |
-| `with ($primary: ...)`, `with ($secondary: ...)`, `with ($default-color: ...)` | Error: variable not declared with !default (removed in v2) |
 | Animation `$props` with unknown keys (`animate-spin((durration: 2s))`) | Error: unknown key (lists valid keys) |
 | `cols(foo)`, `cols(0)`, `col-span(full)`, `truncate-lines(1.5)`, `auto-fit(4)` | Error: not a count / not a line count / not a minimum width |
 | `container(size)`, `scale(foo)`, `rotate(foo)`, `translate-z(50%)`, `cursor(foo)`, `aspect-ratio(video)` | Error: not a display value / not a scale / not an angle / a percentage on the z axis / unknown cursor / not a ratio |
 | `font-size(-1rem)`, `duration(-100ms)`, `fill(1.5)`, `media-between(lg, sm)` | Error: negative size or time / whole columns only / lower breakpoint must be smaller |
-| Removed mixins (`flex-inline`, `text-size`, `grid-position`, `flow-in-row`, ...) | Error: Undefined mixin (direct) or Mixin not found (in `apply()`) |
 | `with ($high-contrast-theme: ...)` | Error: variable not declared with !default (use `$high-contrast-light`, `$high-contrast-dark`) |
 
 ```scss
@@ -806,7 +801,6 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 .a { @include apply(bg(bg-surface)); }
 .a { @include apply(bg(red, 450)); }
 .a { color: get-color(var(--x)); }
-.a { color: token(brand-default); }
 .a { @include apply(leading(foo)); }
 .a { @include apply(z-index(top)); }
 .a { @include apply(shadow(huge)); }
@@ -827,7 +821,7 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 9. **Alpha syntax**: there is no `bg-danger@10` or opacity color syntax. Use `bg-danger-subtle`.
 10. **`text-on-{hue}`**: only roles have it. For text on a palette fill use `text-on-color(red, 700)`.
 11. **Setting `error-*` tokens**: they follow danger. Override `danger-*`.
-12. **`-default` role names**: `--wu-brand-default`, `token(brand-default)`, `bg(brand-default)`, a `"brand-default"` theme key. The fill is the bare name: `--wu-brand`, `token(brand)`, `bg(brand)`, `"brand"`.
+12. **A suffix on the role fill**: the fill is the bare role name: `--wu-brand`, `token(brand)`, `bg(brand)`, theme key `"brand"`.
 13. **Custom theme token in one map only**: a new key must be in both `$light-theme` and `$dark-theme` (only `$light-theme` when `$enable-dark-mode` is false).
 14. **Animation options in namespaced apply()**: `woven.apply(animate-spin((duration: 2s)))` fails, because Sass cannot write a map into a plain-text item. Pass the item as a call: `woven.apply(woven.animate-spin((duration: 2s)))`, or `@include woven.animate-spin(...)` directly. With `as *`, `apply(animate-spin((duration: 2s)))` works.
 15. **Grid templates**: `cols-custom(1fr auto 1fr)` and `cols-custom("1fr_auto_1fr")` give the same track list. A comma inside the template (`repeat(2, 1fr)`) needs quotes: `cols-custom("repeat(2, 1fr) 200px")`.
@@ -847,11 +841,9 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 | `--bg-surface` | `--wu-bg-surface` | |
 | `--link-color` | `--wu-text-link` | |
 | `--wu-text-default`, `--wu-text-normal` | `--wu-text-regular` | `default` is not a token word |
-| `--wu-brand-default`, `--wu-danger-default`, `bg(brand-default)` | `--wu-brand`, `--wu-danger`, `bg(brand)` | The fill is the bare role name |
 | `--wu-brand-text` | `--wu-text-brand` | |
 | `--wu-status-danger` | `--wu-danger` | No `status-` prefix |
 | `--wu-brand-1000`, `bg(red, 450)` | stops 50, 100 to 900, 950 | |
-| `.text-on-red-700` | `text-on-color(red, 700)` mixin | Per-shade classes removed |
 | `.text-on-blue` | `.text-on-brand` etc. (roles only) | |
 | `bg-danger@10`, `bg-danger/10` | `bg-danger-subtle` | |
 | `.gap-auto`, `gap(auto)` | `gap-0`, `gap(normal)` | `gap: auto` is not valid CSS |
@@ -870,21 +862,14 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 | `items-center`, `justify-center` | `x-center`, `center` | |
 | `y-center` | `x-center` | `x-` = cross axis |
 | `w()`, `h()`, `min-w()`, `max-w()` | `width()`, `height()`, `min-width()`, `max-width()` | |
-| `flex-inline`, `grid-inline`, `d-tbl` | `inline-flex`, `inline-grid`, `table` | Removed in 2.0 |
-| `text-size()` | `font-size()` | Removed in 2.0 |
-| `flow-in-row`, `grid-position()`, `position-col()` | `flow-row`, `grid-place-at()`, `grid-col-at()` | Renamed to match classes |
 | `role="tooltip"` on a tooltip trigger | `data-tooltip` alone | Keeps the trigger's real role |
 | Tooltip without `data-tooltip-position` (no arrow) | Shown on top by default | Keyboard focus slides it in like hover |
 | `.backdrop-hue-90` | `.backdrop-hue-rotate-90` | Matches the mixin name |
-| `.inverted-*`, `--inverted-*` | `data-theme="inverse"` | Opposite of the page |
 | `font-weight(bold)` | `font(bold)` | |
 | `line-height(tight)` | `leading(tight)` | |
 | `rounded(8)` | `rounded(lg)` or `rounded(8px)` | |
 | `shadow(0 4px 20px ...)` | `shadow-base(0, 4px, 20px, 0, ...)` | `shadow()` takes keys |
 | `z-index(9999)` for modals | `z-modal` | Named levels |
-| `[data-theme="system"]` for auto dark | omit `data-theme` | Tokens and the `dark-mode` mixin follow the OS only on `:root:not([data-theme])`; `system` is not read |
-| `--flex-gap`, `--translate-x`, `--border-style` | `--wu-gap`, `--wu-translate-x`, `--wu-border-style` | Internal variables carry `--wu-` |
-| `--tooltip-bg`, `--tooltip-text-color` | `--wu-tooltip--Background`, `--wu-tooltip--Color` | Component grammar |
 | `opacity(0.5)` | `opacity(50)` | Keys, as `.opacity-50` |
 | `scale(1.5)` only | `scale(150)` or `scale(1.5)` | Both give 1.5 |
 | `luminance()`, `to-color()` | not public | |

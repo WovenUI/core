@@ -49,7 +49,7 @@
 // Display values accepted by container()
 $-container-displays: (block, flex, grid, inline-block, inline-flex, inline-grid, flow-root, inherit, initial, unset, revert, revert-layer);
 
-/// Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only, as in v1).
+/// Builds a centered, full-width container whose max-width steps up at each breakpoint (breakpoint width minus 100px), with block padding of spacing key 4 (top and bottom only).
 ///
 /// 100px is subtracted from each breakpoint width; an em or rem breakpoint gives calc(40em - 100px).
 /// @param {String} $display [block] - Display value: block, flex, grid, inline-block, inline-flex, inline-grid, flow-root, a CSS-wide keyword or var(); anything else raises an error
