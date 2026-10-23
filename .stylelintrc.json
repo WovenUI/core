@@ -27,9 +27,9 @@
       }
     ],
     "custom-property-pattern": [
-      "^(([a-z][a-z0-9]*)(-[a-z0-9]+)*|nu-[a-z0-9]+(-[a-z0-9]+)*--[A-Z][a-zA-Z0-9]*)$",
+      "^(([a-z][a-z0-9]*)(-[a-z0-9]+)*|wu-[a-z0-9]+(-[a-z0-9]+)*--[A-Z][a-zA-Z0-9]*)$",
       {
-        "message": "Expected custom property name to be kebab-case, or --nu-{block}--{Name} for component variables"
+        "message": "Expected custom property name to be kebab-case, or --wu-{block}--{Name} for component variables"
       }
     ],
     "container-name-pattern": null,

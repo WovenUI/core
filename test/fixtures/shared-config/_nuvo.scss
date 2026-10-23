@@ -1,4 +1,0 @@
-// Shared configuration partial, as an app writes it: components and the global stylesheet both load it
-@forward "../../../src/styles/mixins" with (
-    $brand: #4361ee
-);

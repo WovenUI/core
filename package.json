@@ -1,6 +1,6 @@
 {
-  "name": "@nuvoui/core",
-  "version": "2.1.1",
+  "name": "@wovenui/core",
+  "version": "2.2.0",
   "description": "Human-readable, utility-first SCSS framework and design-system foundation: design tokens, light, dark, inverse and high-contrast themes, readable utility classes and apply() mixins. No JavaScript.",
   "author": {
     "name": "AALA IT Solutions",
@@ -8,14 +8,14 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/NuvoUI/core/issues"
+    "url": "https://github.com/WovenUI/core/issues"
   },
-  "homepage": "https://nuvoui.io/",
+  "homepage": "https://wovenui.com/",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/nuvoui.min.css",
-  "style": "dist/nuvoui.min.css",
+  "main": "dist/wovenui.min.css",
+  "style": "dist/wovenui.min.css",
   "sass": "src/styles/index.scss",
   "module": "src/styles/index.scss",
   "files": [
@@ -26,42 +26,46 @@
   "exports": {
     ".": {
       "sass": "./src/styles/index.scss",
-      "style": "./dist/nuvoui.min.css",
-      "default": "./dist/nuvoui.min.css"
+      "style": "./dist/wovenui.min.css",
+      "default": "./dist/wovenui.min.css"
     },
     "./mixins": {
       "sass": "./src/styles/mixins/index.scss"
     },
     "./scss": "./src/styles/index.scss",
-    "./css": "./dist/nuvoui.css",
-    "./min.css": "./dist/nuvoui.min.css"
+    "./css": "./dist/wovenui.css",
+    "./min.css": "./dist/wovenui.min.css",
+    "./sassdoc.json": "./dist/sassdoc.json"
   },
   "scripts": {
     "lint": "stylelint \"src/**/*.scss\"",
     "format": "prettier --write \"src/**/*.{scss,js,json}\" \"test/[a-z]*.mjs\" \"scripts/**/*.mjs\"",
     "format:check": "prettier --check \"src/**/*.{scss,js,json}\" \"test/[a-z]*.mjs\" \"scripts/**/*.mjs\"",
     "clean": "node -e \"const fs=require('fs');if(fs.existsSync('dist')) fs.rmSync('dist',{recursive:true})\"",
-    "build:scss": "sass src/styles/build.scss:dist/nuvoui.css --style expanded",
-    "build:minify": "postcss dist/nuvoui.css -o dist/nuvoui.min.css --use cssnano --map",
+    "build:scss": "sass src/styles/build.scss:dist/wovenui.css --style expanded",
+    "build:minify": "postcss dist/wovenui.css -o dist/wovenui.min.css --use cssnano --map",
     "prebuild": "npm run clean",
-    "build": "npm run build:scss && npm run build:minify",
-    "dev": "sass src/styles/index.scss:dist/nuvoui.css --watch",
+    "build:sassdoc": "node scripts/sassdoc-json.mjs",
+    "build": "npm run build:scss && npm run build:minify && npm run build:sassdoc",
+    "dev": "sass src/styles/index.scss:dist/wovenui.css --watch",
     "test": "node test/contrast.mjs && node test/tokens.mjs && node test/mixins.mjs && node test/config.mjs && node test/docblocks.mjs && node test/mixins-map-sync.mjs && node scripts/generate-scales.mjs --check && node test/size.mjs && node scripts/token-reference.mjs --check",
     "test:perf": "node test/perf.mjs",
     "test:all": "npm run test && npm run test:perf",
     "docs:tokens": "node scripts/token-reference.mjs",
+    "docs:sassdoc": "sassdoc src/styles --parse --no-update-notifier",
     "scales": "node scripts/generate-scales.mjs",
     "prepublishOnly": "npm run lint && npm run test && npm run format:check && npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NuvoUI/core.git"
+    "url": "git+https://github.com/WovenUI/core.git"
   },
   "keywords": [
     "scss",
     "sass",
     "css",
     "framework",
+    "wovenui",
     "nuvoui",
     "design-system",
     "design-tokens",
@@ -97,6 +101,7 @@
     "postcss-nested": "^8.0.1",
     "prettier": "^3.9.6",
     "sass": "^1.103.1",
+    "sassdoc": "^2.7.4",
     "stylelint": "^17.14.1",
     "stylelint-config-standard-scss": "^17.0.0"
   },

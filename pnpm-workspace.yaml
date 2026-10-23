@@ -1,5 +1,6 @@
 allowBuilds:
   '@parcel/watcher': false
+  core-js: false
 minimumReleaseAgeExclude:
   - sass@1.104.0
   - stylelint@17.15.0
