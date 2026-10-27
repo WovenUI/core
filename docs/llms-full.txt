@@ -777,6 +777,8 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 | `rotate(30)`, `skew-x(10)` | Error: write a unit (`30deg`); `rotate(45)` is the `$rotation-values` key (45deg) |
 | `p(4px 8px)`, `m(0 auto)` | Error: `p: unknown value 4px 8px` (scale messages name the mixin: `width: unknown value foo`) |
 | `apply(p(4) hovr)`, `apply(p(4) md lg)`, `apply(p(4) hover focus)` | Error: unknown modifier / more than one breakpoint / more than one state |
+| `apply(font-weight(semibold))` | Error: `apply(font-weight(semibold)): unknown mixin font-weight. Docs: https://wovenui.com/search?q=font-weight` |
+| `apply(transition(colors))` | Error: `apply(transition(colors)): transition takes no arguments. Docs: https://wovenui.com/search?q=transition` |
 | `animate-shake((intensity: 8))`, `container-query(30)` | Error: write a unit (or a breakpoint name for `container-query`) |
 | `shadow(huge)`, `shadow(md, blue)` | Error: size or color not found |
 | `$light-theme: ("bg-surfase": ...)` | Error: unknown tokens |
@@ -873,6 +875,7 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 | `opacity(0.5)` | `opacity(50)` | Keys, as `.opacity-50` |
 | `scale(1.5)` only | `scale(150)` or `scale(1.5)` | Both give 1.5 |
 | `luminance()`, `to-color()` | not public | |
+| `transition(colors)` | `transition-colors` | `transition` takes no arguments |
 | `@import "@wovenui/core"` | `@use "@wovenui/core"` | Sass modules |
 
 ---

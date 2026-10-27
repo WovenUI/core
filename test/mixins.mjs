@@ -1411,7 +1411,9 @@ function run() {
             );
             if (message === null) {
                 failures.push(`${body}: removed mixin compiled`);
-            } else if (!/Undefined mixin|Mixin not found/.test(message)) {
+            } else if (
+                !/Undefined mixin|Mixin not found|unknown mixin/.test(message)
+            ) {
                 failures.push(
                     `${body}: expected an unknown mixin error, got: ${message.split('\n')[0]}`
                 );
@@ -1420,6 +1422,71 @@ function run() {
     }
     console.log(
         `${failures.length === removedBefore ? 'pass' : 'FAIL'}  ${REMOVED.length} removed or renamed mixins fail as unknown, directly and through apply()`
+    );
+
+    // Unknown mixin names and arguments on a no-argument mixin given as text name the mixin and link the docs
+    const DOCS = 'Docs: https://wovenui.com/search?q=';
+    const helpBefore = failures.length;
+    for (const [label, use, prefix] of [
+        ['as *', '@use "../src/styles/index" as *;', ''],
+        ['mixins-map as *', '@use "mixins-map" as *;', ''],
+        ['nu', '@use "../src/styles/index" as nu;', 'nu.'],
+    ]) {
+        for (const [item, expected] of [
+            [
+                'font-weight(semibold)',
+                `apply(font-weight(semibold)): unknown mixin font-weight. ${DOCS}font-weight`,
+            ],
+            [
+                'rounded-lg',
+                `apply(rounded-lg): unknown mixin rounded-lg. ${DOCS}rounded-lg`,
+            ],
+            [
+                'transition(colors)',
+                `apply(transition(colors)): transition takes no arguments. ${DOCS}transition`,
+            ],
+            // flex(1) reaches the parse step as text only on the namespaced path
+            ...(prefix
+                ? [
+                      [
+                          'flex(1)',
+                          `apply(flex(1)): flex takes no arguments. ${DOCS}flex`,
+                      ],
+                  ]
+                : []),
+        ]) {
+            const message = compileError(
+                `${use}\n.t {\n    @include ${prefix}apply(${item});\n}\n`
+            );
+            if (message === null) {
+                failures.push(
+                    `${label} ${item}: expected an error, it compiled`
+                );
+            } else if (!message.includes(expected)) {
+                failures.push(
+                    `${label} ${item}: expected "${expected}", got: ${message.split('\n')[0]}`
+                );
+            }
+        }
+        const ok = compileError(
+            `${use}\n.t {\n    @include ${prefix}apply(transition-none(), flex, p(4));\n}\n`
+        );
+        if (ok !== null) {
+            failures.push(
+                `${label}: an empty argument list on a no-argument mixin must compile, got: ${ok.split('\n')[0]}`
+            );
+        }
+    }
+    const wovenCall = compileError(
+        '@use "../src/styles/index" as woven;\n.t {\n    @include woven.apply(woven.flex(), woven.p(4));\n}\n'
+    );
+    if (wovenCall !== null) {
+        failures.push(
+            `woven.apply(woven.flex(), woven.p(4)) must compile, got: ${wovenCall.split('\n')[0]}`
+        );
+    }
+    console.log(
+        `${failures.length === helpBefore ? 'pass' : 'FAIL'}  unknown mixin names and arguments on a no-argument mixin name the mixin and link the docs (as *, mixins-map as *, nu.apply); woven.flex() compiles`
     );
 
     let errorFailures = 0;
