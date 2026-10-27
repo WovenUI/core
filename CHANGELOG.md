@@ -4,6 +4,13 @@ All notable changes to `@wovenui/core` (formerly `@nuvoui/core`) are documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2] - 2026-10-27
+
+### Added
+
+- `apply()` reports an unknown mixin with its own message instead of Sass's raw error, and links to the docs search: `apply(font-weight(semibold)): unknown mixin font-weight. Docs: https://wovenui.com/search?q=font-weight`.
+- A text item that passes arguments to a mixin that takes none raises `apply(transition(colors)): transition takes no arguments. Docs: https://wovenui.com/search?q=transition`. A no-argument mixin called with arguments through its function form with `as *` (`apply(flex(1))`) keeps Sass's own error, so valid code compiles as fast as before.
+
 ## [2.2.1] - 2026-10-23
 
 ### Fixed
