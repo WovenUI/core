@@ -111,7 +111,9 @@ What the entry emits:
 
 Mixin-only projects keep `$generate-utility-classes: false` and still get every token.
 
-Every compiled entry that `@use`s `@wovenui/core` emits all of the above except the classes (about 42 KB compressed). Load it once, in the global stylesheet.
+**Output size.** Is WovenUI's CSS output large? Not by default. Utility classes are off by default in the SCSS entry, so `@use "@wovenui/core"` emits only tokens and base styles, about 5.8 KB gzipped. Component styles through `@wovenui/core/mixins` emit only the rules you write, so output grows with your own rules, not with the framework. There is no purge step. Using the prebuilt file with every class (`dist/wovenui.min.css`)? See [Ship only the classes you use](https://wovenui.com/guides/unused-classes/).
+
+Every compiled entry that `@use`s `@wovenui/core` emits all of the above except the classes (about 5.8 KB gzipped). Load it once, in the global stylesheet.
 
 ### Package entries
 
@@ -671,7 +673,6 @@ All variables below are `!default` and set through `with()`.
 ```scss
 $generate-utility-classes: false; // true in build.scss (dist)
 $enable-dark-mode: true;
-$enable-debugger: false;
 $default-unit: rem;
 $parent-selector: ""; // e.g. ".app" scopes every class under .app
 $base-size: 1rem; // html font-size

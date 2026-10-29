@@ -71,7 +71,7 @@ yarn add @wovenui/core sass
 - `$brand` sets the main color role. `$success`, `$danger`, `$warning` and `$info` set the status roles.
 - `$light-theme` and `$dark-theme` hold overrides only. Keys are token names without `--wu-`. A value is a CSS value or a name and a stop (`brand 800`).
 - Tokens and base styles are always emitted. Utility classes need `$generate-utility-classes: true`; mixin-only projects can leave it off.
-- Load core once, in the global stylesheet (about 42 KB compressed, under 6 KB gzipped). Component styles load `@wovenui/core/mixins` (see [Component styles](#component-styles)).
+- Load core once, in the global stylesheet (5.8 KB gzipped for tokens and base styles). Component styles load `@wovenui/core/mixins` (see [Component styles](#component-styles)).
 
 Bundlers such as Vite, Next.js, Astro and webpack `sass-loader` resolve `@use "@wovenui/core"` through the package `sass` export. With the Dart Sass command line or JavaScript API, use the Node package importer:
 

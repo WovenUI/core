@@ -1445,6 +1445,11 @@ function run() {
                 'transition(colors)',
                 `apply(transition(colors)): transition takes no arguments. ${DOCS}transition`,
             ],
+            ['border', `apply(border): border requires a value. ${DOCS}border`],
+            [
+                'media-between',
+                `apply(media-between): media-between requires 2 values. ${DOCS}media-between`,
+            ],
             // flex(1) reaches the parse step as text only on the namespaced path
             ...(prefix
                 ? [
@@ -1468,6 +1473,14 @@ function run() {
                 );
             }
         }
+        const okRequired = compileError(
+            `${use}\n.t {\n    @include ${prefix}apply(border(1), gradient(to right, red, blue));\n}\n`
+        );
+        if (okRequired !== null) {
+            failures.push(
+                `${label}: border(1) and gradient(to right, red, blue) must compile, got: ${okRequired.split('\n')[0]}`
+            );
+        }
         const ok = compileError(
             `${use}\n.t {\n    @include ${prefix}apply(transition-none(), flex, p(4));\n}\n`
         );
@@ -1486,7 +1499,7 @@ function run() {
         );
     }
     console.log(
-        `${failures.length === helpBefore ? 'pass' : 'FAIL'}  unknown mixin names and arguments on a no-argument mixin name the mixin and link the docs (as *, mixins-map as *, nu.apply); woven.flex() compiles`
+        `${failures.length === helpBefore ? 'pass' : 'FAIL'}  unknown mixin names, arguments on a no-argument mixin and missing required arguments name the mixin and link the docs (as *, mixins-map as *, nu.apply); woven.flex() compiles`
     );
 
     let errorFailures = 0;
