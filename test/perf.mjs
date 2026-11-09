@@ -46,8 +46,8 @@ import { BUILD_FILE, CORE_DIR, STYLES_DIR, TEST_DIR, pad } from './helpers.mjs';
 
 const BASELINE_COMMIT = '3cf0693';
 const BASELINE_VERSION = '2.0.0';
-const LOAD_BASELINE_COMMIT = '901c927';
-const LOAD_BASELINE_VERSION = '2.2.2';
+const LOAD_BASELINE_COMMIT = '4a94a14';
+const LOAD_BASELINE_VERSION = '2.2.3';
 
 const WARMUP = 3;
 const PAIRS = 7;
