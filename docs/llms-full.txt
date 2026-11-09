@@ -33,7 +33,7 @@ WovenUI core is a **human-readable, utility-first SCSS framework** and the found
 ### Philosophy
 
 1. **Human-readable names**: `between` not `justify-between`, `x-center` not `items-center`, `z-modal` not `z-50`, `bg-surface` not `bg-white`.
-2. **SCSS only, no JavaScript**: real Sass modules (`@use`), compiled by Dart Sass. No runtime, no HTML scanning, no PostCSS plugin.
+2. **SCSS only, no JavaScript**: real Sass modules (`@use`), compiled by Sass. No runtime, no HTML scanning, no PostCSS plugin.
 3. **`apply()` is the core feature**: every utility is also a mixin, called through `@include apply(...)` with state and breakpoint modifiers.
 4. **Design system foundations**: colors, spacing, radii, type, shadows, z-index and motion are design tokens emitted as `--wu-*` CSS custom properties. Classes and mixins output those tokens, so everything follows the active theme.
 5. **Config-driven**: every utility class is generated from a configuration map. Custom values are written in SCSS (`p(1.5rem)`), never in HTML.
@@ -76,7 +76,7 @@ WovenUI core is a **human-readable, utility-first SCSS framework** and the found
 
 ## Install and Configure
 
-Requires Dart Sass `>=1.79.0 <2` (peer dependency). Without a bundler that reads the package `sass` export, load it as `@use "pkg:@wovenui/core"` with the Node package importer.
+Requires Sass 1.79 or later, the `sass` or `sass-embedded` package (`>=1.79.0 <2`, peer dependency). Without a bundler that reads the package `sass` export, load it as `@use "pkg:@wovenui/core"` with the Node package importer.
 
 ```html
 <!-- Prebuilt CSS: every utility class, default configuration -->

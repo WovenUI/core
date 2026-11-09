@@ -46,7 +46,7 @@ src/styles/
   components/       Tooltips
 test/               *.mjs suites (contrast, tokens, mixins, config, docblocks, mixins-map-sync, size, perf), helpers.mjs, fixtures/
 scripts/            generate-scales.mjs, token-reference.mjs
-docs/               TOKENS.md (generated), MIGRATION-v2.md, DOC-BLOCKS.md
+docs/               TOKENS.md (generated), DOC-BLOCKS.md
 ```
 
 Also: `CHANGELOG.md`, `README.md`, `dist/` (build output).
@@ -64,10 +64,10 @@ Also: `CHANGELOG.md`, `README.md`, `dist/` (build output).
 - Every custom property name is written with the internal `$prefix` of `config/_constants.scss` (`--#{config-constants.$prefix}-gap`, `var(--#{config-constants.$prefix}-#{$name})`), never a literal `--wu-`; it is hidden from the public API. Tests use `P` and `PREFIX` from `test/helpers.mjs`.
 - Keep code comments short. Do not narrate history or decisions in source.
 - After any token change (names, default values, themes, scales), run `pnpm docs:tokens`. Never hand-edit `docs/TOKENS.md`. After changing default colors or the shade generator, run `pnpm scales`. Never hand-edit `functions/_default-scales.scss`.
-- Behavior changes need an entry in `CHANGELOG.md` and, for anything a 1.x user would notice, an update to `docs/MIGRATION-v2.md`.
+- Behavior changes need an entry in `CHANGELOG.md`.
 - Add tests that fail without the change. Put them in the suite that owns the area (`test/mixins.mjs`, `test/tokens.mjs`, `test/config.mjs`, and so on).
 - The performance guard (`pnpm test:perf`) and the size guard (`test/size.mjs`) must stay within their limits. Update the size baselines only for an intended size change, with the reason in the change description.
-- Dart Sass is a peer dependency, range `>=1.79.0 <2` (see `package.json`). Use module syntax (`@use`, `sass:map`, `sass:list`) and no deprecated global built-ins such as `map-get`.
+- Sass 1.79 or later (the `sass` or `sass-embedded` package) is a peer dependency, range `>=1.79.0 <2` (see `package.json`). Use module syntax (`@use`, `sass:map`, `sass:list`) and no deprecated global built-ins such as `map-get`.
 - Keep the change small and in the narrowest code path. Do not refactor adjacent code.
 
 ## 5. Writing WovenUI code

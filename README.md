@@ -38,7 +38,7 @@ Core is SCSS and CSS only. It has no JavaScript runtime.
 
 ## Requirements
 
-- Dart Sass `>=1.79.0 <2` (peer dependency). The color space API in Sass 1.79 is required for OKLCH shade generation.
+- Sass 1.79 or later, the `sass` or `sass-embedded` package (`>=1.79.0 <2`, peer dependency). The color space API in Sass 1.79 is required for OKLCH shade generation.
 
 ## Installation
 
@@ -73,7 +73,7 @@ yarn add @wovenui/core sass
 - Tokens and base styles are always emitted. Utility classes need `$generate-utility-classes: true`; mixin-only projects can leave it off.
 - Load core once, in the global stylesheet (5.8 KB gzipped for tokens and base styles). Component styles load `@wovenui/core/mixins` (see [Component styles](#component-styles)).
 
-Bundlers such as Vite, Next.js, Astro and webpack `sass-loader` resolve `@use "@wovenui/core"` through the package `sass` export. With the Dart Sass command line or JavaScript API, use the Node package importer:
+Bundlers such as Vite, Next.js, Astro and webpack `sass-loader` resolve `@use "@wovenui/core"` through the package `sass` export. With the Sass command line or JavaScript API, use the Node package importer:
 
 ```scss
 @use "pkg:@wovenui/core" as *;
@@ -185,7 +185,7 @@ apply(font-weight(semibold)): unknown mixin font-weight. Docs: https://wovenui.c
 
 ## Performance
 
-`apply()` compile time, measured with Dart Sass 1.103.1 (the `sass` npm package) on Node 24, Apple M2 Pro, median of three runs, `@use "@wovenui/core" as *`:
+`apply()` compile time, measured with Sass 1.103.1 (the `sass` package) on Node 24, Apple M2 Pro, median of three runs, `@use "@wovenui/core" as *`:
 
 | Stylesheet | Time | Output |
 | --- | --- | --- |
@@ -227,7 +227,6 @@ Run the loop in the [playground](https://wovenui.com/playground/).
 
 ## Documentation
 
-- [Migration guide](docs/MIGRATION-v2.md)
 - [Token reference](docs/TOKENS.md)
 - [Changelog](CHANGELOG.md)
 - [Documentation site](https://wovenui.com/)

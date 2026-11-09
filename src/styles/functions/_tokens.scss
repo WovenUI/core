@@ -52,9 +52,11 @@ $-color-scales: ();
 @function -palette-tokens() {
     $tokens: ();
     @each $name, $scale in $-color-scales {
+        $shades: ();
         @each $stop, $value in $scale {
-            $tokens: map.set($tokens, "#{$name}-#{$stop}", $value);
+            $shades: map.set($shades, "#{$name}-#{$stop}", $value);
         }
+        $tokens: map.merge($tokens, $shades);
     }
     @return $tokens;
 }
@@ -160,12 +162,14 @@ $-fallback: ":root:not([data-theme])";
     @return meta.inspect($family);
 }
 
-// Adds {prefix}-{key} entries for every key of a config map
+// Adds {prefix}-{key} entries for every key of a config map. The entries are built in a small map and merged once,
+// as map.set copies the whole map
 @function -add-scale($tokens, $prefix, $map) {
+    $entries: ();
     @each $key, $value in $map {
-        $tokens: map.set($tokens, "#{$prefix}-#{fn-css-vars.css-var-key($key)}", $value);
+        $entries: map.set($entries, "#{$prefix}-#{fn-css-vars.css-var-key($key)}", $value);
     }
-    @return $tokens;
+    @return map.merge($tokens, $entries);
 }
 
 // Non-color scale tokens: name to value; font-family is a single token. Shadows use the "default" shadow color, as the .shadow-{size} classes do
@@ -203,10 +207,8 @@ $-scale-tokens: -scale-tokens();
 // Every emitted token name (without --wu-), as a map for lookup; only the keys are read. Whole maps are merged in
 // emission order because map.set copies the map, so adding 300 names one at a time is slow
 @function -token-names() {
-    $theme: ();
-    @each $name in config-theme.$theme-tokens {
-        $theme: map.set($theme, $name, true);
-    }
+    // The keys of the light tokens are the theme token names
+    $theme: config-theme.$light-tokens;
     @each $role in text-on-roles(config-theme.$light-tokens) {
         $theme: map.set($theme, "text-on-#{$role}", true);
     }

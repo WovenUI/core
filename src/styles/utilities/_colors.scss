@@ -43,7 +43,7 @@ $-theme-words: (
 
 @each $token in config-theme.$theme-tokens {
     $family: list.nth(string.split($token, "-"), 1);
-    @if map.has-key($-theme-words, $family) and config-theme.is-color-token($token) and not list.index(config-theme.$role-hue-tokens, $token) {
+    @if map.has-key($-theme-words, $family) and not list.index(config-theme.$role-hue-tokens, $token) and config-theme.is-color-token($token) {
         $words: list.append(map.get($-theme-words, $family), string.slice($token, string.length($family) + 2), comma);
         $-theme-words: map.set($-theme-words, $family, $words);
     }

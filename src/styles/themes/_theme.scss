@@ -46,7 +46,7 @@ $-class-tokens: ();
 @each $token in config-theme.$theme-tokens {
     $prefix: list.nth(string.split($token, "-"), 1);
     $is-text-on: string.index($token, "text-on-") == 1 and list.index(config-theme.$role-names, string.slice($token, 9)) != null;
-    @if config-theme.is-color-token($token) and $token != "border-focus" and not $is-text-on and not list.index(config-theme.$role-hue-tokens, $token) and map.has-key($-class-properties, $prefix) {
+    @if map.has-key($-class-properties, $prefix) and $token != "border-focus" and not $is-text-on and not list.index(config-theme.$role-hue-tokens, $token) and config-theme.is-color-token($token) {
         $-class-tokens: map.set($-class-tokens, $token, map.get($-class-properties, $prefix));
     }
 }
@@ -77,8 +77,23 @@ $-class-tokens: ();
 // text-regular and text-inverted colors of $context, the full theme the block belongs to ($tokens merged over its
 // base theme for high contrast); $setting names the map a consumer sets to fix an uncomputable text color
 @mixin -theme-tokens($tokens, $context, $setting) {
+    @each $name, $value in -theme-declarations($tokens, $context, $setting) {
+        --#{config-constants.$prefix}-#{$name}: #{$value};
+    }
+}
+
+// Declarations of -theme-tokens() by $setting, as (name, value) pairs. A setting always comes with the same $tokens
+// and $context, and several theme blocks emit it, so they are computed once
+$-theme-declarations: ();
+
+// Theme token declarations of a setting, from the cache or computed and cached
+@function -theme-declarations($tokens, $context, $setting) {
+    @if map.has-key($-theme-declarations, $setting) {
+        @return map.get($-theme-declarations, $setting);
+    }
+    $declarations: ();
     @each $token, $value in $tokens {
-        --#{config-constants.$prefix}-#{$token}: #{-token-value($value, $token)};
+        $declarations: list.append($declarations, ($token, -token-value($value, $token)), comma);
     }
 
     $roles: fn-tokens.text-on-roles($tokens);
@@ -86,18 +101,20 @@ $-class-tokens: ();
         $text-colors: fn-contrast.theme-text-colors($context, $setting);
         @each $role in $roles {
             $fill: -token-color(map.get($tokens, $role), $role);
-
-            --#{config-constants.$prefix}-text-on-#{$role}: #{fn-contrast.theme-text-on($fill, $text-colors, "text-on-#{$role}", $setting)};
+            $text-on: fn-contrast.theme-text-on($fill, $text-colors, "text-on-#{$role}", $setting);
+            $declarations: list.append($declarations, ("text-on-#{$role}", $text-on), comma);
         }
     }
 
     @each $alias, $target in fn-tokens.error-aliases() {
-        --#{config-constants.$prefix}-#{$alias}: var(--#{config-constants.$prefix}-#{$target});
+        $declarations: list.append($declarations, ($alias, var(--#{config-constants.$prefix}-#{$target})), comma);
     }
 
     @each $variable, $token in fn-tokens.tooltip-color-variables() {
-        --#{config-constants.$prefix}-#{$variable}: var(--#{config-constants.$prefix}-#{$token});
+        $declarations: list.append($declarations, ($variable, var(--#{config-constants.$prefix}-#{$token})), comma);
     }
+    $-theme-declarations: map.set($-theme-declarations, $setting, $declarations) !global;
+    @return $declarations;
 }
 
 /// Emits the dark theme token custom properties (--wu-*), including computed text-on-{role} and the error aliases of danger.

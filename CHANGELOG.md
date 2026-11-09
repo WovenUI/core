@@ -4,6 +4,13 @@ All notable changes to `@wovenui/core` (formerly `@nuvoui/core`) are documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.3] - 2026-11-09
+
+### Changed
+
+- Faster load: `@wovenui/core/mixins` and the full entry load faster per compilation. Theme validation and the token maps do less work at load, and the theme declarations of each setting are computed once. Output is unchanged.
+- Documentation: The migration guide is removed.
+
 ## [2.2.2] - 2026-10-27
 
 ### Added
@@ -22,7 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [2.2.0] - 2026-10-23
 
-NuvoUI is renamed WovenUI. See [From @nuvoui/core 2.x to @wovenui/core 2.2](docs/MIGRATION-v2.md#from-nuvouicore-2x-to-wovenuicore-22) for the upgrade steps.
+NuvoUI is renamed WovenUI.
 
 ### Changed
 
@@ -58,11 +65,11 @@ NuvoUI is renamed WovenUI. See [From @nuvoui/core 2.x to @wovenui/core 2.2](docs
 
 ### Changed
 
-- Documentation: README, CHANGELOG and MIGRATION-v2.md describe 2.0 as released; pre-release wording removed.
+- Documentation: README and CHANGELOG describe 2.0 as released; pre-release wording removed.
 
 ## [2.0.0] - 2026-10-14
 
-Version 2.0 is a breaking release that rebuilds core as the foundation layer of a design system. There is no compatibility layer for 1.x names. See the [migration guide](docs/MIGRATION-v2.md) for every rename and the [token reference](docs/TOKENS.md) for the full token list with default values.
+Version 2.0 is a breaking release that rebuilds core as the foundation layer of a design system. There is no compatibility layer for 1.x names. See the [token reference](docs/TOKENS.md) for the full token list with default values.
 
 ### Added
 

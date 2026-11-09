@@ -192,19 +192,19 @@ $-light-fixed: (
 
 $-light-defaults: map.merge($-light-fixed, -role-hue-tokens($-light-steps));
 
-$-light-defaults: -with-exceptions(
-    $-light-defaults,
-    (
-        "warning": warning 500,
-        "warning-hover": warning 600,
-        "warning-active": warning 700,
-        "text-success": success 800,
-        "text-warning": warning 800,
-        "text-info": info 800,
-        "text-green": green 800,
-        "text-yellow": yellow 800,
-    )
+// Light stops that differ from the generated ones
+$-light-exceptions: (
+    "warning": warning 500,
+    "warning-hover": warning 600,
+    "warning-active": warning 700,
+    "text-success": success 800,
+    "text-warning": warning 800,
+    "text-info": info 800,
+    "text-green": green 800,
+    "text-yellow": yellow 800,
 );
+
+$-light-defaults: -with-exceptions($-light-defaults, $-light-exceptions);
 
 $-dark-fixed: (
     "bg-base": #1a1a1a,
@@ -229,7 +229,9 @@ $-dark-fixed: (
     "border-focus-offset": 2px,
 );
 
-$-dark-defaults: map.merge($-dark-fixed, -role-hue-tokens($-dark-steps));
+// Dark role and hue tokens; the light ones have the same keys
+$-dark-role-hue: -role-hue-tokens($-dark-steps);
+$-dark-defaults: map.merge($-dark-fixed, $-dark-role-hue);
 
 // Final theme maps: defaults with consumer overrides. Derived, not configurable
 $light-tokens: map.merge($-light-defaults, $light-theme);
@@ -239,7 +241,7 @@ $dark-tokens: map.merge($-dark-defaults, $dark-theme);
 $theme-tokens: map.keys($light-tokens);
 
 // Tokens generated per role and hue (no theme token utility class)
-$role-hue-tokens: map.keys(-role-hue-tokens($-dark-steps));
+$role-hue-tokens: map.keys($-dark-role-hue);
 
 // String values read as a color when they start with one of these; CSS named colors, currentcolor and transparent also count
 $-color-prefixes: ("var(", "color-mix(", "light-dark(", "color(", "rgb", "hsl", "hwb(", "oklch", "oklab", "lab(", "lch(", "#");
@@ -422,25 +424,36 @@ $-error-tokens: ("text-error", "text-on-error");
     @return false;
 }
 
+// Colors, numbers and valid scale references (brand 600): values with no possible problem
+@function -is-sound-value($value) {
+    $type: meta.type-of($value);
+    @return $type == "color" or $type == "number" or (is-scale-ref($value) and list.index(config-color.$shade-stops, list.nth($value, 2)) != null);
+}
+
 // Problems in the scale references and hex strings of a merged theme map, one message per token. $label names the
 // map, $overrides is the consumer map merged into it
 @function -value-problems($tokens, $overrides, $label, $override-name) {
     $problems: ();
     @each $token, $value in $tokens {
-        $source: "built-in default";
-        @if map.has-key($overrides, $token) {
-            $source: "set in #{$override-name}";
-        }
-        $where: "#{$label}, token '#{$token}' (#{$source})";
         $value: theme-value($value);
-        $unknown: -unknown-scale($value);
 
-        @if $unknown {
-            $problems: list.append($problems, "#{$where}: #{meta.inspect($value)} refers to '#{$unknown}', which is not a role or palette name. Keep '#{$unknown}' in $semantic-colors or $color-primitives, or set '#{$token}' in #{$override-name}.", comma);
-        } @else if -is-malformed-ref($value) {
-            $problems: list.append($problems, "#{$where} has a malformed scale reference (#{meta.inspect($value)}). Write name and stop unquoted, separated by a space, e.g. brand 600. Valid stops: #{config-color.$shade-stops}.", comma);
-        } @else if -is-invalid-hex($value) {
-            $problems: list.append($problems, "#{$where}: #{meta.inspect($value)} is not a valid hex color (#rgb, #rgba, #rrggbb or #rrggbbaa).", comma);
+        // Role and hue tokens that keep their generated value (a name and a stop) are valid
+        $generated: map.has-key($-dark-role-hue, $token) and not map.has-key($overrides, $token) and not map.has-key($-light-exceptions, $token);
+        @if not $generated and not -is-sound-value($value) {
+            $source: "built-in default";
+            @if map.has-key($overrides, $token) {
+                $source: "set in #{$override-name}";
+            }
+            $where: "#{$label}, token '#{$token}' (#{$source})";
+            $unknown: -unknown-scale($value);
+
+            @if $unknown {
+                $problems: list.append($problems, "#{$where}: #{meta.inspect($value)} refers to '#{$unknown}', which is not a role or palette name. Keep '#{$unknown}' in $semantic-colors or $color-primitives, or set '#{$token}' in #{$override-name}.", comma);
+            } @else if -is-malformed-ref($value) {
+                $problems: list.append($problems, "#{$where} has a malformed scale reference (#{meta.inspect($value)}). Write name and stop unquoted, separated by a space, e.g. brand 600. Valid stops: #{config-color.$shade-stops}.", comma);
+            } @else if -is-invalid-hex($value) {
+                $problems: list.append($problems, "#{$where}: #{meta.inspect($value)} is not a valid hex color (#rgb, #rgba, #rrggbb or #rrggbbaa).", comma);
+            }
         }
     }
     @return $problems;
@@ -460,7 +473,8 @@ $-error-tokens: ("text-error", "text-on-error");
 
     $owners: ();
     @each $name in $-scale-names {
-        @each $token in map.keys(-scale-tokens($name, $-dark-steps)) {
+        $tokens: -scale-tokens($name, $-dark-steps);
+        @each $token in map.keys($tokens) {
             @if map.has-key($-light-fixed, $token) or -is-error-token($token) {
                 @error "'#{$name}' generates the token '#{$token}', which is a built-in theme token. Rename '#{$name}'.";
             }
@@ -470,8 +484,13 @@ $-error-tokens: ("text-error", "text-on-error");
             @if map.has-key($owners, $token) {
                 @error "'#{map.get($owners, $token)}' and '#{$name}' both generate the token '#{$token}'. Rename one of them.";
             }
-            $owners: map.set($owners, $token, $name);
         }
+
+        // The tokens of one name are distinct keys, so they are added together (map.set copies the whole map)
+        @each $token in map.keys($tokens) {
+            $tokens: map.set($tokens, $token, $name);
+        }
+        $owners: map.merge($owners, $tokens);
     }
 }
 
@@ -481,18 +500,19 @@ $-error-tokens: ("text-error", "text-on-error");
 }
 
 // Palette, basic color and non-color scale token names (the keys of fn-tokens palette-tokens(), basic-tokens()
-// and scale-tokens()), so a reserved key is reported before the unknown-key checks
-@function -reserved-names() {
+// and scale-tokens()), so a reserved key is reported before the unknown-key checks. Only the names that are keys of
+// $candidates are returned: the checks look up a few names, and building the full map is slow
+@function -reserved-names($candidates) {
     $names: ();
     @each $name in $-scale-names {
         @each $stop in config-color.$shade-stops {
-            $names: map.set($names, "#{$name}-#{$stop}", true);
+            $names: -add-candidate($names, $candidates, "#{$name}-#{$stop}");
         }
     }
     @each $name in map.keys(config-color.$basic-colors) {
-        $names: map.set($names, "#{$name}", true);
+        $names: -add-candidate($names, $candidates, "#{$name}");
     }
-    $names: map.set($names, "font-family", true);
+    $names: -add-candidate($names, $candidates, "font-family");
     $border-widths: ();
     @each $width in config-border.$border-widths {
         $border-widths: map.set($border-widths, $width, true);
@@ -514,8 +534,16 @@ $-error-tokens: ("text-error", "text-on-error");
     );
     @each $prefix, $map in $scales {
         @each $key in map.keys($map) {
-            $names: map.set($names, "#{$prefix}-#{fn-css-vars.css-var-key($key)}", true);
+            $names: -add-candidate($names, $candidates, "#{$prefix}-#{fn-css-vars.css-var-key($key)}");
         }
+    }
+    @return $names;
+}
+
+// $names with $name added when it is a key of $candidates
+@function -add-candidate($names, $candidates, $name) {
+    @if map.has-key($candidates, $name) {
+        @return map.set($names, $name, true);
     }
     @return $names;
 }
@@ -589,7 +617,10 @@ $-error-tokens: ("text-error", "text-on-error");
         );
     }
     @include -validate-renamed-keys($themes);
-    $reserved: -reserved-names();
+
+    // Reserved names are looked up for the generated role and hue tokens and the custom theme keys only
+    $candidates: map.merge(map.merge($light-theme, $dark-theme), $-dark-role-hue);
+    $reserved: -reserved-names($candidates);
     @include -validate-names($reserved);
     @include -validate-reserved-keys($reserved);
     @include -validate-error-tokens($light-theme, "$light-theme");

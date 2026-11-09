@@ -1914,8 +1914,8 @@
           "name": "dark-theme",
           "code": "\n    @include -theme-tokens(config-theme.$dark-tokens, config-theme.$dark-tokens, \"$dark-theme\");\n",
           "line": {
-            "start": 112,
-            "end": 114
+            "start": 129,
+            "end": 131
           }
         }
       }
@@ -3705,16 +3705,16 @@
   {
     "description": "Returns the var() reference of a v2 token; an unknown name, a --wu- prefixed name or a disabled theme feature raises an error.\n",
     "commentRange": {
-      "start": 287,
-      "end": 295
+      "start": 289,
+      "end": 297
     },
     "context": {
       "type": "function",
       "name": "token",
       "code": "\n    // Unquoted black, white and transparent arrive as colors\n    @if meta.type-of($name) == \"color\" {\n        $name: meta.inspect($name);\n    }\n    @if meta.type-of($name) != \"string\" {\n        @error \"token(#{meta.inspect($name)}): pass a token name, e.g. token(brand).\";\n    }\n    $name: string.unquote($name);\n    @if not fn-flags.feature-flag-on(\"theme\") {\n        @error \"token(#{$name}): no tokens are emitted because the theme feature flag is off.\";\n    }\n    @if map.has-key($-names, $name) {\n        @return var(--#{config-constants.$prefix}-#{$name});\n    }\n\n    // Not a token name: strip a leading --, - or wu- prefix\n    $bare: $name;\n    @while string.index($bare, \"-\") == 1 {\n        $bare: string.slice($bare, 2);\n    }\n    @if string.index($bare, \"#{config-constants.$prefix}-\") == 1 {\n        $bare: string.slice($bare, string.length(config-constants.$prefix) + 2);\n    }\n    @if $bare == \"\" {\n        @error \"token(\\\"#{$name}\\\"): pass a token name, e.g. token(brand).\";\n    }\n    @if $bare != $name {\n        @error \"token(#{$name}): pass the name without the prefix, e.g. token(#{$bare}).\";\n    }\n\n    $renamed: renamed-role($name);\n    @if $renamed {\n        @error \"token(#{$name}): renamed in 2.0, use token(#{$renamed}).\";\n    }\n\n    $matches: -close-matches($name);\n    @if list.length($matches) > 0 {\n        @error \"token(#{$name}): unknown token. Close matches: #{$matches}.\";\n    }\n    @error \"token(#{$name}): unknown token. Valid names are the --#{config-constants.$prefix}- custom properties in :root, without --#{config-constants.$prefix}-.\";\n",
       "line": {
-        "start": 296,
-        "end": 337
+        "start": 298,
+        "end": 339
       }
     },
     "parameter": [
@@ -8419,16 +8419,16 @@
   {
     "description": "Emits the dark theme token custom properties (--wu-*), including computed text-on-{role} and the error aliases of danger.\n\nThe theme already emits these under [data-theme=\"dark\"] and the prefers-color-scheme fallback; use this for a custom scope.\n",
     "commentRange": {
-      "start": 103,
-      "end": 111
+      "start": 120,
+      "end": 128
     },
     "context": {
       "type": "mixin",
       "name": "dark-theme",
       "code": "\n    @include -theme-tokens(config-theme.$dark-tokens, config-theme.$dark-tokens, \"$dark-theme\");\n",
       "line": {
-        "start": 112,
-        "end": 114
+        "start": 129,
+        "end": 131
       }
     },
     "output": "--wu-* theme token declarations with the dark values (built-in defaults merged with $dark-theme)",

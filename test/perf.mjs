@@ -1,4 +1,4 @@
-// apply() compile time guard, measured against a released baseline live.
+// apply() compile time and package load time guard, measured against released baselines live.
 //
 // Usage: node test/perf.mjs (npm run test:perf)
 //
@@ -24,6 +24,11 @@
 //                colors at a shade), so every value repeats across rules, as in a real stylesheet.
 //   large-app    the first LARGE_APP_RULES rules of test/fixtures/large-app.scss (namespaced, 10 items per call).
 //
+// Load checks. The same method against LOAD_BASELINE_VERSION (LOAD_BASELINE_COMMIT), with one call per fixture: the
+// fixture is a `@use` line and PLAIN_RULE, its empty entry is PLAIN_RULE alone, so the ratio compares package load time.
+//   load mixins  `@use "mixins/index" as *;`, the @wovenui/core/mixins entry (as in every CSS module).
+//   load index   `@use "index";`, the full entry with tokens and base styles.
+//
 // Self-relative checks (no baseline needed):
 //   get-color    GET_COLOR_RULES get-color() calls on 24 repeated hex colors at a shade must cost at most
 //                GET_COLOR_LIMIT times the same calls on palette names (uncached raw colors cost about 4 times as much).
@@ -41,6 +46,8 @@ import { BUILD_FILE, CORE_DIR, STYLES_DIR, TEST_DIR, pad } from './helpers.mjs';
 
 const BASELINE_COMMIT = '3cf0693';
 const BASELINE_VERSION = '2.0.0';
+const LOAD_BASELINE_COMMIT = '901c927';
+const LOAD_BASELINE_VERSION = '2.2.2';
 
 const WARMUP = 3;
 const PAIRS = 7;
@@ -96,6 +103,12 @@ const GENERATED = [
 const LARGE_APP = path.join(TEST_DIR, 'fixtures', 'large-app.scss');
 const LARGE_APP_RULES = 1500;
 
+const PLAIN_RULE = '.plain { color: red; }';
+const LOAD = [
+    ['load mixins', '@use "mixins/index" as *;'],
+    ['load index', '@use "index";'],
+];
+
 function time(fn) {
     const start = process.hrtime.bigint();
     fn();
@@ -135,24 +148,24 @@ function git(args, options = {}) {
     return result.error || result.status !== 0 ? null : result.stdout;
 }
 
-// Extracts the baseline sources into a new temporary directory; returns it, or null with the reason
-function extractBaseline() {
-    const pkg = git(['show', `${BASELINE_COMMIT}:package.json`], {
+// Extracts the sources of a baseline commit into a new temporary directory; returns it, or null with the reason
+function extractBaseline(commit, expectedVersion) {
+    const pkg = git(['show', `${commit}:package.json`], {
         encoding: 'utf8',
     });
     if (pkg === null) {
-        return [null, `git or commit ${BASELINE_COMMIT} is not available`];
+        return [null, `git or commit ${commit} is not available`];
     }
     const version = JSON.parse(pkg).version;
-    if (version !== BASELINE_VERSION) {
+    if (version !== expectedVersion) {
         return [
             null,
-            `commit ${BASELINE_COMMIT} is version ${version}, not ${BASELINE_VERSION}`,
+            `commit ${commit} is version ${version}, not ${expectedVersion}`,
         ];
     }
-    const archive = git(['archive', '--format=tar', BASELINE_COMMIT, 'src']);
+    const archive = git(['archive', '--format=tar', commit, 'src']);
     if (archive === null) {
-        return [null, `git archive ${BASELINE_COMMIT} failed`];
+        return [null, `git archive ${commit} failed`];
     }
     const dir = fs.mkdtempSync(
         path.join(os.tmpdir(), 'wovenui-perf-baseline-')
@@ -176,6 +189,16 @@ function generated([name, use, applyName, items]) {
         calls: RULES,
         baseline: [use, source],
         current: [use, source],
+    };
+}
+
+function load([name, use]) {
+    const source = `${use}\n${PLAIN_RULE}`;
+    return {
+        name,
+        calls: 1,
+        baseline: [PLAIN_RULE, source],
+        current: [PLAIN_RULE, source],
     };
 }
 
@@ -231,10 +254,16 @@ function attempt(fixture, compileBaseline) {
     };
 }
 
-function checkAgainstBaseline(compileBaseline, problems) {
-    const fixtures = [...GENERATED.map(generated), largeApp()];
+// fixtures, compiler and version of the baseline, the measured cost ('apply()' or 'load') and its table unit
+function checkAgainstBaseline(
+    fixtures,
+    [compileBaseline, version, commit],
+    cost,
+    unit,
+    problems
+) {
     console.log(
-        `baseline ${BASELINE_VERSION} (${BASELINE_COMMIT}) measured live: ${PAIRS} interleaved pairs per fixture after ${WARMUP} warm-up rounds; fail above ${FAIL_RATIO}x baseline on all of ${ATTEMPTS} attempts, warn above ${WARN_RATIO}x\n`
+        `baseline ${version} (${commit}) measured live: ${PAIRS} interleaved pairs per fixture after ${WARMUP} warm-up rounds; fail above ${FAIL_RATIO}x baseline on all of ${ATTEMPTS} attempts, warn above ${WARN_RATIO}x\n`
     );
     const widths = [22, 17, 17, 8, 11, 0];
     const row = (cells) =>
@@ -242,8 +271,8 @@ function checkAgainstBaseline(compileBaseline, problems) {
     console.log(
         row([
             'fixture',
-            'baseline µs/call',
-            'current µs/call',
+            `baseline ${unit}`,
+            `current ${unit}`,
             'ratio',
             'spread',
             'result',
@@ -260,7 +289,7 @@ function checkAgainstBaseline(compileBaseline, problems) {
         if (result.ratio > FAIL_RATIO) {
             status = 'FAIL';
             problems.push(
-                `${fixture.name}: ${result.ratio.toFixed(2)}x the baseline cost per apply() on all ${attempts} attempts (limit ${FAIL_RATIO})`
+                `${fixture.name}: ${result.ratio.toFixed(2)}x the baseline ${cost} cost on all ${attempts} attempts (limit ${FAIL_RATIO})`
             );
         } else if (result.ratio > WARN_RATIO) {
             status = `warn (above ${WARN_RATIO})`;
@@ -379,22 +408,56 @@ function checkSelfRelative(problems) {
 
 function run() {
     const problems = [];
-    const [baselineDir, reason] = extractBaseline();
+    const [baselineDir, reason] = extractBaseline(
+        BASELINE_COMMIT,
+        BASELINE_VERSION
+    );
+    const [loadBaselineDir, loadReason] = baselineDir
+        ? extractBaseline(LOAD_BASELINE_COMMIT, LOAD_BASELINE_VERSION)
+        : [null, reason];
+    const baselineCompiler = (dir, version, commit) => [
+        compiler(path.join(dir, 'src', 'styles')),
+        version,
+        commit,
+    ];
     try {
         if (baselineDir) {
             checkAgainstBaseline(
-                compiler(path.join(baselineDir, 'src', 'styles')),
+                [...GENERATED.map(generated), largeApp()],
+                baselineCompiler(
+                    baselineDir,
+                    BASELINE_VERSION,
+                    BASELINE_COMMIT
+                ),
+                'apply()',
+                'µs/call',
                 problems
             );
-        } else {
+        }
+        if (loadBaselineDir) {
+            checkAgainstBaseline(
+                LOAD.map(load),
+                baselineCompiler(
+                    loadBaselineDir,
+                    LOAD_BASELINE_VERSION,
+                    LOAD_BASELINE_COMMIT
+                ),
+                'load',
+                'µs',
+                problems
+            );
+        }
+        if (!loadBaselineDir) {
             console.log(
-                `perf: ${reason}; skipping the baseline checks (run from a git checkout of @wovenui/core to include them)\n`
+                `perf: ${loadReason}; skipping the ${baselineDir ? 'load' : 'baseline'} checks (run from a git checkout of @wovenui/core to include them)\n`
             );
         }
         checkSelfRelative(problems);
     } finally {
-        if (baselineDir) {
-            fs.rmSync(baselineDir, { recursive: true, force: true });
+        for (const dir of [baselineDir, loadBaselineDir]) {
+            if (dir) {
+                fs.rmSync(dir, { recursive: true, force: true });
+            }
         }
     }
 
@@ -404,7 +467,7 @@ function run() {
         return;
     }
     console.log(
-        `\nperf: ${baselineDir ? `apply() within ${FAIL_RATIO}x baseline on every fixture, ` : ''}get-color cache and unique value growth within limits`
+        `\nperf: ${baselineDir ? `apply() within ${FAIL_RATIO}x baseline on every fixture, ` : ''}${loadBaselineDir ? `load within ${FAIL_RATIO}x baseline, ` : ''}get-color cache and unique value growth within limits`
     );
 }
 

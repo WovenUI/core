@@ -135,7 +135,7 @@
         }
 
         // Remove all animations and transitions for people that prefer not to see them (WCAG 2.3.3), hand-written ones
-        // included. Restore an essential animation with !important inside @layer reset (see MIGRATION-v2.md)
+        // included. Restore an essential animation with !important inside @layer reset
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,

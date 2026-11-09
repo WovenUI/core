@@ -67,7 +67,11 @@
 
 // Map a config key to a custom property name part: "." becomes "_" and "/" becomes "-" (0.5 is 0_5, 1/2 is 1-2)
 @function css-var-key($key) {
-    @return fn-strings.str-replace(fn-strings.str-replace("#{$key}", ".", "_"), "/", "-");
+    $text: "#{$key}";
+    @if not string.index($text, ".") and not string.index($text, "/") {
+        @return $text;
+    }
+    @return fn-strings.str-replace(fn-strings.str-replace($text, ".", "_"), "/", "-");
 }
 
 // Escape a config key for a class name: 0.5 gives 0\.5 and 1/2 gives 1\/2
