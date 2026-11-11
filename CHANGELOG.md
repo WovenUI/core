@@ -4,6 +4,19 @@ All notable changes to `@wovenui/core` (formerly `@nuvoui/core`) are documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-11-11
+
+### Changed
+
+- Border tokens `border-regular`, `border-strong`, `border-control` and `border-control-hover` are now semi-transparent black in light (`rgb(0 0 0 / 8%)`, `12%`, `45%`, `60%`) and semi-transparent white in dark (`rgb(255 255 255 / 4%)`, `12%`, `41%`, `60%`), so edges adapt to the surface under them. `border-control` keeps 3:1 contrast on the page, surface, raised and hover backgrounds in both themes.
+
+### Fixed
+
+- Dark theme `bg-hover` is now `#454545` (was `#3a3a3a`, the same as `bg-raised`), so hover shows on raised surfaces such as menus and popovers.
+- Dark theme `text-muted` is now `#b2b2b2` (was `#a8a8a8`), so muted text keeps 4.5:1 contrast on `bg-hover`.
+- Placeholders in the base field styles use `text-muted` (was `text-subtle`, 3.03:1 on `bg-surface`), so placeholder text reaches 4.5:1 in both themes.
+- Light `text-warning` is now warning stop 900 (was 800, 4.42:1 on gray 100), so warning text reaches 4.5:1 on every light surface. The accepted contrast exception is removed.
+
 ## [2.2.3] - 2026-11-09
 
 ### Changed
