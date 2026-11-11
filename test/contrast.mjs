@@ -13,11 +13,12 @@
 // Checks, per theme (light and dark, and their high-contrast twins when a high-contrast map is set):
 //   text-regular, text-muted        >= 4.5 on bg-base and bg-surface
 //   text-link, text-link-hover      >= 4.5 on bg-base and bg-surface
-//   text-{role}                     >= 4.5 on bg-surface, bg-alternate, bg-raised and bg-hover
+//   text-{role}                     >= 4.5 on bg-surface, bg-alternate, bg-raised, bg-hover and bg-disabled
 //   text-on-{role}                  >= 4.5 on {role}
 //   text-{hue}                      >= 4.5 on bg-surface and on {hue}-subtle
-//   border-control, border-focus    >= 3   on bg-surface
-// Accepted exception: light (and high-contrast light when it inherits the same values) text-warning on bg-alternate and bg-hover may measure 4.0 to 4.5 (printed as "accepted"); below 4.0 still fails.
+//   border-control                  >= 3   on bg-base, bg-surface, bg-raised and bg-hover (a translucent border is blended over the background)
+//   border-focus                    >= 3   on bg-surface
+// Also prints, for information, border-control and border-control-hover over every bg-* token.
 // Prints a table and exits with code 1 on any failure.
 import fs from 'node:fs';
 import {
@@ -37,15 +38,6 @@ import {
 
 const TEXT = 4.5;
 const NON_TEXT = 3;
-const EXCEPTION_FLOOR = 4;
-// Accepted, owner-ruled exception: light text-warning (stop 800) measures 4.42 on gray 100.
-const ACCEPTED_EXCEPTIONS = [
-    {
-        themes: ['light', 'hc-light'],
-        fg: 'text-warning',
-        bgs: ['bg-alternate', 'bg-hover'],
-    },
-];
 
 function usageError(message) {
     console.error(
@@ -116,6 +108,7 @@ function pairs(light) {
             'bg-alternate',
             'bg-raised',
             'bg-hover',
+            'bg-disabled',
         ]) {
             list.push([`text-${role}`, bg, TEXT]);
         }
@@ -125,7 +118,9 @@ function pairs(light) {
         list.push([`text-${hue}`, 'bg-surface', TEXT]);
         list.push([`text-${hue}`, `${hue}-subtle`, TEXT]);
     }
-    list.push(['border-control', 'bg-surface', NON_TEXT]);
+    for (const bg of ['bg-base', 'bg-surface', 'bg-raised', 'bg-hover']) {
+        list.push(['border-control', bg, NON_TEXT]);
+    }
     list.push(['border-focus', 'bg-surface', NON_TEXT]);
     return list;
 }
@@ -157,13 +152,12 @@ function run() {
         themes.push(['hc-dark', [hcDark, dark, light]]);
     }
     const failures = [];
-    const exceptions = [];
 
     console.log(
         `Contrast check (${options ? options.label : 'default build'})${hcLight || hcDark ? '' : '; no high-contrast map set, high contrast uses the base values'}\n`
     );
     console.log(
-        `${pad('theme', 9)}${pad('foreground', 22)}${pad('background', 18)}${pad('fg', 10)}${pad('bg', 10)}${pad('ratio', 8)}${pad('min', 5)}result`
+        `${pad('theme', 9)}${pad('foreground', 22)}${pad('background', 18)}${pad('fg', 28)}${pad('bg', 10)}${pad('ratio', 8)}${pad('min', 5)}result`
     );
     for (const [theme, layers] of themes) {
         for (const [fgName, bgName, min] of pairs(light)) {
@@ -179,25 +173,9 @@ function run() {
                     );
                 }
                 const ratio = contrast(fg, bg);
-                const accepted =
-                    ratio < min &&
-                    ratio >= EXCEPTION_FLOOR &&
-                    ACCEPTED_EXCEPTIONS.some(
-                        (item) =>
-                            item.themes.includes(theme) &&
-                            item.fg === fgName &&
-                            item.bgs.includes(bgName) &&
-                            (theme !== 'hc-light' ||
-                                (resolveToken(fgName, [light]) === fgValue &&
-                                    resolveToken(bgName, [light]) === bgValue))
-                    );
                 const ok = ratio >= min;
-                row = `${pad(fgValue, 10)}${pad(bgValue, 10)}${pad(ratio.toFixed(2), 8)}${pad(min, 5)}${ok ? 'pass' : accepted ? 'accepted exception' : 'FAIL'}`;
-                if (accepted) {
-                    exceptions.push(
-                        `${theme}: ${fgName} on ${bgName} is ${ratio.toFixed(2)}:1 (needs ${min}:1)`
-                    );
-                } else if (!ok) {
+                row = `${pad(fgValue, 28)}${pad(bgValue, 10)}${pad(ratio.toFixed(2), 8)}${pad(min, 5)}${ok ? 'pass' : 'FAIL'}`;
+                if (!ok) {
                     failures.push(
                         `${theme}: ${fgName} on ${bgName} is ${ratio.toFixed(2)}:1, needs ${min}:1`
                     );
@@ -214,10 +192,28 @@ function run() {
         }
     }
 
-    if (exceptions.length > 0) {
-        console.log(`\n${exceptions.length} accepted exception(s):`);
-        exceptions.forEach((item) => console.log(`  ${item}`));
+    console.log(
+        `\nControl borders over every bg token (information; translucent borders blended over the background)\n`
+    );
+    console.log(
+        `${pad('theme', 9)}${pad('border', 22)}${pad('background', 18)}ratio`
+    );
+    for (const [theme, layers] of themes) {
+        const bgs = Object.keys(layers[layers.length - 1]).filter((name) =>
+            /^bg-[a-z]+$/.test(name)
+        );
+        for (const border of ['border-control', 'border-control-hover']) {
+            for (const bgName of bgs) {
+                const fg = parseColor(resolveToken(border, layers));
+                const bg = parseColor(resolveToken(bgName, layers));
+                const ratio = fg && bg ? contrast(fg, bg).toFixed(2) : 'n/a';
+                console.log(
+                    `${pad(theme, 9)}${pad(border, 22)}${pad(bgName, 18)}${ratio}`
+                );
+            }
+        }
     }
+
     if (failures.length > 0) {
         console.log(`\n${failures.length} contrast failure(s):`);
         failures.forEach((failure) => console.log(`  ${failure}`));

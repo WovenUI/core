@@ -267,7 +267,7 @@ const ERROR_CASES = [
     [
         'removed gray reports every token that refers to it in one error',
         `$color-primitives: ("red": #ef4444)`,
-        "token 'border-control-hover' (built-in default): gray 600 refers to 'gray'",
+        "token 'bg-disabled' (built-in default): gray 100 refers to 'gray'",
     ],
     [
         'hue named like a basic color',
@@ -1673,9 +1673,14 @@ function run() {
     );
 
     check(
-        'base layer: list-box selects keep their height, only inline code is nowrap, the reset layer comes first when mixins-map loads before index',
+        'base layer: list-box selects keep their height, placeholders use text-muted, only inline code is nowrap, the reset layer comes first when mixins-map loads before index',
         () => {
             const css = compileWith('$generate-utility-classes: false');
+            expectIncludes(
+                css,
+                `textarea)::placeholder {\n    color: var(${P}text-muted);`,
+                'placeholder color'
+            );
             expectIncludes(
                 css,
                 `select:not([multiple], :where([size]:not([size="1"])))) {\n    height: var(${P}control-height-md);`,

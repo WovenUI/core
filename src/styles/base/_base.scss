@@ -225,7 +225,7 @@ $-invalid-border: "border-control";
             }
 
             #{config-flags.$parent-selector} :is(#{$-text-inputs}, textarea)::placeholder {
-                color: -token("text-subtle");
+                color: -token("text-muted");
             }
 
             // Checkboxes and Radio Buttons
