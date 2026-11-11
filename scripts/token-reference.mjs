@@ -175,7 +175,7 @@ function generate() {
         'Statuses',
         'Same set as brand for each status role: ' +
             statuses.map((status) => `\`${status}\``).join(', ') +
-            '. Light `text-warning` stays at stop 800: it measures 5.53:1 on white but 4.42:1 on gray 100 (`bg-alternate`, `bg-hover`), an accepted exception.',
+            '. Light `text-warning` uses stop 900, so it reaches 4.5:1 on every light surface, gray 100 (`bg-alternate`, `bg-hover`, `bg-disabled`) included.',
         pick(statuses.flatMap(roleSet)),
         roleTier
     );

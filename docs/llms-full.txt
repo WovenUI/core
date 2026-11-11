@@ -111,7 +111,7 @@ What the entry emits:
 
 Mixin-only projects keep `$generate-utility-classes: false` and still get every token.
 
-**Output size.** Is WovenUI's CSS output large? Not by default. Utility classes are off by default in the SCSS entry, so `@use "@wovenui/core"` emits only tokens and base styles, about 5.8 KB gzipped. Component styles through `@wovenui/core/mixins` emit only the rules you write, so output grows with your own rules, not with the framework. There is no purge step. Using the prebuilt file with every class (`dist/wovenui.min.css`)? See [Ship only the classes you use](https://wovenui.com/guides/unused-classes/).
+**Output size.** Is WovenUI's CSS output large? Not by default. Utility classes are off by default in the SCSS entry, so `@use "@wovenui/core"` emits only tokens and base styles, about 5.8 KB gzipped. Component styles through `@wovenui/core/mixins` emit only the rules you write, so output grows with your own rules, not with the framework. There is no purge step. Using the prebuilt file with every class (`dist/wovenui.min.css`)? See [Remove unused CSS with PurgeCSS](https://wovenui.com/guides/remove-unused-css/).
 
 Every compiled entry that `@use`s `@wovenui/core` emits all of the above except the classes (about 5.8 KB gzipped). Load it once, in the global stylesheet.
 
@@ -333,7 +333,7 @@ Default role stops (every role and hue; full values in `core/docs/TOKENS.md`):
 | `-border` | 200 | 800 |
 | `text-{name}` | 700 | 300 |
 
-Light exceptions: `warning` fill 500, hover 600, active 700 (it takes dark `text-on-warning`); `text-success`, `text-warning`, `text-info`, `text-green` and `text-yellow` use 800. Light `text-warning` is 5.53:1 on white but 4.42:1 on gray 100 (`bg-alternate`, `bg-hover`), an accepted exception. Write theme overrides as `name stop` references, never copied hex values.
+Light exceptions: `warning` fill 500, hover 600, active 700 (it takes dark `text-on-warning`); `text-success`, `text-info`, `text-green` and `text-yellow` use 800; `text-warning` uses 900, so it reaches 4.5:1 on every light surface. Write theme overrides as `name stop` references, never copied hex values.
 
 ### Theme mixins
 
@@ -744,7 +744,7 @@ $high-contrast-light: (); // overrides only, empty: nothing emitted
 $high-contrast-dark: (); // overrides only, empty: nothing emitted
 ```
 
-Built-in theme defaults (light / dark; `core/docs/TOKENS.md` is generated from the source): `bg-base` #fbfafc / #1a1a1a, `bg-surface` #fff / #2e2e2e, `bg-alternate` gray 100 / #242424, `bg-raised` #fff / #3a3a3a, `bg-hover` gray 100 / #3a3a3a, `bg-selected` brand 50 / brand 950, `bg-disabled` gray 100 / #333, `text-regular` #1a1a1a / #f1f1f1, `text-muted` #666 / #a8a8a8, `text-subtle` #949494 / #6e6e6e, `text-inverted` #f1f1f1 / #1a1a1a, `text-link` brand 700 / brand 300, `text-link-hover` brand 800 / brand 200, `border-regular` #d3d5d9 / #474747, `border-strong` gray 400 / gray 500, `border-control` gray 500 / gray 400, `border-control-hover` gray 600 / gray 300, `border-focus` brand 600 / brand 400, `border-focus-width` 2px, `border-focus-offset` 2px.
+Built-in theme defaults (light / dark; `core/docs/TOKENS.md` is generated from the source): `bg-base` #fbfafc / #1a1a1a, `bg-surface` #fff / #2e2e2e, `bg-alternate` gray 100 / #242424, `bg-raised` #fff / #3a3a3a, `bg-hover` gray 100 / #454545, `bg-selected` brand 50 / brand 950, `bg-disabled` gray 100 / #333, `text-regular` #1a1a1a / #f1f1f1, `text-muted` #666 / #b2b2b2, `text-subtle` #949494 / #6e6e6e, `text-inverted` #f1f1f1 / #1a1a1a, `text-link` brand 700 / brand 300, `text-link-hover` brand 800 / brand 200, `border-regular` rgb(0 0 0 / 8%) / rgb(255 255 255 / 4%), `border-strong` rgb(0 0 0 / 12%) / rgb(255 255 255 / 12%), `border-control` rgb(0 0 0 / 45%) / rgb(255 255 255 / 41%), `border-control-hover` rgb(0 0 0 / 60%) / rgb(255 255 255 / 60%), `border-focus` brand 600 / brand 400, `border-focus-width` 2px, `border-focus-offset` 2px.
 
 ---
 

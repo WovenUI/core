@@ -27,7 +27,7 @@ Backgrounds of the surface stack and shared interaction states. Classes: `.bg-{w
 | `--wu-bg-surface` | `#fff` | `#2e2e2e` | theme (flips) |
 | `--wu-bg-alternate` | `--wu-gray-100` (`#e3e6ec`) | `#242424` | theme (flips) |
 | `--wu-bg-raised` | `#fff` | `#3a3a3a` | theme (flips) |
-| `--wu-bg-hover` | `--wu-gray-100` (`#e3e6ec`) | `#3a3a3a` | theme (flips) |
+| `--wu-bg-hover` | `--wu-gray-100` (`#e3e6ec`) | `#454545` | theme (flips) |
 | `--wu-bg-selected` | `--wu-brand-50` (`#ebf3ff`) | `--wu-brand-950` (`#002352`) | theme (flips) |
 | `--wu-bg-disabled` | `--wu-gray-100` (`#e3e6ec`) | `#333` | theme (flips) |
 
@@ -38,7 +38,7 @@ Text colors for a normal page. Classes: `.text-{word}` (for example `.text-muted
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
 | `--wu-text-regular` | `#1a1a1a` | `#f1f1f1` | theme (flips) |
-| `--wu-text-muted` | `#666` | `#a8a8a8` | theme (flips) |
+| `--wu-text-muted` | `#666` | `#b2b2b2` | theme (flips) |
 | `--wu-text-subtle` | `#949494` | `#6e6e6e` | theme (flips) |
 | `--wu-text-inverted` | `#f1f1f1` | `#1a1a1a` | theme (flips) |
 | `--wu-text-link` | `--wu-brand-700` (`#0058bb`) | `--wu-brand-300` (`#91beff`) | theme (flips) |
@@ -50,10 +50,10 @@ Border colors. `border-control` is the darker edge for form controls (WCAG 1.4.1
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--wu-border-regular` | `#d3d5d9` | `#474747` | theme (flips) |
-| `--wu-border-strong` | `--wu-gray-400` (`#8d94a1`) | `--wu-gray-500` (`#6b7280`) | theme (flips) |
-| `--wu-border-control` | `--wu-gray-500` (`#6b7280`) | `--wu-gray-400` (`#8d94a1`) | theme (flips) |
-| `--wu-border-control-hover` | `--wu-gray-600` (`#5d6471`) | `--wu-gray-300` (`#adb4c0`) | theme (flips) |
+| `--wu-border-regular` | `rgba(0, 0, 0, 0.08)` | `rgba(255, 255, 255, 0.04)` | theme (flips) |
+| `--wu-border-strong` | `rgba(0, 0, 0, 0.12)` | `rgba(255, 255, 255, 0.12)` | theme (flips) |
+| `--wu-border-control` | `rgba(0, 0, 0, 0.45)` | `rgba(255, 255, 255, 0.41)` | theme (flips) |
+| `--wu-border-control-hover` | `rgba(0, 0, 0, 0.6)` | `rgba(255, 255, 255, 0.6)` | theme (flips) |
 
 ## Focus
 
@@ -81,7 +81,7 @@ The bare role name (`brand`) is the solid fill, `-hover` and `-active` its state
 
 ## Statuses
 
-Same set as brand for each status role: `success`, `danger`, `warning`, `info`. Light `text-warning` stays at stop 800: it measures 5.53:1 on white but 4.42:1 on gray 100 (`bg-alternate`, `bg-hover`), an accepted exception.
+Same set as brand for each status role: `success`, `danger`, `warning`, `info`. Light `text-warning` uses stop 900, so it reaches 4.5:1 on every light surface, gray 100 (`bg-alternate`, `bg-hover`, `bg-disabled`) included.
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
@@ -104,7 +104,7 @@ Same set as brand for each status role: `success`, `danger`, `warning`, `info`. 
 | `--wu-warning-active` | `--wu-warning-700` (`#b28600`) | `--wu-warning-200` (`#ffeabe`) | role (flips) |
 | `--wu-warning-subtle` | `--wu-warning-50` (`#fff6e5`) | `--wu-warning-950` (`#3d2b00`) | role (flips) |
 | `--wu-warning-border` | `--wu-warning-200` (`#ffeabe`) | `--wu-warning-800` (`#866300`) | role (flips) |
-| `--wu-text-warning` | `--wu-warning-800` (`#866300`) | `--wu-warning-300` (`#ffdf9c`) | role (flips) |
+| `--wu-text-warning` | `--wu-warning-900` (`#5e4500`) | `--wu-warning-300` (`#ffdf9c`) | role (flips) |
 | `--wu-text-on-warning` | `#1a1a1a` | `#1a1a1a` | role (flips) |
 | `--wu-info` | `--wu-info-700` (`#007485`) | `--wu-info-400` (`#4cbdd2`) | role (flips) |
 | `--wu-info-hover` | `--wu-info-800` (`#005a67`) | `--wu-info-300` (`#79d4e6`) | role (flips) |
