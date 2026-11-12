@@ -40,7 +40,7 @@ Text colors for a normal page. Classes: `.text-{word}` (for example `.text-muted
 | `--wu-text-regular` | `#1a1a1a` | `#f1f1f1` | theme (flips) |
 | `--wu-text-muted` | `#666` | `#b2b2b2` | theme (flips) |
 | `--wu-text-subtle` | `#949494` | `#6e6e6e` | theme (flips) |
-| `--wu-text-inverted` | `#f1f1f1` | `#1a1a1a` | theme (flips) |
+| `--wu-text-inverted` | `#fff` | `#1a1a1a` | theme (flips) |
 | `--wu-text-link` | `--wu-brand-700` (`#0058bb`) | `--wu-brand-300` (`#91beff`) | theme (flips) |
 | `--wu-text-link-hover` | `--wu-brand-800` (`#004494`) | `--wu-brand-200` (`#bad7ff`) | theme (flips) |
 
@@ -71,13 +71,13 @@ The bare role name (`brand`) is the solid fill, `-hover` and `-active` its state
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--wu-brand` | `--wu-brand-700` (`#0058bb`) | `--wu-brand-400` (`#5ca0ff`) | role (flips) |
-| `--wu-brand-hover` | `--wu-brand-800` (`#004494`) | `--wu-brand-300` (`#91beff`) | role (flips) |
-| `--wu-brand-active` | `--wu-brand-900` (`#003270`) | `--wu-brand-200` (`#bad7ff`) | role (flips) |
+| `--wu-brand` | `--wu-brand-600` (`#006be0`) | `--wu-brand-400` (`#5ca0ff`) | role (flips) |
+| `--wu-brand-hover` | `--wu-brand-700` (`#0058bb`) | `--wu-brand-300` (`#91beff`) | role (flips) |
+| `--wu-brand-active` | `--wu-brand-800` (`#004494`) | `--wu-brand-200` (`#bad7ff`) | role (flips) |
 | `--wu-brand-subtle` | `--wu-brand-50` (`#ebf3ff`) | `--wu-brand-950` (`#002352`) | role (flips) |
 | `--wu-brand-border` | `--wu-brand-200` (`#bad7ff`) | `--wu-brand-800` (`#004494`) | role (flips) |
 | `--wu-text-brand` | `--wu-brand-700` (`#0058bb`) | `--wu-brand-300` (`#91beff`) | role (flips) |
-| `--wu-text-on-brand` | `#f1f1f1` | `#1a1a1a` | role (flips) |
+| `--wu-text-on-brand` | `#fff` | `#1a1a1a` | role (flips) |
 
 ## Statuses
 
@@ -91,14 +91,14 @@ Same set as brand for each status role: `success`, `danger`, `warning`, `info`. 
 | `--wu-success-subtle` | `--wu-success-50` (`#e5fae6`) | `--wu-success-950` (`#00300b`) | role (flips) |
 | `--wu-success-border` | `--wu-success-200` (`#a8ecae`) | `--wu-success-800` (`#005e1d`) | role (flips) |
 | `--wu-text-success` | `--wu-success-800` (`#005e1d`) | `--wu-success-300` (`#7fdb89`) | role (flips) |
-| `--wu-text-on-success` | `#f1f1f1` | `#1a1a1a` | role (flips) |
-| `--wu-danger` | `--wu-danger-700` (`#ab0728`) | `--wu-danger-400` (`#fd6066`) | role (flips) |
-| `--wu-danger-hover` | `--wu-danger-800` (`#88001c`) | `--wu-danger-300` (`#ff9997`) | role (flips) |
-| `--wu-danger-active` | `--wu-danger-900` (`#670013`) | `--wu-danger-200` (`#ffc1bf`) | role (flips) |
+| `--wu-text-on-success` | `#fff` | `#1a1a1a` | role (flips) |
+| `--wu-danger` | `--wu-danger-600` (`#c72037`) | `--wu-danger-400` (`#fd6066`) | role (flips) |
+| `--wu-danger-hover` | `--wu-danger-700` (`#ab0728`) | `--wu-danger-300` (`#ff9997`) | role (flips) |
+| `--wu-danger-active` | `--wu-danger-800` (`#88001c`) | `--wu-danger-200` (`#ffc1bf`) | role (flips) |
 | `--wu-danger-subtle` | `--wu-danger-50` (`#ffeeed`) | `--wu-danger-950` (`#4c000b`) | role (flips) |
 | `--wu-danger-border` | `--wu-danger-200` (`#ffc1bf`) | `--wu-danger-800` (`#88001c`) | role (flips) |
 | `--wu-text-danger` | `--wu-danger-700` (`#ab0728`) | `--wu-danger-300` (`#ff9997`) | role (flips) |
-| `--wu-text-on-danger` | `#f1f1f1` | `#1a1a1a` | role (flips) |
+| `--wu-text-on-danger` | `#fff` | `#1a1a1a` | role (flips) |
 | `--wu-warning` | `--wu-warning-500` (`#ffc107`) | `--wu-warning-400` (`#ffd16c`) | role (flips) |
 | `--wu-warning-hover` | `--wu-warning-600` (`#dca600`) | `--wu-warning-300` (`#ffdf9c`) | role (flips) |
 | `--wu-warning-active` | `--wu-warning-700` (`#b28600`) | `--wu-warning-200` (`#ffeabe`) | role (flips) |
@@ -112,7 +112,7 @@ Same set as brand for each status role: `success`, `danger`, `warning`, `info`. 
 | `--wu-info-subtle` | `--wu-info-50` (`#e4f8fc`) | `--wu-info-950` (`#002d35`) | role (flips) |
 | `--wu-info-border` | `--wu-info-200` (`#a4e6f4`) | `--wu-info-800` (`#005a67`) | role (flips) |
 | `--wu-text-info` | `--wu-info-800` (`#005a67`) | `--wu-info-300` (`#79d4e6`) | role (flips) |
-| `--wu-text-on-info` | `#f1f1f1` | `#1a1a1a` | role (flips) |
+| `--wu-text-on-info` | `#fff` | `#1a1a1a` | role (flips) |
 
 ## Error aliases
 
@@ -120,13 +120,13 @@ Same set as brand for each status role: `success`, `danger`, `warning`, `info`. 
 
 | Token | Light | Dark | Tier |
 | --- | --- | --- | --- |
-| `--wu-error` | `--wu-danger` (`#ab0728`) | `--wu-danger` (`#fd6066`) | role (flips) |
-| `--wu-error-hover` | `--wu-danger-hover` (`#88001c`) | `--wu-danger-hover` (`#ff9997`) | role (flips) |
-| `--wu-error-active` | `--wu-danger-active` (`#670013`) | `--wu-danger-active` (`#ffc1bf`) | role (flips) |
+| `--wu-error` | `--wu-danger` (`#c72037`) | `--wu-danger` (`#fd6066`) | role (flips) |
+| `--wu-error-hover` | `--wu-danger-hover` (`#ab0728`) | `--wu-danger-hover` (`#ff9997`) | role (flips) |
+| `--wu-error-active` | `--wu-danger-active` (`#88001c`) | `--wu-danger-active` (`#ffc1bf`) | role (flips) |
 | `--wu-error-subtle` | `--wu-danger-subtle` (`#ffeeed`) | `--wu-danger-subtle` (`#4c000b`) | role (flips) |
 | `--wu-error-border` | `--wu-danger-border` (`#ffc1bf`) | `--wu-danger-border` (`#88001c`) | role (flips) |
 | `--wu-text-error` | `--wu-text-danger` (`#ab0728`) | `--wu-text-danger` (`#ff9997`) | role (flips) |
-| `--wu-text-on-error` | `--wu-text-on-danger` (`#f1f1f1`) | `--wu-text-on-danger` (`#1a1a1a`) | role (flips) |
+| `--wu-text-on-error` | `--wu-text-on-danger` (`#fff`) | `--wu-text-on-danger` (`#1a1a1a`) | role (flips) |
 
 ## Hue roles
 

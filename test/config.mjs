@@ -290,7 +290,7 @@ function run() {
             );
             const { light, dark } = themeBlocks(css);
             expectToken(light, 'light', 'accent-500');
-            expectToken(light, 'light', 'accent', `var(${P}accent-700)`);
+            expectToken(light, 'light', 'accent', `var(${P}accent-600)`);
             expectToken(light, 'light', 'text-on-accent');
             expectToken(dark, 'dark', 'accent', `var(${P}accent-400)`);
             expectToken(dark, 'dark', 'text-on-accent');
@@ -973,7 +973,7 @@ function run() {
         'a computed text-on-{role} below 4.5:1 warns once per theme map; the default build warns nothing',
         () => {
             const { warnings } = compileSource(
-                '@use "index" as nu with ($brand: #1ab5a5);'
+                '@use "index" as nu with ($brand: #7a7a7a, $light-theme: ("brand": brand 500));'
             );
             const messages = warnings.map((warning) => warning.message);
             const textOn = messages.filter((message) =>
@@ -981,11 +981,11 @@ function run() {
             );
             if (textOn.length !== 1 || messages.length !== 1) {
                 fail(
-                    `$brand #1ab5a5: expected one text-on-brand warning, got ${JSON.stringify(messages)}`
+                    `brand 500 of #7a7a7a: expected one text-on-brand warning, got ${JSON.stringify(messages)}`
                 );
             }
             const fixed = compileSource(
-                '@use "index" as nu with ($brand: #1ab5a5, $light-theme: ("brand": brand 800));'
+                '@use "index" as nu with ($brand: #7a7a7a, $light-theme: ("brand": brand 800));'
             );
             if (fixed.warnings.length) {
                 fail('brand: brand 800 still warns');
@@ -1523,12 +1523,7 @@ function run() {
             const quoted = themeBlocks(
                 compileWith('$light-theme: ("text-regular": "#111111")')
             );
-            expectToken(
-                quoted.light,
-                'quoted color',
-                'text-on-brand',
-                '#f1f1f1'
-            );
+            expectToken(quoted.light, 'quoted color', 'text-on-brand', '#fff');
             expectToken(
                 quoted.light,
                 'quoted color',
