@@ -73,10 +73,10 @@ $-invalid-border: "border-control";
     $-invalid-border: "danger";
 }
 
-// Focus ring shared by buttons and form fields
-@mixin -focus-ring {
+// Focus ring: buttons keep the offset ring, form fields pass 0 so the edge turns the focus color
+@mixin -focus-ring($offset: -token("border-focus-offset")) {
     outline: -token("border-focus-width") solid -token("border-focus");
-    outline-offset: -token("border-focus-offset");
+    outline-offset: $offset;
 }
 
 // CSS output of this module; index.scss includes it, the mixins entry does not
@@ -205,7 +205,7 @@ $-invalid-border: "border-control";
                 }
 
                 &:focus-visible {
-                    @include -focus-ring;
+                    @include -focus-ring(0);
                 }
 
                 &:is([aria-invalid="true"], :user-invalid) {
@@ -215,6 +215,14 @@ $-invalid-border: "border-control";
                 &:disabled {
                     background-color: -token("bg-disabled");
                     opacity: $-disabled-opacity;
+                }
+            }
+
+            // Separate rules: one unknown pseudo-class would drop a whole selector list
+            @each $-autofill in ":autofill", ":-webkit-autofill" {
+                #{config-flags.$parent-selector} :is(#{$-text-inputs}, textarea, select)#{$-autofill} {
+                    box-shadow: 0 0 0 62.5rem -token("bg-surface") inset;
+                    -webkit-text-fill-color: -token("text-regular");
                 }
             }
 
