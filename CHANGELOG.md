@@ -4,6 +4,18 @@ All notable changes to `@wovenui/core` (formerly `@nuvoui/core`) are documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-11-12
+
+### Visual changes
+
+- Light role fills for `brand` and `danger` move from stop 700 to 600, with hover at 700 and active at 800. `success` and `info` keep 700, 800 and 900 as light exceptions, like `warning`, which is unchanged.
+- Light `text-inverted` is now `#fff` (was `#f1f1f1`).
+- Form fields (`input`, `textarea`, `select`) focus with a 2 px outline at offset 0, so the edge turns the focus color. Buttons keep the offset ring.
+
+### Added
+
+- Autofilled fields (`:autofill`, `:-webkit-autofill`) keep the `bg-surface` background and the `text-regular` color.
+
 ## [2.3.0] - 2026-11-11
 
 ### Changed

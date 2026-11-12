@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for AI coding tools working on this repository (`@wovenui/core`, version 2.3.0).
+Guidance for AI coding tools working on this repository (`@wovenui/core`, version 2.4.0).
 
 ## 1. What this repo is
 
@@ -25,7 +25,7 @@ Run from the repository root. `pnpm` and `npm` both work (`pnpm-lock.yaml` is co
 | `pnpm build` | Cleans `dist/`, compiles `src/styles/build.scss` to `dist/wovenui.css` and `dist/wovenui.min.css` |
 | `pnpm dev` | Watches `src/styles/index.scss` into `dist/wovenui.css` |
 
-`prepublishOnly` runs lint, `test`, `format:check` and build. Run `test:perf` yourself when a change touches `apply()` or the caches. Before finishing a change, run at least `pnpm test`, `pnpm lint` and `pnpm format:check`.
+`prepublishOnly` runs lint, `format:check`, `test` and build. Run `test:perf` yourself when a change touches `apply()` or the caches. Before finishing a change, run at least `pnpm test`, `pnpm lint` and `pnpm format:check`.
 
 ## 3. Repository layout
 

@@ -241,7 +241,7 @@
   }
   :is(input:not([type]), input[type=text], input[type=tel], input[type=email], input[type=password], input[type=number], input[type=search], input[type=url], input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week], textarea, select):focus-visible {
     outline: var(--wu-border-focus-width) solid var(--wu-border-focus);
-    outline-offset: var(--wu-border-focus-offset);
+    outline-offset: 0;
   }
   :is(input:not([type]), input[type=text], input[type=tel], input[type=email], input[type=password], input[type=number], input[type=search], input[type=url], input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week], textarea, select):is([aria-invalid=true], :user-invalid) {
     border-color: var(--wu-danger);
@@ -249,6 +249,14 @@
   :is(input:not([type]), input[type=text], input[type=tel], input[type=email], input[type=password], input[type=number], input[type=search], input[type=url], input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week], textarea, select):disabled {
     background-color: var(--wu-bg-disabled);
     opacity: 0.5;
+  }
+  :is(input:not([type]), input[type=text], input[type=tel], input[type=email], input[type=password], input[type=number], input[type=search], input[type=url], input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week], textarea, select):autofill {
+    box-shadow: 0 0 0 62.5rem var(--wu-bg-surface) inset;
+    -webkit-text-fill-color: var(--wu-text-regular);
+  }
+  :is(input:not([type]), input[type=text], input[type=tel], input[type=email], input[type=password], input[type=number], input[type=search], input[type=url], input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week], textarea, select):-webkit-autofill {
+    box-shadow: 0 0 0 62.5rem var(--wu-bg-surface) inset;
+    -webkit-text-fill-color: var(--wu-text-regular);
   }
   :is(input:not([type]), input[type=text], input[type=tel], input[type=email], input[type=password], input[type=number], input[type=search], input[type=url], input[type=date], input[type=time], input[type=datetime-local], input[type=month], input[type=week], select:not([multiple], :where([size]:not([size="1"])))) {
     height: var(--wu-control-height-md);
@@ -38689,7 +38697,7 @@
   --wu-text-regular: #1a1a1a;
   --wu-text-muted: #666;
   --wu-text-subtle: #949494;
-  --wu-text-inverted: #f1f1f1;
+  --wu-text-inverted: #fff;
   --wu-text-link: var(--wu-brand-700);
   --wu-text-link-hover: var(--wu-brand-800);
   --wu-border-regular: rgba(0, 0, 0, 0.08);
@@ -38699,9 +38707,9 @@
   --wu-border-focus: var(--wu-brand-600);
   --wu-border-focus-width: 2px;
   --wu-border-focus-offset: 2px;
-  --wu-brand: var(--wu-brand-700);
-  --wu-brand-hover: var(--wu-brand-800);
-  --wu-brand-active: var(--wu-brand-900);
+  --wu-brand: var(--wu-brand-600);
+  --wu-brand-hover: var(--wu-brand-700);
+  --wu-brand-active: var(--wu-brand-800);
   --wu-brand-subtle: var(--wu-brand-50);
   --wu-brand-border: var(--wu-brand-200);
   --wu-text-brand: var(--wu-brand-700);
@@ -38711,9 +38719,9 @@
   --wu-success-subtle: var(--wu-success-50);
   --wu-success-border: var(--wu-success-200);
   --wu-text-success: var(--wu-success-800);
-  --wu-danger: var(--wu-danger-700);
-  --wu-danger-hover: var(--wu-danger-800);
-  --wu-danger-active: var(--wu-danger-900);
+  --wu-danger: var(--wu-danger-600);
+  --wu-danger-hover: var(--wu-danger-700);
+  --wu-danger-active: var(--wu-danger-800);
   --wu-danger-subtle: var(--wu-danger-50);
   --wu-danger-border: var(--wu-danger-200);
   --wu-text-danger: var(--wu-danger-700);
@@ -38750,11 +38758,11 @@
   --wu-pink-subtle: var(--wu-pink-50);
   --wu-pink-border: var(--wu-pink-200);
   --wu-text-pink: var(--wu-pink-700);
-  --wu-text-on-brand: #f1f1f1;
-  --wu-text-on-success: #f1f1f1;
-  --wu-text-on-danger: #f1f1f1;
+  --wu-text-on-brand: #fff;
+  --wu-text-on-success: #fff;
+  --wu-text-on-danger: #fff;
   --wu-text-on-warning: #1a1a1a;
-  --wu-text-on-info: #f1f1f1;
+  --wu-text-on-info: #fff;
   --wu-error: var(--wu-danger);
   --wu-error-hover: var(--wu-danger-hover);
   --wu-error-active: var(--wu-danger-active);
@@ -38865,7 +38873,7 @@
   --wu-text-regular: #1a1a1a;
   --wu-text-muted: #666;
   --wu-text-subtle: #949494;
-  --wu-text-inverted: #f1f1f1;
+  --wu-text-inverted: #fff;
   --wu-text-link: var(--wu-brand-700);
   --wu-text-link-hover: var(--wu-brand-800);
   --wu-border-regular: rgba(0, 0, 0, 0.08);
@@ -38875,9 +38883,9 @@
   --wu-border-focus: var(--wu-brand-600);
   --wu-border-focus-width: 2px;
   --wu-border-focus-offset: 2px;
-  --wu-brand: var(--wu-brand-700);
-  --wu-brand-hover: var(--wu-brand-800);
-  --wu-brand-active: var(--wu-brand-900);
+  --wu-brand: var(--wu-brand-600);
+  --wu-brand-hover: var(--wu-brand-700);
+  --wu-brand-active: var(--wu-brand-800);
   --wu-brand-subtle: var(--wu-brand-50);
   --wu-brand-border: var(--wu-brand-200);
   --wu-text-brand: var(--wu-brand-700);
@@ -38887,9 +38895,9 @@
   --wu-success-subtle: var(--wu-success-50);
   --wu-success-border: var(--wu-success-200);
   --wu-text-success: var(--wu-success-800);
-  --wu-danger: var(--wu-danger-700);
-  --wu-danger-hover: var(--wu-danger-800);
-  --wu-danger-active: var(--wu-danger-900);
+  --wu-danger: var(--wu-danger-600);
+  --wu-danger-hover: var(--wu-danger-700);
+  --wu-danger-active: var(--wu-danger-800);
   --wu-danger-subtle: var(--wu-danger-50);
   --wu-danger-border: var(--wu-danger-200);
   --wu-text-danger: var(--wu-danger-700);
@@ -38926,11 +38934,11 @@
   --wu-pink-subtle: var(--wu-pink-50);
   --wu-pink-border: var(--wu-pink-200);
   --wu-text-pink: var(--wu-pink-700);
-  --wu-text-on-brand: #f1f1f1;
-  --wu-text-on-success: #f1f1f1;
-  --wu-text-on-danger: #f1f1f1;
+  --wu-text-on-brand: #fff;
+  --wu-text-on-success: #fff;
+  --wu-text-on-danger: #fff;
   --wu-text-on-warning: #1a1a1a;
-  --wu-text-on-info: #f1f1f1;
+  --wu-text-on-info: #fff;
   --wu-error: var(--wu-danger);
   --wu-error-hover: var(--wu-danger-hover);
   --wu-error-active: var(--wu-danger-active);
@@ -39129,7 +39137,7 @@
     --wu-text-regular: #1a1a1a;
     --wu-text-muted: #666;
     --wu-text-subtle: #949494;
-    --wu-text-inverted: #f1f1f1;
+    --wu-text-inverted: #fff;
     --wu-text-link: var(--wu-brand-700);
     --wu-text-link-hover: var(--wu-brand-800);
     --wu-border-regular: rgba(0, 0, 0, 0.08);
@@ -39139,9 +39147,9 @@
     --wu-border-focus: var(--wu-brand-600);
     --wu-border-focus-width: 2px;
     --wu-border-focus-offset: 2px;
-    --wu-brand: var(--wu-brand-700);
-    --wu-brand-hover: var(--wu-brand-800);
-    --wu-brand-active: var(--wu-brand-900);
+    --wu-brand: var(--wu-brand-600);
+    --wu-brand-hover: var(--wu-brand-700);
+    --wu-brand-active: var(--wu-brand-800);
     --wu-brand-subtle: var(--wu-brand-50);
     --wu-brand-border: var(--wu-brand-200);
     --wu-text-brand: var(--wu-brand-700);
@@ -39151,9 +39159,9 @@
     --wu-success-subtle: var(--wu-success-50);
     --wu-success-border: var(--wu-success-200);
     --wu-text-success: var(--wu-success-800);
-    --wu-danger: var(--wu-danger-700);
-    --wu-danger-hover: var(--wu-danger-800);
-    --wu-danger-active: var(--wu-danger-900);
+    --wu-danger: var(--wu-danger-600);
+    --wu-danger-hover: var(--wu-danger-700);
+    --wu-danger-active: var(--wu-danger-800);
     --wu-danger-subtle: var(--wu-danger-50);
     --wu-danger-border: var(--wu-danger-200);
     --wu-text-danger: var(--wu-danger-700);
@@ -39190,11 +39198,11 @@
     --wu-pink-subtle: var(--wu-pink-50);
     --wu-pink-border: var(--wu-pink-200);
     --wu-text-pink: var(--wu-pink-700);
-    --wu-text-on-brand: #f1f1f1;
-    --wu-text-on-success: #f1f1f1;
-    --wu-text-on-danger: #f1f1f1;
+    --wu-text-on-brand: #fff;
+    --wu-text-on-success: #fff;
+    --wu-text-on-danger: #fff;
     --wu-text-on-warning: #1a1a1a;
-    --wu-text-on-info: #f1f1f1;
+    --wu-text-on-info: #fff;
     --wu-error: var(--wu-danger);
     --wu-error-hover: var(--wu-danger-hover);
     --wu-error-active: var(--wu-danger-active);
