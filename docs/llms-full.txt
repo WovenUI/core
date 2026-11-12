@@ -146,7 +146,7 @@ Each CSS module or component `<style>` block is a separate compile. Load `@woven
 
 `@use "woven"` comes before `@use "@wovenui/core"`: both load the same configured modules, and configuring after `@wovenui/core` has loaded raises an error. `$generate-utility-classes: true` in the partial gives the classes in the global stylesheet only. The `@property` registrations come from the global stylesheet, so component mixins that read them (transforms, `gap()`, `fill()`, the transition property groups) need it on the page.
 
-Base layer (`base` flag): `body` sets `bg-base` and `text-regular`; buttons (`button`, `input` of type `submit`, `button`, `reset`) and fields (`input` without a type, text-like types, `textarea`, `select`) are styled from tokens with a `:focus-visible` ring. A `select` with `multiple` or a `size` other than 1 keeps its natural height; a single-line `select` (`size="1"` included) takes `--wu-control-height-md`. Invalid fields use `--wu-danger` (`--wu-border-control` when no `danger` role exists). Removing a key the base layer reads (`$spacings` 1, 2, 4, `$font-sizes` `sm`, `$control-heights` `md` and others) raises an error naming the map.
+Base layer (`base` flag): `body` sets `bg-base` and `text-regular`; buttons (`button`, `input` of type `submit`, `button`, `reset`) and fields (`input` without a type, text-like types, `textarea`, `select`) are styled from tokens with a `:focus-visible` outline in `--wu-border-focus`: buttons offset it by `--wu-border-focus-offset`, fields draw it at `outline-offset: 0`, so the field edge turns the focus color. Autofilled fields keep the surface background and regular text color. A `select` with `multiple` or a `size` other than 1 keeps its natural height; a single-line `select` (`size="1"` included) takes `--wu-control-height-md`. Invalid fields use `--wu-danger` (`--wu-border-control` when no `danger` role exists). Removing a key the base layer reads (`$spacings` 1, 2, 4, `$font-sizes` `sm`, `$control-heights` `md` and others) raises an error naming the map.
 
 ### Cascade layers
 
@@ -326,14 +326,14 @@ Default role stops (every role and hue; full values in `core/docs/TOKENS.md`):
 
 | State | Light | Dark |
 | --- | --- | --- |
-| `{role}` fill | 700 | 400 |
-| `-hover` | 800 | 300 |
-| `-active` | 900 | 200 |
+| `{role}` fill | 600 | 400 |
+| `-hover` | 700 | 300 |
+| `-active` | 800 | 200 |
 | `-subtle` | 50 | 950 |
 | `-border` | 200 | 800 |
 | `text-{name}` | 700 | 300 |
 
-Light exceptions: `warning` fill 500, hover 600, active 700 (it takes dark `text-on-warning`); `text-success`, `text-info`, `text-green` and `text-yellow` use 800; `text-warning` uses 900, so it reaches 4.5:1 on every light surface. Write theme overrides as `name stop` references, never copied hex values.
+Light exceptions: `warning` fill 500, hover 600, active 700 (it takes dark `text-on-warning`); `success` and `info` fill 700, hover 800, active 900; `text-success`, `text-info`, `text-green` and `text-yellow` use 800; `text-warning` uses 900, so it reaches 4.5:1 on every light surface. Write theme overrides as `name stop` references, never copied hex values.
 
 ### Theme mixins
 
@@ -744,7 +744,7 @@ $high-contrast-light: (); // overrides only, empty: nothing emitted
 $high-contrast-dark: (); // overrides only, empty: nothing emitted
 ```
 
-Built-in theme defaults (light / dark; `core/docs/TOKENS.md` is generated from the source): `bg-base` #fbfafc / #1a1a1a, `bg-surface` #fff / #2e2e2e, `bg-alternate` gray 100 / #242424, `bg-raised` #fff / #3a3a3a, `bg-hover` gray 100 / #454545, `bg-selected` brand 50 / brand 950, `bg-disabled` gray 100 / #333, `text-regular` #1a1a1a / #f1f1f1, `text-muted` #666 / #b2b2b2, `text-subtle` #949494 / #6e6e6e, `text-inverted` #f1f1f1 / #1a1a1a, `text-link` brand 700 / brand 300, `text-link-hover` brand 800 / brand 200, `border-regular` rgb(0 0 0 / 8%) / rgb(255 255 255 / 4%), `border-strong` rgb(0 0 0 / 12%) / rgb(255 255 255 / 12%), `border-control` rgb(0 0 0 / 45%) / rgb(255 255 255 / 41%), `border-control-hover` rgb(0 0 0 / 60%) / rgb(255 255 255 / 60%), `border-focus` brand 600 / brand 400, `border-focus-width` 2px, `border-focus-offset` 2px.
+Built-in theme defaults (light / dark; `core/docs/TOKENS.md` is generated from the source): `bg-base` #fbfafc / #1a1a1a, `bg-surface` #fff / #2e2e2e, `bg-alternate` gray 100 / #242424, `bg-raised` #fff / #3a3a3a, `bg-hover` gray 100 / #454545, `bg-selected` brand 50 / brand 950, `bg-disabled` gray 100 / #333, `text-regular` #1a1a1a / #f1f1f1, `text-muted` #666 / #b2b2b2, `text-subtle` #949494 / #6e6e6e, `text-inverted` #fff / #1a1a1a, `text-link` brand 700 / brand 300, `text-link-hover` brand 800 / brand 200, `border-regular` rgb(0 0 0 / 8%) / rgb(255 255 255 / 4%), `border-strong` rgb(0 0 0 / 12%) / rgb(255 255 255 / 12%), `border-control` rgb(0 0 0 / 45%) / rgb(255 255 255 / 41%), `border-control-hover` rgb(0 0 0 / 60%) / rgb(255 255 255 / 60%), `border-focus` brand 600 / brand 400, `border-focus-width` 2px, `border-focus-offset` 2px.
 
 ---
 
