@@ -4,6 +4,12 @@ All notable changes to `@wovenui/core` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.1] - 2026-11-15
+
+### Fixed
+
+- `apply()` emits one `@media` block per breakpoint, holding the items without a state and then one rule per state (was one `@media` block per item). Repeated states share one rule, with or without a breakpoint. Order and declarations are unchanged.
+
 ## [2.4.0] - 2026-11-12
 
 ### Visual changes
@@ -34,7 +40,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - Faster load: `@wovenui/core/mixins` and the full entry load faster per compilation. Theme validation and the token maps do less work at load, and the theme declarations of each setting are computed once. Output is unchanged.
-- Documentation: The migration guide is removed.
 
 ## [2.2.2] - 2026-10-27
 
@@ -54,230 +59,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [2.2.0] - 2026-10-23
 
-NuvoUI is renamed WovenUI.
-
 ### Changed
 
-- The package is published as `@wovenui/core`. Install it with `npm i @wovenui/core` and load it with `@use "@wovenui/core"` (entries `@wovenui/core/mixins`, `/scss`, `/css` and `/min.css`). The homepage is https://wovenui.com/ and the repository is https://github.com/WovenUI/core.
-- Every custom property uses the `--wu-` prefix instead of `--nu-`: tokens (`--wu-brand`, `--wu-space-4`), internal variables (`--wu-gap`, `--wu-translate-x`, `--wu-border-style`) and the tooltip variables (`--wu-tooltip--Background`). Token names after the prefix are unchanged, so `token()` calls and theme map keys stay the same.
-- The prebuilt stylesheets are `dist/wovenui.css` and `dist/wovenui.min.css` (were `dist/nuvoui.css` and `dist/nuvoui.min.css`).
-- The debugger classes are `.WovenUI-Debugger-*` (were `.NuvoUI-Debugger-*`).
-- `$default-container-name` defaults to `wovenui-container` (was `nuvoui-container`).
 - Doc comments in the source follow the SassDoc standard: `///` blocks on every public mixin, function and `!default` variable, and one `////` poster per file.
 
 ### Added
 
 - `@wovenui/core/sassdoc.json` export: the SassDoc data of every documented mixin, function and variable, for editor tooling.
 
-## [2.1.1] - 2026-10-16
+---
 
-### Changed
-
-- The internal variable `--nu-flex-gap` is renamed `--nu-gap`. `gap()` and `gap-x()` set it on direct children of flex and grid containers alike, and `fill()` reads it. Replace any hand-written `var(--nu-flex-gap)` with `var(--nu-gap)`.
-
-### Fixed
-
-- `apply()` output no longer depends on the written order of its items. Items without a modifier come first, then state items, then each breakpoint from the smallest up with its own state items. `apply(flex md, hide)` now gives the same CSS as `apply(hide, flex md)`: hidden below `md`, flex from `md` up. Before, the later `hide` overrode the `md` rule at every width.
-- States within a breakpoint follow the LVHA order: first-child, last-child, only-child, first-of-type, last-of-type, empty, target, visited, checked, placeholder-shown, required, valid, invalid, read-only, group-hover, focus-within, hover, focus, focus-visible, active, enabled, disabled. `focus` beats `hover`, `active` beats `focus`, and `disabled` beats every interactive state, whatever the written order.
-
-## [2.1.0] - 2026-10-16
-
-### Added
-
-- `@nuvoui/core/mixins`: the full API (`apply()`, every mixin, `token()`, configuration) with no CSS output. Use it in CSS modules and component styles: each component adds only its own rules, keeps your configured brand, and Next.js CSS modules build. See README, Component styles.
-
-## [2.0.1] - 2026-10-14
-
-### Changed
-
-- Documentation: README and CHANGELOG describe 2.0 as released; pre-release wording removed.
-
-## [2.0.0] - 2026-10-14
-
-Version 2.0 is a breaking release that rebuilds core as the foundation layer of a design system. There is no compatibility layer for 1.x names. See the [token reference](docs/TOKENS.md) for the full token list with default values.
-
-### Added
-
-- Design tokens as CSS custom properties with the `--nu-` prefix, in these families: surfaces (`--nu-bg-base`, `-surface`, `-alternate`, `-raised`, `-hover`, `-selected`, `-disabled`), text (`--nu-text-regular`, `-muted`, `-subtle`, `-inverted`, `-link`, `-link-hover`), borders (`--nu-border-regular`, `-strong`, `-control`, `-control-hover`), focus (`--nu-border-focus`, `-focus-width`, `-focus-offset`), brand and statuses (`--nu-{role}` for the fill, `-hover`, `-active`, `-subtle`, `-border`, `--nu-text-{role}`, `--nu-text-on-{role}`), error aliases of danger (`--nu-error`, `--nu-error-*`), hue roles (`--nu-{hue}-subtle`, `--nu-{hue}-border`, `--nu-text-{hue}`), the palette (`--nu-{name}-{stop}`) and basic colors. Fixed tokens (palette, basic colors, non-color scales, `--nu-font-family`) are declared in a `:root`-only block; the light block (`:root, [data-theme="light"]`) carries the theme-dependent tokens only, so a runtime `:root` override of a fixed token also applies inside `[data-theme="light"]` sections.
-- Non-color scale tokens: `--nu-space-*`, `--nu-radius-*`, `--nu-border-width-*`, `--nu-font-family` (from `$font-family`), `--nu-font-size-*`, `--nu-font-weight-*`, `--nu-line-height-*`, `--nu-shadow-*`, `--nu-opacity-*`, `--nu-z-*`, `--nu-duration-*`, `--nu-ease-*`, `--nu-control-height-*`, `--nu-control-padding-inline-*`.
-- `token($name)` function: returns `var(--nu-{name})` and raises an error with close matches for an unknown name.
-- `$brand` configuration variable for the main color role.
-- Theme override maps `$light-theme`, `$dark-theme`, `$high-contrast-light` and `$high-contrast-dark`, keyed by token name, with scale references written as `name stop` (for example `brand 800`), validated at compile time.
-- `[data-contrast="high"]` selector for high-contrast overrides, on the root, on an element that sets `data-theme`, or on an ancestor of either. `$high-contrast-light` applies where the theme resolves to light and `$high-contrast-dark` where it resolves to dark, including inverse and nested inverse sections and the `prefers-color-scheme` fallback. Every theme selector has a higher-specificity twin, and the light-valued and dark-valued twins carry the same keys: both maps' keys, the `{role}` fill for every `text-on-{role}` either map sets, every `{role}` fill when either map sets `text-regular` or `text-inverted` (so `text-on-{role}` is recomputed from the new text colors), and a `text-on-{role}` that `$light-theme` or `$dark-theme` sets explicitly (an explicit value is never replaced by a computed one). Keys its own map lacks keep the base theme value, so a key set in only one map never leaks into the other theme. Twins are emitted once either map has entries; `$high-contrast-dark` is ignored when `$enable-dark-mode` is false.
-- `data-theme="inverse"`: a section that always takes the opposite theme of the page. On a light page it applies the dark token values; under a `[data-theme="dark"]` ancestor, the `prefers-color-scheme: dark` fallback or another inverse section it applies the light values, and one level deeper it flips back again: an inverse section inside another inverse section takes the light values on a light page and the dark values when the outer inverse section has a `[data-theme="dark"]` ancestor or sits under the fallback; a `data-theme="light"` or `"dark"` section between the two inverse sections is not taken into account (deeper inverse nesting is not supported). Pure CSS, full theme token set, emitted when dark mode is enabled. It resolves against the nearest `[data-theme="dark"]` ancestor or the page, so inside a `[data-theme="light"]` section that sits in a dark page it still applies the light values; set `data-theme="dark"` there instead.
-- `$opacities` configuration map (`config/_opacity.scss`, keys 0 to 100 as in 1.x), read by `opacity()` and the `.opacity-*` classes instead of `$percentages`, emitted as `--nu-opacity-{key}` tokens.
-- `base` feature flag (on by default) for the element styles of the base layer (`base/_base.scss`, including `.sr-only`). It does not need `$generate-utility-classes`. The reset has no flag.
-- Compile-time validation of color names: a name used as both a role and a palette hue, the name `error`, a basic color name (`black`), a name whose generated tokens equal a built-in theme token (a hue named `link` would generate `text-link`), a non-color scale token (a hue named `opacity` would generate `--nu-opacity-50`) or another name's tokens, and a custom theme key that reuses a palette, basic color or scale token name each raise an error.
-- Theme map validation reports every bad value of every map in one error (removing `gray` from `$color-primitives` lists each default that refers to it), and a quoted string that starts with `#` must be a valid hex color (`"#ggg"` raises an error). Theme map keys that Sass reads as colors (`tan`, `red`) work unquoted, and with `$enable-dark-mode: false` a custom key needs only `$light-theme`.
-- OKLCH shade generator for every role, palette hue and consumer color, with stops 50, 100 to 900 and 950.
-- Configuration maps `$line-heights`, `$control-heights` and `$control-padding-inline`.
-- Utility classes `.text-on-{role}`, `.bg-{role}-subtle`, `.bg-{hue}-subtle`, `.bg-error`, `.text-error`, `.border-error`, `.bg-error-subtle`, `.text-on-error`, `.bg-raised`, `.bg-hover`, `.bg-selected`, `.bg-disabled`, `.text-link`, `.text-link-hover`, `.border-strong`, `.border-control`, `.border-control-hover`, shade 950 classes, and `active:` and `focus:` variants for the shade and theme word border color classes (`.focus:border-brand-300`, `.focus:border-control`; the base role and hue border classes such as `.focus:border-red` had them in 1.x).
-- `.w-max` and `.h-max` classes with responsive variants (the mixins existed in 1.x without classes), and responsive `.shadow-none@{breakpoint}` classes.
-- `hover:` and `group-hover:` forms of the non-responsive percentage width and height classes (`.hover:w-50p`, `.group-hover:h-50p`); 1.x had them only with a breakpoint (`.hover:w-50p@md`), while the spacing-key classes had both.
-- Sizing mixins accept the class keys: a percentage key (`width(50p)` gives `50%`) for all six, and a breakpoint name (`width(lg)` gives `1024px` by default, as `.w-lg` does) for `width()`, `min-width()` and `max-width()`. `auto-fit()` and `auto-fill()` accept `$grid-item-sizes` keys (`auto-fit(sm)` gives `minmax(250px, 1fr)`, as `.auto-fit-sm` does). The offset mixins (`top()`, `right()`, `bottom()`, `left()`, `inset-start()`, `inset-end()`, `inset()`, `inset-x()`, `inset-y()`) accept the `$position-fractions` keys (`right(25p)` gives `25%`; a negated key such as `-25p` gives `-25%`).
-- Logical (RTL-aware) utilities and mixins: `ps`, `pe`, `ms`, `me`, `ms-auto`, `me-auto`, `start-*` / `inset-start()`, `end-*` / `inset-end()`, `border-s` / `border-start()`, `border-e` / `border-end()`, `rounded-s-*` / `rounded-s()`, `rounded-e-*` / `rounded-e()`, `rounded-ss-*` / `rounded-ss()`, `rounded-se-*` / `rounded-se()`, `rounded-es-*` / `rounded-es()`, `rounded-ee-*` / `rounded-ee()`, `text-start`, `text-end`.
-- `ease()` mixin for timing functions by key or CSS value.
-- Base styles for buttons, inputs, selects and textareas built on tokens, including `:focus-visible` rings, hover, invalid and disabled states, and control height tokens. Button styles also apply to `input[type="submit"]`, `input[type="button"]` and `input[type="reset"]`; field styles also apply to `input` without a `type` and to the `url`, `date`, `time`, `datetime-local`, `month` and `week` types. Without a `danger` role, invalid fields use `--nu-border-control`.
-- `@property` registrations (`inherits: false`) for the transform variables and `--nu-flex-gap`, emitted whenever the package loads, independent of feature flags, so the transform, gap and `fill()` mixins work with their utility classes off. The registered initial values replace the `var()` fallbacks of 1.x.
-- `$transition-default-duration` (`200`) and `$transition-default-ease` (`in-out`): the duration and easing keys used by `transition()`, the `.transition` classes, `hover-ready` and the tooltip transition. A value that is not a key of `$durations` or `$timing-functions` raises an error.
-- Optional `$color` parameter on `border-top()`, `border-right()`, `border-bottom()`, `border-left()`, `border-start()` and `border-end()`, resolved like the color of `border()`.
-- The default role and palette color scales ship precomputed in `src/styles/functions/_default-scales.scss`, generated by `npm run scales` (`scripts/generate-scales.mjs`) from the real generator. `create-color-scale()` returns them for colors that match a default; other colors are still generated. Output is unchanged; loading the package with the default configuration takes about a fifth less time (an empty `@use` measured 86 ms before, 68 ms after).
-- Doc block format for every public mixin and function (`docs/DOC-BLOCKS.md`), including `apply()`. `npm test` validates every block and compiles every example (`test/docblocks.mjs`), and fails when the precomputed scales differ from the generator.
-- A compile-time warning when a computed `text-on-{role}` reaches less than 4.5:1 on its `{role}` fill, naming the theme map that fixes it. The default configuration emits no warnings.
-- `$container-names` is configurable through the package entry (`@use "@nuvoui/core" with ($container-names: (...))`).
-- The backdrop filter maps (`$backdrop-blur-values` and the other filter value maps, `$backdrop-filter-presets`) are `!default`, so they are configurable.
-- `npm test` checks that `src/styles/mixins-map.scss` and `mixins-map.json` match a fresh run of the generator (`test/mixins-map-sync.mjs`, which runs the generator, `build.js` in the NuvoUI tools repository, on a temporary copy; without a tools checkout next to core the check is skipped).
-
-### Changed
-
-- All custom properties are renamed to the `--nu-` token model. v1 names such as `--primary`, `--text-color`, `--border-base`, `--link-color` are no longer emitted.
-- Internal utility custom properties take the `--nu-` prefix (they are not tokens; `token()` does not accept them): `--border-style` is `--nu-border-style`, `--flex-gap` is `--nu-flex-gap`, `--translate-x`, `-y`, `-z` are `--nu-translate-*`, `--scale-x`, `-y` are `--nu-scale-*`, `--rotate` is `--nu-rotate`, `--skew-x`, `-y` are `--nu-skew-*`, and `--backdrop-*` are `--nu-backdrop-*`. `--scale-z` is removed and the transform no longer includes `scaleZ()`.
-- Tooltip variables follow the component grammar `--nu-tooltip--{Name}`: `--tooltip-bg` is `--nu-tooltip--Background`, `--tooltip-text-color` is `--nu-tooltip--Color`, `--tooltip-shadow-color` is `--nu-tooltip--ShadowColor`, `--tooltip-transition-duration`, `-easing`, `-delay` are `--nu-tooltip--TransitionDuration`, `--nu-tooltip--TransitionTimingFunction`, `--nu-tooltip--TransitionDelay`, `--tooltip-font-size`, `-font-weight`, `-text-transform` are `--nu-tooltip--FontSize`, `--nu-tooltip--FontWeight`, `--nu-tooltip--TextTransform`, `--tooltip-small-width`, `-medium-width`, `-large-width` are `--nu-tooltip--WidthSmall`, `--nu-tooltip--WidthMedium`, `--nu-tooltip--WidthLarge`, and `--tooltip-border-radius` is `--nu-tooltip--BorderRadius`. `--nu-tooltip--ZIndex` is new. Tooltips also show on `:focus-visible` (was `:focus`).
-- Transform variables are registered with `@property` and `inherits: false`, so a child no longer inherits its parent's translate, rotate, skew or scale.
-- Gap mixins and classes set `gap` on the container and `--nu-flex-gap` on its direct children (registered, not inherited). `.fill-{n}` items read the gap of their direct parent; a nested flex container no longer passes an ancestor's gap to its own items.
-- The main color role is named `brand` in tokens, classes and mixins (`.bg-brand`, `bg(brand)`), replacing `primary`.
-- `.text-color` is renamed to `.text-regular` and `.border-base` to `.border-regular`.
-- `.bg-{role}` and `.border-{role}` use the theme-aware `--nu-{role}`; `.text-{role}` and `.text-{hue}` use theme-aware text tokens. `.bg-{hue}` and `.border-{hue}` use the fixed 500 shade.
-- Palette shades are fixed across themes; the dark theme re-points role and theme tokens at other stops of the same scale.
-- `$light-theme` and `$dark-theme` hold overrides only and are merged over built-in defaults. `$theme-tokens` is no longer exported by the package entry (it is derived from the light theme keys), and the derived color name lists are no longer configurable.
-- `$semantic-colors` is a map of role name to color. Keys of `$semantic-colors` and `$color-primitives` may be quoted or unquoted (`red: #ef4444` and `"red": #ef4444` are the same).
-- Mixin numbers are configuration keys: `p(4)` outputs `var(--nu-space-4)` (1rem by default), matching `.p-4`. A unitless number that is not a key raises an error; values with units pass through.
-- `bg()`, `text-color()` and `border-color()` output tokens and accept the class words (`bg(surface)`, `text-color(muted)`, `border-color(regular)`, `bg(danger-subtle)`).
-- Utility classes and mixins output `var(--nu-*)` for configured keys.
-- `get-color()` raises an error for an unknown color or shade, never returns `var()`, and resolves role and palette names before CSS named colors.
-- `leading()`, `duration()`, `delay()`, `z-index()`, `font()` and `font-size()` validate their input and raise errors for unknown values. Spacing, sizing, position, radius and border width mixins raise errors for unknown keys and for words that are not valid CSS keywords for the property.
-- `opacity()` takes a `$opacities` key (`opacity(50)` gives `var(--nu-opacity-50)`, 0.5 by default; the `.opacity-*` classes emit the same token), a percentage, `calc()`, `var()` or a CSS-wide keyword; other values such as `opacity(0.5)` raise an error. `tracking()` takes a key, 0, a value with a unit, `calc()`, `var()` or a CSS-wide keyword. `elevation()` takes a level from 1 to 5. `border-style()` takes a style from `solid`, `dashed`, `dotted`, `double`, `none`, a CSS-wide keyword or `var()`.
-- `space-x` uses `margin-inline-start` and `space-y` uses `margin-block-start`. `mx-auto` uses `margin-inline: auto`, like `mx()`, and so do `container-base()` and `.container`. Container padding stays block only (top and bottom), as in 1.x.
-- `.transition` and `transition()` set a duration and easing (`var(--nu-duration-200)`, `var(--nu-ease-in-out)` by default) as well as `transition-property: all`; 1.x set the property only, so the transition took 0s until a duration class was added. The class defaults sit in `:where()`, so `.duration-*` and `.ease-*` override them in any order. `transition-colors`, `transition-opacity`, `transition-shadow` and `transition-transform` (mixins and classes) get the same defaults. `hover-ready` uses the same tokens (was `0.2s ease-in-out`), and so does the tooltip transition (was `0.18s ease-in-out`).
-- `.col-span-{n}` and `.row-span-{n}` (and their responsive variants) are standalone classes. In 1.x they were descendants of `.grid` (`.grid .col-span-2`), so they did not work in a grid built with mixins and carried two classes of specificity.
-- `pill` and `.pill` use the full radius token `var(--nu-radius-full)` (99in by default) instead of `9999px`.
-- `border-all()` writes the style through `--nu-border-style`, like `border()`, so `border-style()` and `.border-{style}` classes change it.
-- `media-down()`, `media-between()` and `media-only()` end 0.02px below the upper breakpoint, as the container query mixins do (1.x `media-down()` and `media-between()` used 0.01px, which Safari can round into both ranges). em and rem breakpoints subtract the equivalent 0.00125em or rem. `media-only()` accepts a length in the breakpoint unit, like `container-only()`.
-- `landscape` and `portrait` emit `(orientation: ...)` without `screen and`, like the other media mixins.
-- `get-breakpoint-value()`, the media query mixins and `container-up()`, `container-down()`, `container-between()` and `container-only()` raise an error for a unitless number that is not a breakpoint name (`media-up(800)` gave `800rem`; `container-up(800)` gave the invalid `800`). Write a unit (`800px`).
-- Backdrop filter mixins accept configured keys as numbers or strings (`backdrop-brightness(90)` gives `brightness(90%)`) and validate other values: blur takes a length in px, rem or em, hue rotate an angle, the other filters a percentage, each also unitless 0, `calc()` or `var()`. Anything else raises an error (1.x passed `90` through as `brightness(90)`, which is 9000%).
-- Padding, gap, sizing, radius and border width mixins raise an error for a negative raw length (`p(-1rem)`), as they already did for negative keys.
-- `fill()` raises an error for a size that is not a unitless number from 1 to `$column-count` (`fill(0)` divided by zero).
-- Keyframes names built from decimal values replace `.` with `_` and `%` with `per`, so they are valid identifiers (`animate-ping((scale: 1.25))` gives `anim-ping-12_5`). `animate-shake` names its keyframes with the unit (`anim-shake-5px`, was `anim-shake-5`), so 5px and 5rem no longer share keyframes. `animate-fade` raises an error for an unknown type.
-- An invalid color string (`"#ggg"`, `"rgb(1 2 3)"`) raises an error; 1.x warned and continued.
-- Media query mixins and the responsive sizing classes built on `media-up` emit `@media (min-width: ...)` without `screen and` (the other responsive classes already did), so they also apply in print.
-- `.sticky` keeps `top: 0` and `z-index: 999` (not the `z-sticky` token) inside `:where()`, so `.top-*` and `.z-*` classes override them.
-- `.shadow-none` no longer uses `!important`.
-- Base layer: a `select` with `multiple` or a `size` other than 1 (a list box) keeps its natural height; only single-line selects (`size="1"` included) take the control height. `base/_base.scss` loads the reset first, so `@layer reset` is declared before `@layer base` in every entry, `mixins-map` included (it declared base first there).
-- Rule order: non-responsive `.inset-*` classes are still emitted before the `.top-*`, `.right-*`, `.bottom-*`, `.left-*`, `.start-*` and `.end-*` classes, so a side class adjusts an inset (`inset-0 top-4`). Responsive `.inset-*@{bp}` classes are now emitted after every non-responsive position class (1.x emitted them before `.top-*`), so `.inset-0@md` overrides `.top-4`. The inset mixins and classes moved to `utilities/_position.scss` and follow the `position` feature flag. `truncate`, `truncate-lines()` and `overflow-label` and their base classes moved to `utilities/_display.scss`, follow the `displays` feature flag and are emitted before the display and overflow classes, so an `.overflow-*` class overrides the overflow set by `.truncate`. Known limitation: the responsive `.truncate@{bp}`, `.truncate-{n}@{bp}` and `.overflow-label@{bp}` classes are emitted with the responsive typography classes, after the responsive display, overflow and sizing classes of every breakpoint (so they override base classes such as `.whitespace-normal` and `.min-w-4`). A larger-breakpoint display, overflow or min-width class therefore does not undo them: with `truncate@sm overflow-visible@lg` the text stays truncated at `lg`. Undo a responsive truncation in your own styles (for example `@include media-up(lg) { overflow: visible; white-space: normal; }`).
-- `create-color-scale()` accepts a color or a string holding one (`"#007bff"`, `"blue"`); any other value raises an error naming the input.
-- `container-padding()` reads a unitless number as a spacing key (`container-padding(4)` outputs `var(--nu-space-4)`), as `py()` does. Values with units pass through.
-- `translate-x()`, `translate-y()`, `translate-z()` and `translate()` read a unitless number as a spacing key (`translate-x(4)` gives `var(--nu-space-4)`, a negated key gives `calc(-1 * token)`) and accept the fraction keys `25p`, `33p`, `50p`, `66p`, `75p` and `100p`; a unitless number that is not a key raises an error, values with units pass through. The translate classes keep the 1.x key set (0 to 20 and the fractions).
-- `rotate()`, `skew-x()` and `skew-y()` raise an error for a unitless number other than 0 that is not a rotation key, which produced invalid CSS.
-- `scale()`, `scale-x()` and `scale-y()` read the class keys: `scale(150)` gives `1.5`, as `.scale-150` does (1.x gave `150`). Other values (`1.5`, `150%`, `var()`) pass through as factors.
-- The `dark-mode` mixin applies exactly where the dark tokens resolve: on and under `[data-theme="dark"]`, an inverse section that resolves dark, and `:root:not([data-theme])` under `prefers-color-scheme: dark`, stopping at a nested `data-theme` section that resolves light (v1 also matched inside a light section of a dark page). It emits CSS `@scope` rules (Chrome 118, Safari 17.4, Firefox 146); browsers without `@scope` ignore them. `[data-theme="system"]` is no longer read.
-- Shade values changed: scales are generated in OKLCH instead of mixing with white and black.
-- Default values: light `bg-alternate` is gray 100 (was near black), dark `bg-alternate` is `#242424`, dark `border-regular` is `#474747`, and muted and subtle text are solid colors. Role default stops are listed in the [token reference](docs/TOKENS.md); light `text-success`, `text-warning` and `text-info` use stop 800. Light `text-warning` measures 5.53:1 on white but 4.42:1 on gray 100 (`bg-alternate`, `bg-hover`); this is an accepted exception, named in `test/contrast.mjs`. Headings use the `tight` line height (1.25, was 1.2). Tooltips use `text-regular` as background and `text-inverted` as text (opaque and flipping with the theme; was a 90% alpha background), font size `sm` (14px, was 13px) and z-index `--nu-z-tooltip` (800; was 10 and 999). Base `<code>` padding is `0 var(--nu-space-1)` (0 and 4px; was 2px and 6px), and only inline code (`:not(pre) > code`) is kept on one line, so code inside `pre` keeps its line breaks.
-- Z-index and transition maps moved to `config/` and are configurable with `!default`. `$position-fractions` is also configurable with `!default`.
-- Percentage keys 33 and 66 mean exact thirds everywhere: `.w-33p` and the other percentage sizing classes, and `width-percent(33)` and the other percentage mixins, give `33.333%` and `66.667%` (1.x gave `33%` and `66%`), matching the `33p` and `66p` position and translate keys. An explicit percentage (`width-percent(33%)`) is unchanged.
-- Sizing mixins raise an error for a number followed by text that is not a CSS length unit (`width(3xl)`), naming the accepted keys.
-- Tooltips raise an error when a key they read is missing from its map (`tooltip` in `$z-index-levels`, `sm` in `$font-sizes`, `xs` in `$border-radii`, the default duration and easing keys), as the base layer does, instead of dropping the declaration.
-- Tokens are emitted whenever the theme feature flag is on, independent of `$generate-utility-classes`.
-- The `body` element sets `background-color: var(--nu-bg-base)`. Base elements read `font-family: var(--nu-font-family)` (the Sass `$font-family` value when the theme flag is off).
-- `.show` and `show()` use `display: revert`, which restores the element's natural display (block for a `div`); 1.x used `display: initial`, which is `inline` for every element.
-- Tooltip triggers match `[data-tooltip]` alone; `role="tooltip"` is no longer required on the trigger (it overrode the trigger's real role for assistive technology).
-- Tooltips are a component and follow the `tooltips` feature flag alone: they are emitted without `$generate-utility-classes`, so set `"tooltips": false` to leave them out. A trigger without `data-tooltip-position` shows the tooltip on top, with its arrow and offset, and keyboard focus (`:focus-visible`) slides the tooltip in as hover does.
-- `apply()` validates modifiers: each must be a configured breakpoint or a supported state (`hover`, `focus`, `focus-visible`, `focus-within`, `active`, `visited`, `disabled`, `enabled`, `checked`, `required`, `invalid`, `valid`, `placeholder-shown`, `read-only`, `first-child`, `last-child`, `only-child`, `first-of-type`, `last-of-type`, `empty`, `target`, `group-hover`). An unknown modifier (`p(4) hovr`), or more than one breakpoint or state on one item, raises an error. 1.x wrapped any word in `&:word`.
-- `apply()` with `group-hover` emits `.group:hover &`, matching the `group-hover:` classes; 1.x emitted the invalid `&:group-hover`.
-- Scale error messages name the mixin (`width: unknown value foo`, `p: 7 is not a configured key`, `rounded: unknown value 5foo`, `border-top: 3 is not a configured key`) instead of the scale (`space:`, `radius:`, `border-width:`), identically through direct calls, `apply()` and namespaced `nu.apply()`. A list such as `p(4px 8px)` raises the same unknown-value error in every mode.
-- The backdrop hue classes are `.backdrop-hue-rotate-{0|90|180|270}` (were `.backdrop-hue-*`), matching the `backdrop-hue-rotate()` mixin. Every `backdrop-filter` declaration is preceded by `-webkit-backdrop-filter`.
-- `container-query()` resolves a breakpoint name (`container-query(md)` gives `min-width: 768px`; v1 emitted `min-width: md`), keeps a length or `calc()`, and raises an error for any other word or a unitless number (`container-query(30)` emitted `min-width: 30`).
-- A quoted argument is read as the value it spells and validated like the unquoted form, in every mixin, directly and through `apply()`: `font-size("1.25rem")` gives `1.25rem`, `cols("3")` gives `repeat(3, ...)`, `duration("250ms")` and `z-index("5")` are accepted (1.x emitted quoted, invalid CSS or raised an error for some of them). This includes `gradient()`, `shadow-base()`, `backdrop-filter()` and the values of the `animate-*()` maps (`animate-bounce((vertical: "4px"))`). One exception is set by Sass: inside a namespaced `nu.apply()`, `opacity(...)` with anything but a number (`opacity(inherit)`, `opacity("50")`) is Sass's built-in color function and fails before `nu.apply()` sees it. Write `nu.apply(nu.opacity(inherit))` (the package's `opacity()` function hands the item to `apply()`), or `opacity(50)` for a key.
-- Tooltip color variables (`--nu-tooltip--Background`, `--nu-tooltip--Color`) are re-declared in every theme block, so a tooltip inside a `data-theme` section takes that section's colors (they resolved once at `:root`).
-- `animate-shake()` intensity and `animate-bounce()` offsets must be lengths: a unitless number other than 0 raises an error (it emitted invalid `translateX(8)`), and so do `calc()` and `var()`, which cannot name the keyframes. `animate-ping()` takes a unitless scale factor; anything else raises an error naming the mixin.
-- `stretch` and `.stretch` make the direct children of a flex container share the main axis equally (`& > * { flex: 1 1 0% }`); 1.x set `justify-content: stretch`, which has no effect in flexbox. A child with `.fill-{n}`, `.grow` or `.no-grow` keeps its own flex value.
-- `.flex.inline`, `.grid.inline` (and their responsive forms), `.container.flex` and `.container.grid` are emitted as `.flex:where(.inline)`, `.container:where(.flex)` and so on, at one class of specificity, so `.hide`, `.py-0`, `.max-w-full` and the other later utilities override them (at two classes they won over every single-class utility).
-- `.mx-auto`, `.ml-auto`, `.mr-auto`, `.ms-auto` and `.me-auto` (and their responsive forms) are emitted after the `.m-*` classes of the same breakpoint, so `mx-auto m-4` no longer loses the centring to `.m-4`.
-- `.absolute-center` and `.absolute-center@{bp}` set their `-50%` translate inside `:where()`, so a `.translate-*` class, responsive ones included, adjusts it in any order.
-- Feature flags: `config-typo` is renamed `typography`, and each flag owns its classes. `.flex`, `.grid`, their responsive variants and `.container.flex` / `.container.grid` follow the `flex` and `grid` flags instead of `displays`, so `displays: false` keeps flex and grid layouts working. Responsive `.truncate@{bp}` classes follow `displays` instead of the typography flag. The `responsive-config-typo` mixin is renamed `responsive-typography`.
-- Grid mixins match their class names: `flow-in-row()`, `flow-in-col()` and `flow-dense-items()` are `flow-row()`, `flow-col()` and `flow-dense()`; `grid-position()`, `position-col()` and `position-row()` are `grid-place-at()`, `grid-col-at()` and `grid-row-at()`. `justify()`, `align()` and `place()` keep their names and are documented as grid only.
-- Sass peer dependency raised to `>=1.79.0 <2`.
-
-- `rotate()` reads the `$rotation-values` keys like the `.rotate-*` classes: `rotate(45)` gives `45deg`, `rotate(-45)` gives `-45deg`. `rotate(0)`, `skew-x(0)` and `skew-y(0)` emit `0deg` (the registered property needs an angle).
-- `truncate()` takes an optional line count matching the classes: `truncate(2)` is `truncate-lines(2)`, as `.truncate-2`; `truncate()` is still one line.
-- `shadow(none)` gives `box-shadow: none`, as `.shadow-none`.
-- `cols-custom()` accepts an unquoted track list (`cols-custom(1fr 2fr)`), and turns an underscore into a space only outside brackets and parentheses, so line names and variable names keep theirs (`"[main_start]_1fr_var(--side_width)"`).
-- `auto-fit()` and `auto-fill()` take a whole `minmax()` track as written (`auto-fill(minmax(100px, 20%))` gives `repeat(auto-fill, minmax(100px, 20%))`; it was nested inside another `minmax()`).
-- `col-start()`, `col-end()`, `row-start()`, `row-end()`, `grid-place-at()`, `grid-col-at()` and `grid-row-at()` raise an error for a number that is not a whole line number, which is what an unquoted `1 / 3` becomes (Sass division gives `0.333`). Write `"1 / 3"` or `list.slash(1, 3)`.
-- `origin()` validates its value: an `$origin-values` key, or one to three parts that are position keywords, lengths, percentages, `calc()` or `var()`; anything else raises an error (it was emitted as written). `width-percent()` and the other percentage mixins raise an error for a negative value. `safe-area-inset()` takes a side of `top`, `right`, `bottom` or `left`, and `supports()` a declaration with a colon (`"display: grid"`); anything else raises an error (both emitted invalid CSS).
-- `media-only()` raises an error naming the breakpoint when its length cannot be compared with the breakpoint widths (`media-only(50em)` with px breakpoints) instead of failing inside Sass.
-- `container()` and `.container` subtract 100px from em and rem breakpoints with `calc()` (`calc(40em - 100px)`); px breakpoints still give a plain length (`668px`). Before, an em or rem breakpoint failed to compile; the breakpoint debugger works with them too.
-- `text-on-color()` names itself in its errors (`text-on-color(purple, 450): invalid shade`, `text-on-color(foo): unknown color`) instead of `get-color()`. With the theme feature flag off, a color name in `bg()`, `text-color()` or `border-color()` (`bg(brand)`, `bg(red, 600)`, `text-color(muted)`) raises an error that says the theme flag is off, instead of "unknown color" or a `token()` error; `black`, `white` and `transparent` are emitted as plain CSS colors.
-- `apply()` errors with `@use ... as *` name the item with its arguments and modifiers (`apply(bg(red, 500) hover focus)`), as the namespaced form does (it showed `bg(...)`).
-- Sizing mixins try a configured spacing key before parsing a value as a number, so a fractional key such as `"1/2"` works (`width("1/2")` gives `var(--nu-space-1-2)`).
-- `aspect-ratio()` takes a width and height (`aspect-ratio(16, 9)`) or a ratio as text (`"16/9"`) and emits `16 / 9`; a positive number, `auto`, `calc()` and `var()` pass through. An unquoted `16/9` is Sass division (Sass warns), so write one of those forms.
-- `gradient()` resolves color names like `bg()`: `gradient(to right, brand, red 40%)` gives `var(--nu-brand), var(--nu-red-500) 40%`.
-- A quoted hex color (`bg("#ff5733")`) is emitted as written (`#ff5733`); 1.x converted it to `rgb(255, 87, 51)`.
-- `bg()`, `text-color()` and `border-color()` pass any CSS color function through when no shade is given (`hsl()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()`, `color-mix()`, `light-dark()`), identically directly, through `apply()` and through a namespaced `apply()`. With a shade only a value Sass reads as a color is accepted, and the error says so. In a namespaced load Sass evaluates the color functions it knows (`hwb(0 0% 0%)`, `rgb(255, 0, 0)`) before `nu.apply()` sees them, so a result that prints as a palette name (`red`) resolves as the palette color, as a variable holding `red` does. Role, palette and theme words are lowercase; `bg(RED)` is the CSS color.
-- `adaptive-contrast()` under `prefers-contrast: more` moves the background away from the text color (darker under light text, lighter under dark text) and clamps the lightness, so the contrast ratio rises (it lowered it for mid-tone colors: `#336699` went from 5.31:1 to 4.19:1).
-- Validation: `cols()`, `rows()`, `col-span()` and `row-span()` take a whole number of 1 or more, `calc()` or `var()`; `auto-fit()` and `auto-fill()` take a key, a length or percentage, `calc()` or `var()`; `container()` takes a display value; `scale()` takes a key, a number, a percentage, `calc()` or `var()`; `rotate()`, `skew-x()` and `skew-y()` take an angle; `translate-z()` rejects percentages and fraction keys; `truncate-lines()` takes a whole number of 1 or more; `font-size()` and `duration()` reject negative values; `fill()` takes whole numbers; `cursor()` takes cursor keywords, `url()` or `var()`; `media-between()` requires the lower breakpoint to be smaller; animation `$props` reject unknown keys; scale mixins reject booleans and colors with their own message (`p: unknown value true`) instead of an internal one. Each of these emitted invalid CSS or failed with an unrelated message.
-- Keyframes from `ensure-keyframes()` and the `animate-*` mixins are emitted at the stylesheet root (outside `@media`, `@supports`, `@container` and `@scope`, inside any `@layer`), so an animation first used inside a breakpoint or `dark-mode` also runs elsewhere.
-- `.hover-ready` sets `transition-property: all` on `.hover-ready` and its duration and easing in `:where(.hover-ready)`, so `.duration-*` and `.ease-*` override them in any order.
-- The `.flex.stretch` and `.flex.stretch@{bp}` class rules use `.flex:where(.stretch) > *`, so `.no-grow`, `.grow` and `.fill-{n}` children keep their own flex value at every breakpoint.
-- `apply()` caches raw values in size-capped caches (128 entries per generation, two generations): repeated raw values (`p(13px)`, `bg(#336699, 600)`) are resolved once, and unique values keep compile time linear. The performance guard (`npm run test:perf`) checks repeated raw values against v1 on both load styles.
-
-### Removed
-
-- `$primary`, `$secondary` and `$default-color` configuration variables.
-- The `secondary` color role and its classes and custom properties.
-- v1 custom properties `--button-text-color`, `--button-bg-color`, `--button-bg-color-hover`, `--link-color`, `--link-hover-color` and `--font-family-base` (replaced by `--nu-font-family`).
-- Deprecated mixins `flex-inline`, `grid-inline`, `d-tbl`, `d-tbl-row`, `d-tbl-cell` and `text-size`. Use `inline-flex`, `inline-grid`, `table`, `table-row`, `table-cell` and `font-size`.
-- The `config-typo` feature flag name (now `typography`).
-- Per-shade contrast classes `.text-on-{color}-{stop}`. Use `.text-on-{role}` or the `text-on-color()` mixin.
-- Acceptance of in-between shade stops such as 450.
-- `.gap-auto` class (`gap: auto` is not valid CSS).
-- `to-css-var()` from the public API, and its fallback parameter, which emitted `var()` with a fallback value.
-- `to-color()`, `from-hex()`, `hex-to-dec()`, `luminance()`, `is-valid-color()` and `is-valid-shade()` from the public API.
-- `validate-theme-tokens()`, the `validate-tokens` mixin, `$translate-values`, `$negative-translate-values`, `$colors-primitives`, `$digit-map`, `$colors` and `$color-cache` from the public API.
-- `$color-names` and `$color-names-with-basic`. `$primitive-color-names` remains, derived from `$color-primitives` and not configurable.
-- The `apply()` internals `pam()`, `pai()`, `am()` and `$ac` are not forwarded by the package entry.
-- The v1 `--inverted-*` custom properties and `.inverted-*` classes. For an opposite-theme region, use `data-theme="inverse"` or set `data-theme` on that element.
-
-### Fixed
-
-- `body` referenced an undefined `--text-default` custom property.
-- The z-index maps were declared without `!default` and could not be configured.
-- The `prefers-color-scheme: dark` fallback used a bare `:not([data-theme])` selector that matched every element and overrode nested light sections. It now targets `:root:not([data-theme])` only.
-- `get-color(red)` returned CSS `red` instead of the palette red.
-- `.ease-*` classes were emitted twice.
-- Responsive sizing keyword classes (`.w-auto@sm` and similar) were emitted outside their media query.
-- Responsive gap classes did not set the flex gap variable.
-- `gap(normal)` emitted `normalrem`; it now emits `gap: normal`.
-- `container-name("card")` emitted a quoted string, which is not a valid container name; the name is emitted unquoted.
-- `cols-custom("1fr 2fr")` emitted a quoted string, which is invalid for `grid-template-columns`; the template is emitted unquoted.
-- A CSS `inset()` call (for example `clip-path: inset(50%)`) in a stylesheet that loads the package with `as *` resolved to the `apply()` registry and failed to compile.
-- Transform and flex gap variables inherited into descendants: a nested `.rotate-45` or `.fill-6` used its ancestor's values.
-- `.border-0` emitted `border-style` and `border-color`.
-- `find-text-color()` used a fixed luminance threshold that could pick the lower-contrast text color. It now picks the theme text color with the higher WCAG contrast ratio, and takes an optional pair of candidate colors. `text-on-{role}` is computed this way in both themes, from that theme's own `text-regular` and `text-inverted`.
-- `apply()` used Sass global built-in functions that raise deprecation warnings in current Dart Sass.
-- `container-query()` emitted `(min-width: $size)` literally; the size is now interpolated.
-- Backdrop filter mixins did not match numeric keys (`backdrop-brightness(90)` gave `brightness(90)`).
-- `media-only(2xl)` with an unquoted `2xl` raised an error.
-- `animate-shake` reused one keyframes rule for intensities with the same number and different units; keyframes names from decimal values were invalid identifiers; `animate-fade` with an unknown type emitted empty keyframes.
-- `fill(0)` divided by zero.
-- `.col-span-{n}` and `.row-span-{n}` did not apply inside a grid that was not a `.grid` element.
-- Color parsing warned on an invalid hex or rgb() string and continued with a wrong value.
-- The offset mixins passed class keys through as invalid CSS (`right(25p)` gave `right: 25p`), and the sizing mixins did the same for unknown words (`width(3xl)` gave `width: 3xl`).
-- Scale-reading mixins (spacing, gap, space, offsets, inset, radius, border widths, font size, line height, translate, `container-padding`) passed a number with an unknown suffix through as invalid CSS (`p(3xl)` gave `padding: 3xl`, `gap(5foo)` gave `gap: 5foo`). Values are now checked against one shared list of CSS length units plus `%` (no `%` for border widths), and anything else raises an error. Units are matched in any case (`10PX`). `leading()` now also accepts a quoted length such as `"10dvh"`.
-- `apply(opacity(inherit))` failed with "$color: inherit is not a color" (and the same for other CSS-wide keywords, quoted keys and unknown words) because Sass resolved `opacity()` to its built-in color function before `apply()` saw it; the direct `@include opacity(inherit)` worked. `mixins-map` now defines `opacity()`: a color argument keeps the Sass result, anything else reaches `apply()` as text, so `apply()` with `@use ... as *` accepts the same inputs as the direct call. `filter: opacity(50%)` is unchanged. In a namespaced load the bare `opacity(...)` is still Sass's built-in; call the package function instead: `nu.apply(nu.opacity(inherit), nu.opacity("50") hover)`.
-- The base button and field transitions read the keys `200` and `in-out` directly; they now follow `$transition-default-duration` and `$transition-default-ease`.
-- `auto-fit(sm)` and `auto-fill(sm)` emitted the invalid `minmax(sm, 1fr)` although the `.auto-fit-sm` class takes the same key.
-- Removing `tooltip` from `$z-index-levels` silently dropped the tooltip z-index.
-- The breakpoint debugger labeled one step ahead of the active suffix (640px showed `md`) and showed no label at 1536px and wider. It now names the breakpoint whose `@` suffix applies, and `base` below the first breakpoint.
-- `get-color()` cached every raw color value (each unique hex), so compile time grew faster than linearly with the number of unique colors; role, palette and CSS color names are cached without limit and raw colors in a size-capped cache.
-- `apply()` stored every parsed item in a cache, including items with unique raw values (`p(13px)`), and each insert copied the whole cache, so compile time grew quadratically with the number of unique values (4000 rules with three unique values each took 33 s in 1.5.7). Bounded inputs (config keys, theme words, role and hue names) are cached without limit; raw values go in size-capped caches, so each insert copies a bounded map. The performance guard (`npm run test:perf`) checks that the cost per call does not grow with the rule count.
-- `apply()` through a namespaced load (`@use "@nuvoui/core" as nu`, `nu.apply(...)`) received every argument as text, so validating mixins rejected valid raw values such as `font-size(12px)`, `z-index(5)`, `duration(250ms)` and `fill(6)`, and a quoted argument (`p("4")`) skipped key validation. Numeric arguments with a CSS unit (or none) now become real numbers, quoted arguments stay quoted strings, and CSS functions written as text (`clamp()`, `calc()`) are accepted where the direct call accepts a calculation, so direct calls, `apply()` and the namespaced `apply()` accept the same inputs.
-- `to-number("12px")` returned the string `12px` instead of a number with a unit; `to-number("8", 1rem)` returned `9rem`. A string with no digit before its first other character (`"."`, `".px"`) gives `null` (it gave `0`).
-- A quoted `$font-family` holding a list (`"Inter, sans-serif"`) became one family name; it is emitted unquoted as a family list, in `--nu-font-family` and in the base layer with the theme flag off. A quoted single family (`"Inter"`) keeps its quotes.
-- Quoted colors in theme maps (`"text-regular": "#111"`) failed when `text-on-{role}` was computed; they are read like unquoted colors. An explicit `text-on-{role}` in a theme map also got `hover:` and `group-hover:` classes and a second `.text-on-{role}` rule; it now has the one plain class, as a computed one does.
-- `origin(top-left)` emitted `transform-origin: top-left`; `origin()` now resolves `$origin-values` keys like the `.origin-*` classes (`top left`).
-- Rounded, font-size and other scale mixins with an alphanumeric key starting with a digit (`rounded(2xl)`) failed unquoted in a direct call and in `apply()` with `as *`, because Sass reads `2xl` as a number with the unit `xl`.
-
-## [1.5.7]
-
-Last 1.x release. Earlier versions are not recorded in this file.
+Earlier releases (2024 to 2026) were published under a previous name; their notes are in the repository history.

@@ -255,7 +255,7 @@ const RAW_VALUES = [
     ['z-index("5")', 'z-index: 5'],
 ];
 
-// Mixins removed in 2.0 (deprecated in 1.x) and renamed grid mixins: each must fail as an unknown mixin,
+// Removed and renamed grid mixins: each must fail as an unknown mixin,
 // called directly and through apply()
 const REMOVED = [
     ['d-tbl', ''],
@@ -410,32 +410,32 @@ const EXPECTED_ERRORS = [
     [
         'bg(brand-default) names the renamed role',
         '@include apply(bg(brand-default));',
-        'bg(brand-default): renamed in 2.0, use bg(brand)',
+        'bg(brand-default): unknown color, use bg(brand)',
     ],
     [
         'border-color(danger-default) names the renamed role',
         '@include apply(border-color(danger-default));',
-        'border-color(danger-default): renamed in 2.0, use border-color(danger)',
+        'border-color(danger-default): unknown color, use border-color(danger)',
     ],
     [
         'text-color(brand-default) names the renamed role',
         '@include apply(text-color(brand-default));',
-        'text-color(brand-default): renamed in 2.0, use text-color(brand)',
+        'text-color(brand-default): unknown color, use text-color(brand)',
     ],
     [
         'bg(error-default) points at danger',
         '@include apply(bg(error-default));',
-        'bg(error-default): renamed in 2.0, use bg(danger)',
+        'bg(error-default): unknown color, use bg(danger)',
     ],
     [
         'gradient(to right, brand-default, red) names the renamed role',
         '@include apply(gradient(to right, brand-default, red));',
-        'bg(brand-default): renamed in 2.0, use bg(brand)',
+        'bg(brand-default): unknown color, use bg(brand)',
     ],
     [
         'text-on-color(brand-default) names the renamed role',
         '@include text-on-color(brand-default);',
-        'text-on-color(brand-default): renamed in 2.0, use text-on-color(brand)',
+        'text-on-color(brand-default): unknown color, use text-on-color(brand)',
     ],
     ['p(true)', '@include apply(p(true));', 'p: unknown value true'],
     ['p(#fff)', '@include apply(p(#fff));', 'p: unknown value #fff'],
@@ -1347,7 +1347,7 @@ function run() {
         `${failures.length === combineBefore ? 'pass' : 'FAIL'}  transition-colors and transition-transform combine in one apply() (as *, N.apply, nu.apply)`
     );
 
-    // Base items, then breakpoints smallest first; within each, states in LVHA order, whatever the written order
+    // Base items, then breakpoints smallest first, each in one media block; within each, states in LVHA order, whatever the written order
     const SORT_CASES = [
         [
             `.t {\n  display: none;\n}\n.t:hover {\n  opacity: var(${P}opacity-50);\n}\n` +
@@ -1362,11 +1362,21 @@ function run() {
         [
             `.t:hover {\n  opacity: var(${P}opacity-90);\n}\n.t:focus {\n  opacity: var(${P}opacity-80);\n}\n` +
                 `.t:active {\n  opacity: var(${P}opacity-70);\n}\n.t:disabled {\n  opacity: var(${P}opacity-50);\n}\n` +
-                `@media (min-width: 768px) {\n  .t:hover {\n    opacity: var(${P}opacity-60);\n  }\n}\n` +
-                `@media (min-width: 768px) {\n  .t:focus {\n    opacity: var(${P}opacity-40);\n  }\n}`,
+                `@media (min-width: 768px) {\n  .t:hover {\n    opacity: var(${P}opacity-60);\n  }\n  .t:focus {\n    opacity: var(${P}opacity-40);\n  }\n}`,
             [
                 'opacity(90) hover, opacity(80) focus, opacity(70) active, opacity(50) disabled, opacity(60) hover md, opacity(40) focus md',
                 'opacity(40) focus md, opacity(50) disabled, opacity(60) hover md, opacity(70) active, opacity(80) focus, opacity(90) hover',
+            ],
+        ],
+        // One media block per breakpoint: its items without a state, then one rule per state
+        [
+            `.t {\n  background-color: var(${P}brand);\n}\n` +
+                `@media (min-width: 768px) {\n  .t {\n    padding: var(${P}space-4);\n    margin: var(${P}space-4);\n  }\n` +
+                `  .t:hover {\n    display: flex;\n    margin-top: var(${P}space-2);\n  }\n}\n` +
+                `@media (min-width: 1024px) {\n  .t {\n    margin: var(${P}space-2);\n  }\n  .t:focus {\n    display: none;\n  }\n}`,
+            [
+                'p(4) md, m(4) md, flex hover md, mt(2) hover md, hide focus lg, m(2) lg, bg(brand)',
+                'bg(brand), m(2) lg, hide focus lg, p(4) md, flex hover md, m(4) md, mt(2) hover md',
             ],
         ],
     ];
@@ -1396,7 +1406,7 @@ function run() {
         }
     }
     console.log(
-        `${failures.length === sortBefore ? 'pass' : 'FAIL'}  base items, then breakpoints smallest first, states in LVHA order, in any written order (as *, N.apply, nu.apply)`
+        `${failures.length === sortBefore ? 'pass' : 'FAIL'}  base items, then breakpoints smallest first in one media block each, states in LVHA order, in any written order (as *, N.apply, nu.apply)`
     );
 
     const removedBefore = failures.length;

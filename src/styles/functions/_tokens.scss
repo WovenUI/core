@@ -271,7 +271,7 @@ $-names: -token-names();
     @return $matches;
 }
 
-// The role that replaced an old {role}-default fill name from the 2.0 drafts (error points at danger), else null
+// The role a {role}-default fill name stands for (error points at danger), else null
 @function renamed-role($name) {
     $suffix: string.index($name, "-default");
     @if $suffix and $suffix == string.length($name) - 7 {
@@ -328,7 +328,7 @@ $-names: -token-names();
 
     $renamed: renamed-role($name);
     @if $renamed {
-        @error "token(#{$name}): renamed in 2.0, use token(#{$renamed}).";
+        @error "token(#{$name}): unknown token, use token(#{$renamed}).";
     }
 
     $matches: -close-matches($name);

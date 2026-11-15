@@ -216,7 +216,7 @@ $-color-functions: (
         }
         $renamed: fn-tokens.renamed-role($name);
         @if $renamed {
-            @error "#{$mixin}(#{$name}): renamed in 2.0, use #{$mixin}(#{$renamed}).";
+            @error "#{$mixin}(#{$name}): unknown color, use #{$mixin}(#{$renamed}).";
         }
     }
 
@@ -333,7 +333,7 @@ $-color-functions: (
     } @else {
         $renamed: fn-tokens.renamed-role($name);
         @if $renamed {
-            @error "text-on-color(#{$name}): renamed in 2.0, use text-on-color(#{$renamed}).";
+            @error "text-on-color(#{$name}): unknown color, use text-on-color(#{$renamed}).";
         }
         @if not $shade {
             $shade: 500;

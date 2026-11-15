@@ -571,7 +571,7 @@ $-error-tokens: ("text-error", "text-on-error");
     }
 }
 
-// 2.0 drafts named role fills {role}-default; 2.0 uses the bare name ({role}). No fallback
+// Role fills use the bare name ({role}); a {role}-default key is rejected
 @mixin -validate-renamed-keys($themes) {
     @each $theme-name, $theme in $themes {
         @each $token, $value in $theme {
@@ -579,10 +579,10 @@ $-error-tokens: ("text-error", "text-on-error");
             @if $suffix and $suffix == string.length($token) - 7 {
                 $name: string.slice($token, 1, $suffix - 1);
                 @if $name == "error" and map.has-key(config-color.$semantic-colors, "danger") {
-                    @error "#{$theme-name}: '#{$token}' was renamed to 'error' in 2.0, and error tokens follow danger; set 'danger' instead.";
+                    @error "#{$theme-name}: '#{$token}' is not a token: error tokens follow danger; set 'danger' instead.";
                 }
                 @if list.index($role-names, $name) {
-                    @error "#{$theme-name}: '#{$token}' was renamed to '#{$name}' in 2.0 (--#{config-constants.$prefix}-#{$name}). Rename the key.";
+                    @error "#{$theme-name}: '#{$token}' is not a token: the role fill is '#{$name}' (--#{config-constants.$prefix}-#{$name}). Rename the key.";
                 }
             }
         }

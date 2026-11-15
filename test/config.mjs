@@ -165,24 +165,24 @@ const ERROR_CASES = [
         "'error' cannot be set",
     ],
     [
-        'old {role}-default key (renamed to the bare role name in 2.0)',
+        '{role}-default key',
         '$light-theme: ("brand-default": brand 800)',
-        `$light-theme: 'brand-default' was renamed to 'brand' in 2.0 (${P}brand)`,
+        `$light-theme: 'brand-default' is not a token: the role fill is 'brand' (${P}brand)`,
     ],
     [
         'old {role}-default key for a custom role in $dark-theme',
         `$semantic-colors: (${ROLES}, "accent": #8b5cf6), $dark-theme: ("accent-default": accent 300)`,
-        `$dark-theme: 'accent-default' was renamed to 'accent' in 2.0 (${P}accent)`,
+        `$dark-theme: 'accent-default' is not a token: the role fill is 'accent' (${P}accent)`,
     ],
     [
         'old {role}-default key in $high-contrast-light',
         '$high-contrast-light: ("danger-default": danger 900)',
-        "$high-contrast-light: 'danger-default' was renamed to 'danger' in 2.0",
+        "$high-contrast-light: 'danger-default' is not a token: the role fill is 'danger'",
     ],
     [
         'old error-default key',
         '$light-theme: ("error-default": red 700)',
-        "'error-default' was renamed to 'error' in 2.0, and error tokens follow danger; set 'danger' instead",
+        "'error-default' is not a token: error tokens follow danger; set 'danger' instead",
     ],
     [
         'role whose bare token is a palette token (red-500 with hue red)',
