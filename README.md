@@ -2,7 +2,7 @@
 
 The foundation layer of the WovenUI design system: design tokens, utility classes and SCSS mixins, written in Sass.
 
-WovenUI is a utility-first framework for Sass projects and an alternative to Tailwind CSS. Use the classes in markup, or the same utilities as mixins through `apply()` in your stylesheets. See the [comparison with Tailwind CSS](https://wovenui.com/vs/tailwind/) and the [setup guides](https://wovenui.com/guides/).
+WovenUI is a utility-first framework for Sass projects and an alternative to Tailwind CSS. Use the classes in markup, or the same utilities as mixins in your stylesheets: include one directly, or combine several with `apply()`. See the [comparison with Tailwind CSS](https://wovenui.com/vs/tailwind/) and the [setup guides](https://wovenui.com/guides/).
 
 [![GitHub stars](https://img.shields.io/github/stars/WovenUI/core?style=flat-square&color=FFB000)](https://github.com/WovenUI/core)
 [![GitHub forks](https://img.shields.io/github/forks/WovenUI/core?style=flat-square&color=FFB000)](https://github.com/WovenUI/core)
@@ -31,7 +31,7 @@ Both output theme tokens, so they follow light and dark mode.
 
 - **Design tokens** as CSS custom properties with the `--wu-` prefix, with light and dark themes.
 - **Utility classes** with readable names (`between`, `x-center`), responsive suffixes (`p-4@md`) and state prefixes (`hover:`, `focus:`).
-- **SCSS mixins** through `@include apply(...)`, the same utilities for your stylesheets.
+- **SCSS mixins**, the same utilities for your stylesheets: `@include p(4)` for one, `@include apply(...)` for several or with a state or breakpoint.
 - **Base styles** for plain HTML elements, including buttons and form controls.
 
 Core is SCSS and CSS only. It has no JavaScript runtime.
@@ -159,9 +159,9 @@ The full token list with light and dark values is in the [token reference](docs/
 - Logical classes (`ms-*`, `me-*`, `text-start`) follow the text direction. Physical classes (`ml-*`, `text-left`) keep their side.
 - A breakpoint suffix applies from that width up: `p-6@md`.
 
-## Mixins with `apply()`
+## Mixins and `apply()`
 
-`apply()` takes mixin calls separated by commas. A state and a breakpoint follow the call, in either order.
+Every utility is also a mixin. Include one directly. Use `apply()` for several items or for a state or breakpoint modifier: it takes mixin calls separated by commas, and a state and a breakpoint follow the call, in either order.
 
 ```scss
 @use "@wovenui/core" as *;
@@ -171,11 +171,15 @@ The full token list with light and dark values is in the [token reference](docs/
     @include apply(p(6) md, bg(hover) hover, bg(selected) hover lg);
 }
 
+.card__meta {
+    @include text-color(muted);
+}
 ```
 
 - A unitless number is a configuration key: `p(4)` outputs `padding: var(--wu-space-4)`, the same as `.p-4`. Values with units pass through: `p(1.5rem)`.
 - Color mixins take the class words and output tokens: `bg(brand)` gives `var(--wu-brand)`.
-- With a namespaced load (`@use "@wovenui/core" as woven`), write `woven.apply(...)`.
+- A mixin around a literal or a `var()` only passes the value through. Write plain CSS there (`width: 100%`, `margin: 0`), and `token()` for a theme value on a property no mixin covers.
+- With a namespaced load (`@use "@wovenui/core" as woven`), write `woven.apply(...)` and `woven.p(4)`.
 
 Mistakes fail at compile time, and the message points to the docs:
 
