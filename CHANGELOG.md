@@ -13,6 +13,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Background size mixins and classes: `bg-cover` and `bg-contain` set `background-size`, with `@{breakpoint}` forms (`.bg-cover@lg`).
 - The new classes belong to the `sizing` feature flag.
 - A role, hue or basic color named `cover` or `contain`, or a custom theme key `bg-cover` or `bg-contain`, raises an error, since its color class would be the background-size class.
+- `justify-self($value)` sets `justify-self` to `start`, `end`, `center`, `stretch` or `var()`; any other value raises an error naming the accepted values. Classes `.justify-self-start`, `.justify-self-end`, `.justify-self-center` and `.justify-self-stretch` stand alone (on any grid item, no `.grid` needed), with `@{breakpoint}` forms, under the `grid` feature flag.
+- `min-h-screen` mixin and class set `min-height: 100dvh`, like `h-screen` (`sizing` feature flag).
+- `$font-families` configuration map: `sans` (defaults to `$font-family`) and `mono` (`ui-monospace, "SF Mono", "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", monospace`). Projects may add keys. Every key emits a fixed `--wu-font-family-{key}` token; `--wu-font-family` is unchanged and still follows `$font-family`.
+- `font-family($value...)`: a `$font-families` key gives its token (`font-family(mono)` gives `var(--wu-font-family-mono)`, the stack itself with the `theme` flag off); a stack is written as separate arguments (`font-family("SF Mono", Menlo, monospace)`), and a single quoted family name, a family name of several words, a generic family, `-apple-system`, a CSS-wide keyword or `var()` pass through. Bare generic families, `-apple-system` and CSS-wide keywords match in any case and are emitted lowercase and unquoted; other family names are emitted quoted. A quoted string is always a family name, as in CSS (`font-family("serif")` gives `"serif"`). An unknown bare word or a quoted stack with commas raises an error listing the keys.
+- Classes `.font-sans`, `.font-mono` and `.font-{key}` for every `$font-families` key, with `@{breakpoint}` forms, under the `typography` feature flag.
+- A `$font-families` key equal to a `$font-weights` key (`bold`) raises an error, since its class would be the font weight class. A custom theme key equal to a font family token (`font-family-mono`) raises the reserved-name error.
+
+### Changed
+
+- Base styles: `code`, `pre`, `kbd` and `samp` use `--wu-font-family-mono` (the `mono` stack when the `theme` flag is off) instead of `"Courier New", Courier, monospace`. `pre`, `kbd` and `samp` had no font family in the base layer before. The debugger uses the same stack. With the `base` flag on, `$font-families` must keep the `mono` key; removing it raises an error.
 
 ### Fixed
 
