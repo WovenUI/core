@@ -27,6 +27,7 @@ const ARGS = {
     'auto-fit': '200px',
     'auto-fill': '200px',
     justify: 'center',
+    'justify-self': 'center',
     align: 'center',
     place: 'center',
     'col-span': '2',
@@ -145,6 +146,7 @@ const ARGS = {
     delay: '100',
     'font-size': 'md',
     font: 'bold',
+    'font-family': 'mono',
     leading: 'normal',
     'truncate-lines': '3',
     tracking: 'wide',
@@ -301,10 +303,54 @@ const RAW_VALUES = [
         'grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))',
     ],
     ['font-size("1.25rem")', 'font-size: 1.25rem'],
+    ['justify-self(end)', 'justify-self: end;'],
+    ['justify-self("stretch")', 'justify-self: stretch;'],
+    ['justify-self(var(--j))', 'justify-self: var(--j);'],
+    ['min-h-screen', 'min-height: 100dvh;'],
+    ['font-family(mono)', `font-family: var(${P}font-family-mono);`],
+    ['font-family(sans)', `font-family: var(${P}font-family-sans);`],
+    ['font-family(Georgia, serif)', 'font-family: "Georgia", serif;'],
+    [
+        'font-family("SF Mono", Menlo, monospace)',
+        'font-family: "SF Mono", "Menlo", monospace;',
+    ],
+    ['font-family("Inter")', 'font-family: "Inter";'],
+    ['font-family("mono")', 'font-family: "mono";'],
+    ['font-family("serif")', 'font-family: "serif";'],
+    ['font-family(Georgia, "serif")', 'font-family: "Georgia", "serif";'],
+    [
+        'font-family(system-ui, -apple-system, sans-serif)',
+        'font-family: system-ui, -apple-system, sans-serif;',
+    ],
+    ['font-family(-apple-system)', 'font-family: -apple-system;'],
+    ['font-family(Georgia, Serif)', 'font-family: "Georgia", serif;'],
+    ['font-family(SERIF)', 'font-family: serif;'],
+    ['font-family(Inherit)', 'font-family: inherit;'],
+    ['font-family(serif)', 'font-family: serif;'],
+    ['font-family(inherit)', 'font-family: inherit;'],
+    ['font-family(var(--font))', 'font-family: var(--font);'],
+    ['font-family(var(--font, serif))', 'font-family: var(--font, serif);'],
     ['cols("3")', 'grid-template-columns: repeat(3, minmax(0, 1fr))'],
     ['col-span("2")', 'grid-column: span 2/span 2'],
     ['duration("250ms")', 'transition-duration: 250ms'],
     ['z-index("5")', 'z-index: 5'],
+];
+
+// [mixin call, error text]: a quoted stack fails with the same message directly, through apply(), nu.apply() and
+// N.apply(), although the namespaced paths split the quoted string at its commas
+const FONT_FAMILY_ERRORS = [
+    [
+        'font-family("Inter, sans-serif")',
+        'font-family("Inter, sans-serif"): "Inter, sans-serif" is not a font family name. Use a key (sans, mono)',
+    ],
+    [
+        "font-family('Inter, sans-serif')",
+        'font-family("Inter, sans-serif"): "Inter, sans-serif" is not a font family name. Use a key (sans, mono)',
+    ],
+    [
+        'font-family(Georgia, "A, B, C", serif)',
+        'font-family(Georgia, "A, B, C", serif): "A, B, C" is not a font family name. Use a key (sans, mono)',
+    ],
 ];
 
 // [mixin call, error text]: position values that break the CSS position grammar fail the same way directly, through
@@ -414,6 +460,36 @@ const EXPECTED_ERRORS = [
         'apply(font(a(b)): missing closing parenthesis.',
     ],
     ['p(7)', '@include apply(p(7));', 'p: 7 is not a configured key'],
+    [
+        'justify-self(left)',
+        '@include apply(justify-self(left));',
+        'justify-self(left): unknown value. Use start, end, center, stretch or var().',
+    ],
+    [
+        'justify-self(3)',
+        '@include justify-self(3);',
+        'justify-self(3): unknown value',
+    ],
+    [
+        'font-family(mnoo): an unknown word lists the keys',
+        '@include apply(font-family(mnoo));',
+        'font-family(mnoo): unknown font family mnoo. Use a key (sans, mono)',
+    ],
+    [
+        'font-family() without a value',
+        '@include font-family();',
+        'font-family(): a value is required',
+    ],
+    [
+        'font-family(4)',
+        '@include apply(font-family(4));',
+        'font-family(4): 4 is not a font family name',
+    ],
+    [
+        'font-family() with a quoted stack asks for separate arguments',
+        '@include font-family("Inter, sans-serif");',
+        'is not a font family name. Use a key (sans, mono), a quoted family name',
+    ],
     [
         'p(-4)',
         '@include apply(p(-4));',
@@ -1433,7 +1509,10 @@ function run() {
     );
 
     const positionBefore = failures.length;
-    for (const [callText, expected] of POSITION_ERRORS) {
+    for (const [callText, expected] of [
+        ...POSITION_ERRORS,
+        ...FONT_FAMILY_ERRORS,
+    ]) {
         for (const [label, use, body] of [
             [
                 'direct',
@@ -1469,7 +1548,7 @@ function run() {
         }
     }
     console.log(
-        `${failures.length === positionBefore ? 'pass' : 'FAIL'}  ${POSITION_ERRORS.length} position values outside the CSS grammar fail directly, through apply(), nu.apply() and N.apply()`
+        `${failures.length === positionBefore ? 'pass' : 'FAIL'}  ${POSITION_ERRORS.length} position values outside the CSS grammar and ${FONT_FAMILY_ERRORS.length} quoted font stacks fail directly, through apply(), nu.apply() and N.apply()`
     );
 
     // A state and a breakpoint may follow the utility in either order, on all three apply() paths

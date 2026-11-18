@@ -6,6 +6,7 @@
 @use "../config/breakpoints" as config-breakpoint;
 @use "../functions/breakpoints" as fn-breakpoints;
 @use "../functions/feature-flags" as fn-flags;
+@use "../functions/tokens" as fn-tokens;
 
 // CSS output of this module; index.scss includes it, the mixins entry does not
 @mixin -emit {
@@ -54,7 +55,7 @@
 
                 &::before,
                 &::after {
-                    font-family: "Courier New", Courier, monospace;
+                    font-family: fn-tokens.font-family-ref("mono", "the debugger reads");
                     font-size: 0.8em;
                     display: block;
                 }
@@ -102,7 +103,7 @@
 
                 &::before,
                 &::after {
-                    font-family: "Courier New", Courier, monospace;
+                    font-family: fn-tokens.font-family-ref("mono", "the debugger reads");
                     font-size: 0.8em;
                     display: block;
                 }

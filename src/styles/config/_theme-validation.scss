@@ -503,7 +503,8 @@ $-error-tokens: ("text-error", "text-on-error");
 // Words of the background-size classes (.bg-cover, .bg-contain), which share the bg- prefix with color classes
 $-bg-class-words: ("cover", "contain");
 
-// No role, hue, basic color or custom theme key may generate a color class equal to a background-size class
+// No role, hue, basic color or custom theme key may generate a color class equal to a background-size class, and no
+// font family key a font weight class
 @mixin -validate-class-names {
     $themes: (
         "$light-theme": $light-theme,
@@ -525,6 +526,13 @@ $-bg-class-words: ("cover", "contain");
             @if map.has-key($theme, "bg-#{$word}") {
                 @error "#{$theme-name}: custom token 'bg-#{$word}' would generate .bg-#{$word}, which is the background-size class .bg-#{$word}. Choose another name.";
             }
+        }
+    }
+
+    // Font family classes share the font- prefix with the font weight classes
+    @each $key in map.keys(config-typo.$font-families) {
+        @if map.has-key(config-typo.$font-weights, "#{$key}") {
+            @error "Font family '#{$key}' ($font-families) would generate .font-#{$key}, which is the font weight class .font-#{$key} ($font-weights). Rename the font family key.";
         }
     }
 }
@@ -556,6 +564,7 @@ $-bg-class-words: ("cover", "contain");
         "space": config-spacing.$spacings,
         "radius": config-border.$border-radii,
         "border-width": $border-widths,
+        "font-family": config-typo.$font-families,
         "font-size": config-typo.$font-sizes,
         "font-weight": config-typo.$font-weights,
         "line-height": config-typo.$line-heights,

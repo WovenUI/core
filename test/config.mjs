@@ -225,6 +225,21 @@ const ERROR_CASES = [
         "$light-theme: custom token 'bg-contain' would generate .bg-contain",
     ],
     [
+        'font family key equal to a font weight key would generate the weight class',
+        '$font-families: ("sans": system-ui, "mono": monospace, "bold": serif)',
+        "Font family 'bold' ($font-families) would generate .font-bold, which is the font weight class .font-bold ($font-weights)",
+    ],
+    [
+        'custom theme token reusing a font family token name',
+        '$light-theme: ("font-family-mono": #fff), $dark-theme: ("font-family-mono": #000)',
+        "$light-theme: custom token 'font-family-mono' is already a palette, basic color or scale token",
+    ],
+    [
+        'base styles need the mono font family',
+        '$font-families: ("sans": system-ui)',
+        '$font-families has no key mono, which the base styles read. Configured keys: sans. Add mono back to $font-families.',
+    ],
+    [
         'removed gray still referenced by the default theme',
         `$color-primitives: ("red": #ef4444, "blue": #3b82f6)`,
         "refers to 'gray', which is not a role or palette name",
@@ -1176,6 +1191,111 @@ function run() {
                 'theme false'
             );
             expectExcludes(noTheme, `${P}font-family`, 'theme false');
+        }
+    );
+
+    check(
+        `font families: ${P}font-family-{key} tokens, .font-{key} classes, base code fonts and $font-family`,
+        () => {
+            const mono = `ui-monospace, "SF Mono", "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", monospace`;
+            const css = compileWith('$generate-utility-classes: true');
+            const { root } = themeBlocks(css);
+            if (root['font-family-sans'] !== root['font-family']) {
+                fail(
+                    `${P}font-family-sans must equal ${P}font-family, got ${root['font-family-sans']}`
+                );
+            }
+            if (root['font-family-mono'] !== mono) {
+                fail(`${P}font-family-mono: got ${root['font-family-mono']}`);
+            }
+            for (const text of [
+                `.font-sans {\n  font-family: var(${P}font-family-sans);`,
+                `.font-mono {\n  font-family: var(${P}font-family-mono);`,
+                `.font-mono\\@md {\n    font-family: var(${P}font-family-mono);`,
+                `  code,\n  pre,\n  kbd,\n  samp {\n    font-family: var(${P}font-family-mono);`,
+            ]) {
+                expectIncludes(css, text, 'default');
+            }
+            expectExcludes(css, 'Courier', 'default');
+
+            const custom = compileWith(
+                '$generate-utility-classes: true, $parent-selector: ".app", $font-families: ("sans": system-ui, "mono": (Menlo, monospace), "heading": (Georgia, serif))'
+            );
+            expectIncludes(
+                custom,
+                `${P}font-family-heading: Georgia, serif;`,
+                'custom key'
+            );
+            expectIncludes(
+                custom,
+                `.app .font-heading {\n  font-family: var(${P}font-family-heading);`,
+                'custom key'
+            );
+
+            const family = compileWith('$font-family: ("Inter", sans-serif)');
+            expectIncludes(
+                family,
+                `${P}font-family: "Inter", sans-serif;\n  ${P}font-family-sans: "Inter", sans-serif;`,
+                '$font-family alone'
+            );
+
+            const noTheme = compileWith(
+                '$generate-utility-classes: true, $feature-flags: ("theme": false)'
+            );
+            expectIncludes(
+                noTheme,
+                `.font-mono {\n  font-family: ${mono};`,
+                'theme false'
+            );
+            expectIncludes(
+                noTheme,
+                `  samp {\n    font-family: ${mono};`,
+                'theme false'
+            );
+            expectExcludes(noTheme, `${P}font-family-`, 'theme false');
+
+            const noTypography = compileWith(
+                '$generate-utility-classes: true, $feature-flags: ("typography": false)'
+            );
+            expectExcludes(noTypography, '.font-mono', 'typography false');
+            expectIncludes(
+                noTypography,
+                `${P}font-family-mono:`,
+                'typography false'
+            );
+            const noBase = compileWith(
+                '$font-families: ("sans": system-ui), $feature-flags: ("base": false)'
+            );
+            expectExcludes(noBase, 'samp', 'base false without mono');
+        }
+    );
+
+    check(
+        'grid flag owns the standalone .justify-self-* classes; sizing owns .min-h-screen',
+        () => {
+            const css = compileWith(
+                '$generate-utility-classes: true, $parent-selector: ".app"'
+            );
+            for (const text of [
+                '.app .justify-self-start {\n  justify-self: start;',
+                '.app .justify-self-stretch {\n  justify-self: stretch;',
+                '.app .justify-self-center\\@md {\n    justify-self: center;',
+                '.app .min-h-screen {\n  min-height: 100dvh;',
+            ]) {
+                expectIncludes(css, text, 'default');
+            }
+            const noGrid = compileWith(
+                '$generate-utility-classes: true, $feature-flags: ("grid": false)'
+            );
+            expectExcludes(noGrid, '.justify-self-', 'grid false');
+            const noSizing = compileWith(
+                '$generate-utility-classes: true, $feature-flags: ("sizing": false)'
+            );
+            expectExcludes(noSizing, '.min-h-screen', 'sizing false');
+            const noClasses = compileWith('$generate-utility-classes: false');
+            expectExcludes(noClasses, '.justify-self-', 'classes off');
+            expectExcludes(noClasses, '.min-h-screen', 'classes off');
+            expectExcludes(noClasses, '.font-mono', 'classes off');
         }
     );
 

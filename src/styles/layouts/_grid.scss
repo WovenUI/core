@@ -1,6 +1,6 @@
 ////
 //// @group grid
-//// Grid layout system: column and row templates, auto-fit and auto-fill tracks, flow, alignment and item placement.
+//// Grid layout system: column and row templates, auto-fit and auto-fill tracks, flow, alignment, self alignment and item placement.
 ////
 //// Gap utilities are defined in _spacing.scss.
 ////
@@ -252,6 +252,27 @@ $alignments: (
     place-items: fn-math.css-arg($value);
 }
 
+/// Sets justify-self, aligning one grid item along the inline axis of its cell.
+///
+/// Accepts start, end, center, stretch or var(); anything else raises an error. Works on any grid item, so the classes stand alone: .justify-self-center, .justify-self-end@md.
+/// @param {String} $value - start, end, center, stretch or var()
+/// @example scss
+///   .card-action {
+///     @include justify-self(end); // justify-self: end
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/justify-self justify-self on MDN
+/// @see {mixin} justify
+@mixin justify-self($value) {
+    $value: fn-math.css-arg($value);
+    @if meta.type-of($value) == "string" and map.has-key($alignments, $value) {
+        justify-self: map.get($alignments, $value);
+    } @else if fn-css-vars.is-css-var($value) {
+        justify-self: $value;
+    } @else {
+        @error "justify-self(#{meta.inspect($value)}): unknown value. Use #{map.keys($alignments)} or var().";
+    }
+}
+
 // Grid Item Placement Mixins
 
 /// Makes a grid item span a number of columns.
@@ -455,6 +476,13 @@ $alignments: (
             }
         }
 
+        // Self alignment classes sit on grid items, so they stand alone like the span classes
+        @each $name, $value in $alignments {
+            #{config-flags.$parent-selector} .justify-self-#{$name} {
+                @include justify-self($value);
+            }
+        }
+
         // Handle responsive variants
         @each $breakpoint, $width in config-breakpoint.$breakpoints {
             @media (min-width: #{$width}) {
@@ -477,6 +505,12 @@ $alignments: (
                     }
                     #{config-flags.$parent-selector} .row-span-#{$i}\@#{$breakpoint} {
                         @include row-span($i);
+                    }
+                }
+
+                @each $name, $value in $alignments {
+                    #{config-flags.$parent-selector} .justify-self-#{$name}\@#{$breakpoint} {
+                        @include justify-self($value);
                     }
                 }
 

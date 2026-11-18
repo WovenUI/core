@@ -306,8 +306,14 @@ $-invalid-border: "border-control";
                 border: 0 !important;
             }
 
+            #{config-flags.$parent-selector} code,
+            #{config-flags.$parent-selector} pre,
+            #{config-flags.$parent-selector} kbd,
+            #{config-flags.$parent-selector} samp {
+                font-family: fn-tokens.font-family-ref("mono", "the base styles read");
+            }
+
             #{config-flags.$parent-selector} code {
-                font-family: "Courier New", Courier, monospace;
                 background-color: -token("bg-alternate");
                 color: -token("text-regular");
                 padding: 0 -scale-var("space", config-spacing.$spacings, 1);

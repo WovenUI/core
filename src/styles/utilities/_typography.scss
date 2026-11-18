@@ -1,11 +1,12 @@
 ////
 //// @group typography
-//// Typography utilities: font size, weight and line height, text alignment, transform, style and decoration, word breaking, white-space and letter spacing.
+//// Typography utilities: font size, weight, family and line height, text alignment, transform, style and decoration, word breaking, white-space and letter spacing.
 ////
 //// Classes:
 ////
 //// - Font Size: .text-xs, .text-sm, .text-base, etc.
 //// - Font Weight: .font-thin, .font-normal, .font-bold, etc.
+//// - Font Family: .font-sans, .font-mono and .font-{key} for every $font-families key
 //// - Line Height: .leading-none, .leading-tight, .leading-normal, etc.
 //// - Text Align: .text-left, .text-center, .text-right, .text-justify, .text-start, .text-end
 //// - Text Transform: .uppercase, .lowercase, .capitalize, .normal-case
@@ -30,6 +31,7 @@
 @use "../functions/feature-flags" as fn-flags;
 @use "../functions/math" as fn-math;
 @use "../functions/css-vars" as fn-css-vars;
+@use "../functions/tokens" as fn-tokens;
 @use "./display" as util-display;
 
 $-font-size-keywords: (xx-small, x-small, small, medium, large, x-large, xx-large, xxx-large, smaller, larger, math, inherit, initial, unset, revert, revert-layer);
@@ -156,6 +158,127 @@ $-font-weight-cache: ();
         @return $number;
     }
     @error "Unknown font weight: #{$weight}. Use a key (#{map.keys(config-typo.$font-weights)}) or a number from 1 to 1000.";
+}
+
+$-font-family-keywords: (serif, sans-serif, monospace, cursive, fantasy, system-ui, -apple-system, ui-serif, ui-sans-serif, ui-monospace, ui-rounded, math, emoji, fangsong, inherit, initial, unset, revert, revert-layer);
+
+/// Sets font-family from a $font-families key (mono gives var(--wu-font-family-mono)) or a font stack; an unknown word raises an error.
+///
+/// A stack is written as separate arguments, like CSS: font-family("SF Mono", Menlo, monospace). One value may also be a quoted family name ("Inter"), a family name of several words, a generic family (serif), -apple-system, a CSS-wide keyword or var(). A single bare word is a key first. Bare generic families, -apple-system and CSS-wide keywords match in any case and are emitted lowercase and unquoted (Serif gives serif); every other family name is emitted quoted ("SF Mono", "Menlo"). A quoted string is always a family name, as in CSS: "serif" and "mono" stay quoted names. With the theme feature flag off, a key gives the stack itself.
+/// @param {String|List} $value - Font family key (sans, mono), or the families of a stack
+/// @example scss
+///   .snippet {
+///     @include font-family(mono); // font-family: var(--wu-font-family-mono)
+///   }
+/// @example scss
+///   .heading {
+///     @include apply(font-family(Georgia, serif), font(bold));
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/font-family font-family on MDN
+/// @see {variable} font-families
+/// @see {mixin} font
+@mixin font-family($value...) {
+    font-family: -font-family($value);
+}
+
+// True for a string written with quotes
+@function -is-quoted($value) {
+    @return meta.type-of($value) == "string" and list.index(('"', "'"), string.slice(meta.inspect($value), 1, 1)) != null;
+}
+
+// Resolves font-family() arguments: one key to its token (the stack when the theme flag is off), a stack kept,
+// anything else raises an error
+@function -font-family($values) {
+    $values: -rejoin-quoted($values);
+    $args: "";
+    @each $part in $values {
+        @if $args != "" {
+            $args: "#{$args}, ";
+        }
+        $args: "#{$args}#{meta.inspect($part)}";
+    }
+    $label: "font-family(#{$args})";
+    $help: 'Use a key (#{map.keys(config-typo.$font-families)}), a quoted family name ("Inter"), a generic family (serif, monospace), var(), or the families of a stack as separate arguments: font-family("SF Mono", Menlo, monospace).';
+    @if list.length($values) == 0 {
+        @error "font-family(): a value is required. #{$help}";
+    }
+    @each $part in $values {
+        $type: meta.type-of($part);
+        $text: "#{$part}";
+        $bad-text: string.index($text, ",") or (not -is-quoted($part) and (string.index($text, '"') or string.index($text, "'")));
+        $not-name: $type != "string" and $type != "list";
+        @if $not-name or ($bad-text and (-is-quoted($part) or not fn-css-vars.is-css-function($part))) {
+            @error "#{$label}: #{meta.inspect($part)} is not a font family name. #{$help}";
+        }
+    }
+    @if list.length($values) > 1 {
+        $stack: ();
+        @each $part in $values {
+            $stack: list.append($stack, -family-name($part), comma);
+        }
+        @return $stack;
+    }
+    $value: list.nth($values, 1);
+    @if meta.type-of($value) == "list" or -is-quoted($value) {
+        @return -family-name($value);
+    }
+    @if map.has-key(config-typo.$font-families, $value) {
+        @if fn-flags.feature-flag-on("theme") {
+            @return fn-tokens.token("font-family-#{fn-css-vars.css-var-key($value)}");
+        }
+        @return fn-tokens.font-family-value(map.get(config-typo.$font-families, $value));
+    }
+    @if list.index($-font-family-keywords, string.to-lower-case($value)) or fn-css-vars.is-css-function($value) or string.index($value, " ") {
+        @return -family-name($value);
+    }
+    @error "#{$label}: unknown font family #{$value}. #{$help}";
+}
+
+// One family of a stack: a quoted string stays a quoted name; a bare keyword is emitted lowercase, var() as written,
+// any other bare name quoted
+@function -family-name($part) {
+    @if -is-quoted($part) {
+        @return $part;
+    }
+    $text: string.unquote("#{$part}");
+    @if fn-css-vars.is-css-function($text) {
+        @return $text;
+    }
+    @if list.index($-font-family-keywords, string.to-lower-case($text)) {
+        @return string.to-lower-case($text);
+    }
+    @return string.quote($text);
+}
+
+// Joins the pieces of a quoted string that the namespaced apply() split at its commas ("Inter, sans-serif" arrives
+// as "Inter and sans-serif") back into one quoted string, so every path reports the same value
+@function -rejoin-quoted($values) {
+    $result: ();
+    $open: null;
+    $inner: "";
+    @each $part in $values {
+        $text: "#{$part}";
+        @if meta.type-of($part) == "string" {
+            $text: string.unquote($part);
+        }
+        @if $open {
+            @if string.slice($text, -1) == $open {
+                $result: list.append($result, string.quote("#{$inner}, #{string.slice($text, 1, -2)}"), comma);
+                $open: null;
+            } @else {
+                $inner: "#{$inner}, #{$text}";
+            }
+        } @else if meta.type-of($part) == "string" and list.index(('"', "'"), string.slice($text, 1, 1)) and (string.length($text) == 1 or string.slice($text, -1) != string.slice($text, 1, 1)) {
+            $open: string.slice($text, 1, 1);
+            $inner: string.slice($text, 2);
+        } @else {
+            $result: list.append($result, $part, comma);
+        }
+    }
+    @if $open {
+        $result: list.append($result, string.quote($inner), comma);
+    }
+    @return $result;
 }
 
 // A number with no unit or a CSS length unit or %, also as a string ("1.5rem"), as (value, sign, unitless):
@@ -707,7 +830,7 @@ $-tracking-keywords: ("inherit", "initial", "unset", "revert", "revert-layer");
     }
 }
 
-/// Emits the typography utility classes (size, weight, line height, alignment, transform, style, decoration, tracking), suffixed with @breakpoint when a breakpoint is given.
+/// Emits the typography utility classes (size, weight, family, line height, alignment, transform, style, decoration, tracking), suffixed with @breakpoint when a breakpoint is given.
 /// @param {String|Null} $breakpoint [null] - Breakpoint name for the class suffix (also adds responsive truncate classes); null emits the base classes
 /// @example scss
 ///   @media (min-width: 1440px) {
@@ -729,6 +852,12 @@ $-tracking-keywords: ("inherit", "initial", "unset", "revert", "revert-layer");
     @each $size, $val in config-typo.$font-weights {
         #{config-flags.$parent-selector} .font-#{fn-css-vars.class-key($size)}#{$suffix} {
             @include font($size);
+        }
+    }
+
+    @each $key, $family in config-typo.$font-families {
+        #{config-flags.$parent-selector} .font-#{fn-css-vars.class-key($key)}#{$suffix} {
+            @include font-family(string.unquote("#{$key}"));
         }
     }
 

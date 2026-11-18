@@ -20,6 +20,25 @@ $font-family:
     "Cantarell",
     sans-serif !default;
 
+/// Font family stacks: key to stack, emitted as --wu-font-family-{key} tokens and .font-{key} classes.
+///
+/// sans defaults to $font-family, so setting $font-family alone changes --wu-font-family and --wu-font-family-sans together. $font-family stays the source of --wu-font-family and the body font.
+///
+/// Set the whole map to add a key (heading); keep mono, which the base styles of code, pre, kbd and samp read. A key equal to a $font-weights key raises an error, since .font-{key} would be the weight class.
+/// @type Map
+$font-families: (
+    "sans": $font-family,
+    "mono": (
+        ui-monospace,
+        "SF Mono",
+        "SFMono-Regular",
+        "Menlo",
+        "Consolas",
+        "Liberation Mono",
+        monospace,
+    ),
+) !default;
+
 /// Font size scale: key to size, emitted as --wu-font-size-{key} tokens.
 /// @type Map
 $font-sizes: (

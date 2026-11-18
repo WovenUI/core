@@ -1,6 +1,6 @@
 ////
 //// @group sizing
-//// Sizing utilities: .w-{key}, .h-{key}, .min-w-{key}, .min-h-{key}, .max-w-{key}, .max-h-{key} from the spacing scale, .w-{n}p etc. from $percentages, .w-{breakpoint}, .min-w-{breakpoint} and .max-w-{breakpoint} from breakpoint widths (there are no h-, min-h- or max-h- breakpoint classes), keyword classes (.w-full, .h-screen, .w-fit), object-fit classes (.fit-cover, .fit-contain, .fit-fill, .fit-none, .fit-scale-down), object-position classes (.fit-position-top-left etc. from $fit-position-values) and background-size classes (.bg-cover, .bg-contain).
+//// Sizing utilities: .w-{key}, .h-{key}, .min-w-{key}, .min-h-{key}, .max-w-{key}, .max-h-{key} from the spacing scale, .w-{n}p etc. from $percentages, .w-{breakpoint}, .min-w-{breakpoint} and .max-w-{breakpoint} from breakpoint widths (there are no h-, min-h- or max-h- breakpoint classes), keyword classes (.w-full, .h-screen, .min-h-screen, .w-fit), object-fit classes (.fit-cover, .fit-contain, .fit-fill, .fit-none, .fit-scale-down), object-position classes (.fit-position-top-left etc. from $fit-position-values) and background-size classes (.bg-cover, .bg-contain).
 ////
 //// Responsive variants use the @breakpoint suffix (.w-full@md).
 ////
@@ -383,6 +383,16 @@ $-size-cache: ();
     height: 100dvh;
 }
 
+/// Sets min-height to 100dvh, the full dynamic viewport height.
+/// @example scss
+///   .page {
+///     @include min-h-screen; // min-height: 100dvh
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/min-height min-height on MDN
+@mixin min-h-screen {
+    min-height: 100dvh;
+}
+
 /// Sets object-fit to cover: the content fills the box, keeps its aspect ratio and is cropped.
 /// @example scss
 ///   .thumbnail {
@@ -556,6 +566,10 @@ $-fit-position-words: (left, center, right, top, bottom, inherit, initial, unset
 
         #{config-flags.$parent-selector} .h-screen {
             @include h-screen;
+        }
+
+        #{config-flags.$parent-selector} .min-h-screen {
+            @include min-h-screen;
         }
 
         #{config-flags.$parent-selector} .w-auto {

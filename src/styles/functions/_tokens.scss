@@ -152,14 +152,26 @@ $-fallback: ":root:not([data-theme])";
     @return $map;
 }
 
-// Internal: $font-family as CSS text. Quoted family names keep their quotes; a single quoted string holding a
-// comma ("Inter, sans-serif") is a family list and is unquoted, so it does not become one family name
-@function font-family-value() {
-    $family: config-typo.$font-family;
+// Internal: a font family stack ($font-family by default) as CSS text. Quoted family names keep their quotes; a
+// single quoted string holding a comma ("Inter, sans-serif") is a family list and is unquoted, so it does not become
+// one family name
+@function font-family-value($family: config-typo.$font-family) {
     @if meta.type-of($family) == "string" and string.index($family, ",") {
         @return string.unquote($family);
     }
     @return meta.inspect($family);
+}
+
+// Internal: var(--wu-font-family-{key}), or the stack itself when the theme feature is off; a missing key raises an
+// error naming $reader (subject and verb: "the debugger reads")
+@function font-family-ref($key, $reader) {
+    @if not map.has-key(config-typo.$font-families, $key) {
+        @error "$font-families has no key #{$key}, which #{$reader}. Configured keys: #{map.keys(config-typo.$font-families)}. Add #{$key} back to $font-families.";
+    }
+    @if fn-flags.feature-flag-on("theme") {
+        @return var(--#{config-constants.$prefix}-font-family-#{fn-css-vars.css-var-key($key)});
+    }
+    @return font-family-value(map.get(config-typo.$font-families, $key));
 }
 
 // Adds {prefix}-{key} entries for every key of a config map. The entries are built in a small map and merged once,
@@ -184,6 +196,11 @@ $-fallback: ":root:not([data-theme])";
     $tokens: -add-scale($tokens, "border-width", border-width-map());
 
     $tokens: map.set($tokens, "font-family", font-family-value());
+    $families: ();
+    @each $key, $family in config-typo.$font-families {
+        $families: map.set($families, "font-family-#{fn-css-vars.css-var-key($key)}", font-family-value($family));
+    }
+    $tokens: map.merge($tokens, $families);
     $tokens: -add-scale($tokens, "font-size", config-typo.$font-sizes);
     $tokens: -add-scale($tokens, "font-weight", config-typo.$font-weights);
     $tokens: -add-scale($tokens, "line-height", config-typo.$line-heights);
