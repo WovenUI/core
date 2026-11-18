@@ -169,7 +169,7 @@ Each CSS module or component `<style>` block is a separate compile. Load `@woven
 
 `@use "woven"` comes before `@use "@wovenui/core"`: both load the same configured modules, and configuring after `@wovenui/core` has loaded raises an error. `$generate-utility-classes: true` in the partial gives the classes in the global stylesheet only. The `@property` registrations come from the global stylesheet, so component mixins that read them (transforms, `gap()`, `fill()`, the transition property groups) need it on the page.
 
-Base layer (`base` flag): `body` sets `bg-base` and `text-regular`; buttons (`button`, `input` of type `submit`, `button`, `reset`) and fields (`input` without a type, text-like types, `textarea`, `select`) are styled from tokens with a `:focus-visible` outline in `--wu-border-focus`: buttons offset it by `--wu-border-focus-offset`, fields draw it at `outline-offset: 0`, so the field edge turns the focus color. Autofilled fields keep the surface background and regular text color. A `select` with `multiple` or a `size` other than 1 keeps its natural height; a single-line `select` (`size="1"` included) takes `--wu-control-height-md`. Invalid fields use `--wu-danger` (`--wu-border-control` when no `danger` role exists). Removing a key the base layer reads (`$spacings` 1, 2, 4, `$font-sizes` `sm`, `$control-heights` `md` and others) raises an error naming the map.
+Base layer (`base` flag): `body` sets `bg-base` and `text-regular`; buttons (`button`, `input` of type `submit`, `button`, `reset`) and fields (`input` without a type, text-like types, `textarea`, `select`) are styled from tokens with a `:focus-visible` outline in `--wu-border-focus`: buttons offset it by `--wu-border-focus-offset`, fields draw it at `outline-offset: 0`, so the field edge turns the focus color. Autofilled fields keep the surface background and regular text color. `code`, `pre`, `kbd` and `samp` use `--wu-font-family-mono`. A `select` with `multiple` or a `size` other than 1 keeps its natural height; a single-line `select` (`size="1"` included) takes `--wu-control-height-md`. Invalid fields use `--wu-danger` (`--wu-border-control` when no `danger` role exists). Removing a key the base layer reads (`$spacings` 1, 2, 4, `$font-sizes` `sm`, `$control-heights` `md`, `$font-families` `mono` and others) raises an error naming the map.
 
 ### Cascade layers
 
@@ -189,7 +189,7 @@ Reset, base and components live in `@layer reset, base, components`. Utility cla
 }
 ```
 
-Exported color variables: `$brand`, `$success`, `$danger`, `$warning`, `$info`. Maps: `$spacings`, `$percentages`, `$opacities`, `$breakpoints`, `$font-sizes`, `$font-weights`, `$line-heights`, `$border-widths`, `$border-radii`, `$shadow-sizes`, `$shadow-colors`, `$z-indexes`, `$z-index-levels`, `$durations`, `$delays`, `$timing-functions`, `$control-heights`, `$control-padding-inline`, `$color-primitives`, `$basic-colors`, `$semantic-colors`, `$shade-stops`, `$position-fractions`, `$grid-item-sizes`, `$container-names`.
+Exported color variables: `$brand`, `$success`, `$danger`, `$warning`, `$info`. Maps: `$spacings`, `$percentages`, `$opacities`, `$breakpoints`, `$font-families`, `$font-sizes`, `$font-weights`, `$line-heights`, `$border-widths`, `$border-radii`, `$shadow-sizes`, `$shadow-colors`, `$z-indexes`, `$z-index-levels`, `$durations`, `$delays`, `$timing-functions`, `$control-heights`, `$control-padding-inline`, `$color-primitives`, `$basic-colors`, `$semantic-colors`, `$shade-stops`, `$position-fractions`, `$grid-item-sizes`, `$container-names`.
 
 Not public (Undefined variable): `$primary`, `$secondary`, `$theme-tokens`, `$color-names`, `$color-names-with-basic`, `$colors`, `$colors-primitives`, `$color-cache`, `$digit-map`, `$translate-values`, `$negative-translate-values`, `$high-contrast-theme`, `$prefix` (the `wu` custom property prefix, fixed).
 
@@ -226,9 +226,9 @@ Fixed tiers (palette, basic, scale, `--wu-font-family`) are declared once in a `
 | Error aliases | `error`, `error-hover`, `error-active`, `error-subtle`, `error-border`, `text-error`, `text-on-error`: always the matching danger token (`--wu-error` is `var(--wu-danger)`) |
 | Hue roles | `{hue}-subtle`, `{hue}-border`, `text-{hue}` for gray, red, blue, green, yellow, purple, pink |
 | Palette | `{name}-{stop}` for every role and hue |
-| Scales | `space-*`, `radius-*`, `border-width-*`, `font-family` (one token), `font-size-*`, `font-weight-*`, `line-height-*`, `shadow-*`, `opacity-*`, `z-*`, `duration-*`, `ease-*`, `control-height-{sm,md,lg}`, `control-padding-inline-{sm,md,lg}` |
+| Scales | `space-*`, `radius-*`, `border-width-*`, `font-family`, `font-family-*` (one per `$font-families` key: `font-family-sans`, `font-family-mono`), `font-size-*`, `font-weight-*`, `line-height-*`, `shadow-*`, `opacity-*`, `z-*`, `duration-*`, `ease-*`, `control-height-{sm,md,lg}`, `control-padding-inline-{sm,md,lg}` |
 
-There are no delay tokens and no disabled text token (disabled text uses opacity). `--wu-font-family` is emitted from `$font-family`; base elements read it (the raw Sass value when the `theme` flag is off).
+There are no delay tokens and no disabled text token (disabled text uses opacity). `--wu-font-family` is emitted from `$font-family`; base elements read it (the raw Sass value when the `theme` flag is off). `--wu-font-family-{key}` is emitted for every `$font-families` key; `code`, `pre`, `kbd` and `samp` read `--wu-font-family-mono`.
 
 ### Naming grammar
 
@@ -597,6 +597,7 @@ Axis rule: no prefix = main axis; `x-` = cross axis. `x` does not mean horizonta
 - Template: `cols($count)`, `rows($count)` (a whole number of 1 or more, `calc()` or `var()`), `cols-custom($template)` (`cols-custom(2fr 1fr)` or `cols-custom("2fr_1fr")`, `_` works as a space outside brackets and parentheses, so `"[main_start]_1fr"` keeps the line name), `auto-fit($min-width)`, `auto-fill($min-width)` (a `$grid-item-sizes` key, `auto-fit(sm)` is `minmax(250px, 1fr)` as `.auto-fit-sm`, a length or percentage, `calc()` or `var()`, or a whole `minmax()` track used as written (`auto-fill(minmax(100px, 20%))`); a unitless number such as 4 raises an error)
 - Flow: `flow-row`, `flow-col`, `flow-dense` (same names as the `.flow-*` classes)
 - Alignment (grid only: justify-items, align-items, place-items): `justify($value)`, `align($value)`, `place($value)` with `start`, `end`, `center`, `stretch`
+- Self alignment (one grid item, justify-self): `justify-self($value)` with `start`, `end`, `center`, `stretch` or `var()`; any other value raises an error. Classes `.justify-self-start`, `.justify-self-end`, `.justify-self-center`, `.justify-self-stretch` with `@{breakpoint}` forms stand alone on the item (no `.grid` on it), like `.col-span-*`. `@include justify-self(end);` gives `justify-self: end`.
 - Items: `col-span($n)`, `row-span($n)`, `col-start($n)`, `col-end($n)`, `row-start($n)`, `row-end($n)`, `grid-place-at($col, $row)`, `grid-col-at($col)`, `grid-row-at($row)`. A number must be a whole line number: an unquoted `1 / 3` is Sass division (0.333) and raises an error; write `"1 / 3"` or `list.slash(1, 3)`.
 
 ### Container
@@ -620,7 +621,7 @@ Values: a `$spacings` key gives `var(--wu-space-{key})`; values with units, `cal
 
 Percent: `width-percent($n)`, `height-percent($n)`, `min-width-percent($n)`, `min-height-percent($n)`, `max-width-percent($n)`, `max-height-percent($n)` (`width-percent(50)` is `50%`; the keys 33 and 66 are exact thirds, `33.333%` and `66.667%`, as are `.w-33p` and `.w-66p`; `width-percent(33%)` stays `33%`). Percentage width and height classes have `hover:` and `group-hover:` forms with and without a breakpoint (`.hover:w-50p`, `.hover:w-50p@md`).
 
-Keywords: `w-auto`, `w-full`, `w-screen`, `w-min`, `w-max`, `w-fit`, `h-auto`, `h-full`, `h-screen`, `h-min`, `h-max`, `h-fit`, `min-w-full`, `max-w-full`, `min-h-full`, `max-h-full`
+Keywords: `w-auto`, `w-full`, `w-screen`, `w-min`, `w-max`, `w-fit`, `h-auto`, `h-full`, `h-screen` (`100dvh`), `h-min`, `h-max`, `h-fit`, `min-w-full`, `max-w-full`, `min-h-full`, `min-h-screen` (`min-height: 100dvh`), `max-h-full`
 
 Object fit and background size (classes `.fit-cover`, `.bg-cover` and the others, each with an `@{breakpoint}` form; owned by the `sizing` flag):
 
@@ -667,6 +668,7 @@ Object fit and background size (classes `.fit-cover`, `.bg-cover` and the others
 
 - `font-size($key)`: `$font-sizes` key gives a token; values with units, CSS size keywords, `calc()` and `var()` pass through.
 - `font($weight)`: `$font-weights` key (`bold`) or a number 1 to 1000.
+- `font-family($value...)`: a `$font-families` key gives its token (`font-family(mono)` is `var(--wu-font-family-mono)`, the stack itself with the `theme` flag off). A stack is written as separate arguments, like CSS: `font-family("SF Mono", Menlo, monospace)` gives `"SF Mono", "Menlo", monospace`. One quoted name (`"Inter"`), a name of several words, a generic family (`serif`), `-apple-system`, a CSS-wide keyword or `var()` also pass through. A single bare word is a key first. Bare generic families, `-apple-system` and CSS-wide keywords match in any case and are emitted lowercase and unquoted (`Serif` gives `serif`); every other family name is emitted quoted. A quoted string is always a family name, as in CSS: `font-family("serif")` gives `"serif"` and `font-family("mono")` gives `"mono"`. An unknown bare word (`font-family(Georgia)`) or a quoted stack with commas (`"Inter, sans-serif"`) raises an error listing the keys. Classes `.font-sans`, `.font-mono` and `.font-{key}` for every key, with `@{breakpoint}` forms (`typography` flag).
 - `leading($value)`: `$line-heights` key, a number, a length, `calc()`, `var()` or a keyword. Shortcuts: `leading-none`, `leading-tight`, `leading-snug`, `leading-normal`, `leading-relaxed`, `leading-loose`.
 - Alignment: `text-left`, `text-center`, `text-right`, `text-justify`, `text-start` (L), `text-end` (L)
 - Case: `uppercase`, `lowercase`, `capitalize`, `normal-case`
@@ -792,10 +794,13 @@ $shadow-colors: ("default": rgb(0 0 0 / 10%), "dark": rgb(0 0 0 / 20%), "darker"
 
 ```scss
 $font-family: system-ui, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+$font-families: ("sans": $font-family, "mono": (ui-monospace, "SF Mono", "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", monospace));
 $font-sizes: ("xs": 0.75rem, "sm": 0.875rem, "md": 1rem, "base": 1rem, "lg": 1.25rem, "xl": 1.5rem, "2xl": 1.75rem, "3xl": 2rem, "4xl": 2.5rem);
 $font-weights: ("thin": 100, "extralight": 200, "light": 300, "normal": 400, "medium": 500, "semibold": 600, "bold": 700, "extrabold": 800, "black": 900);
 $line-heights: ("none": 1, "tight": 1.25, "snug": 1.375, "normal": 1.5, "relaxed": 1.625, "loose": 2);
 ```
+
+`$font-family` is the source of `--wu-font-family` and the body font; `sans` defaults to it, so setting `$font-family` alone changes both. To add a family, set the whole map, writing every stack out (a `with()` entry cannot read `$font-family`), and keep `mono` (the base styles read it): `$font-families: ("sans": (system-ui, sans-serif), "mono": (ui-monospace, monospace), "heading": ("Fraunces", serif))` gives `--wu-font-family-heading` and `.font-heading`. A map set this way replaces `sans` too; `--wu-font-family` still follows `$font-family`. A key equal to a `$font-weights` key raises an error, since `.font-bold` is the weight class.
 
 ### Z-index and motion
 
@@ -864,6 +869,10 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 | `fit-position(foo)`, `fit-position(4)`, `fit-position(left 1px top 2px 3px)` | Error: not an object-position part (lists keys and keywords) / more than four parts |
 | `fit-position(top top)`, `fit-position(center 10px 20px)`, `fit-position(inherit 10px)`, `origin(left left left)`, `origin(left top 10%)` | Error: not an object-position (or transform-origin) value, with the reason and the accepted forms |
 | `$semantic-colors`, `$color-primitives` or `$basic-colors` with a name `cover` or `contain`, or a theme key `bg-cover` | Error: the color class would be the background-size class |
+| `$font-families` with a key `bold` (any `$font-weights` key) | Error: the font family class would be the font weight class |
+| `$font-families` without `mono` (base layer on) | Error: the base styles read `mono` |
+| `font-family(Georgia)`, `font-family("Inter, sans-serif")`, `font-family(4)` | Error: unknown font family / not a font family name (lists keys; write a stack as separate arguments) |
+| `justify-self(left)`, `justify-self(3)` | Error: unknown value (lists start, end, center, stretch, var()) |
 | `cols(foo)`, `cols(0)`, `col-span(full)`, `truncate-lines(1.5)`, `auto-fit(4)` | Error: not a count / not a line count / not a minimum width |
 | `container(size)`, `scale(foo)`, `rotate(foo)`, `translate-z(50%)`, `cursor(foo)`, `aspect-ratio(video)` | Error: not a display value / not a scale / not an angle / a percentage on the z axis / unknown cursor / not a ratio |
 | `font-size(-1rem)`, `duration(-100ms)`, `fill(1.5)`, `media-between(lg, sm)` | Error: negative size or time / whole columns only / lower breakpoint must be smaller |
@@ -951,6 +960,8 @@ WovenUI 2 fails at compile time instead of emitting broken CSS. Every message na
 | Tooltip without `data-tooltip-position` (no arrow) | Shown on top by default | Keyboard focus slides it in like hover |
 | `.backdrop-hue-90` | `.backdrop-hue-rotate-90` | Matches the mixin name |
 | `font-weight(bold)` | `font(bold)` | |
+| `font-family("Inter, sans-serif")`, `.font-monospace`, `.font-code` | `font-family(Inter, sans-serif)`, `.font-mono` | A stack is separate arguments; family classes come from `$font-families` keys |
+| `.justify-self-center` needing `.grid`, `self-center` for a grid item's inline axis | `.justify-self-center` alone, `justify-self(center)` | `self-*` sets `align-self` |
 | `line-height(tight)` | `leading(tight)` | |
 | `rounded(8)` | `rounded(lg)` or `rounded(8px)` | |
 | `shadow(0 4px 20px ...)` | `shadow-base(0, 4px, 20px, 0, ...)` | `shadow()` takes keys |
