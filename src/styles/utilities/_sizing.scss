@@ -1,6 +1,6 @@
 ////
 //// @group sizing
-//// Sizing utilities: .w-{key}, .h-{key}, .min-w-{key}, .min-h-{key}, .max-w-{key}, .max-h-{key} from the spacing scale, .w-{n}p etc. from $percentages, .w-{breakpoint}, .min-w-{breakpoint} and .max-w-{breakpoint} from breakpoint widths (there are no h-, min-h- or max-h- breakpoint classes), and keyword classes (.w-full, .h-screen, .w-fit).
+//// Sizing utilities: .w-{key}, .h-{key}, .min-w-{key}, .min-h-{key}, .max-w-{key}, .max-h-{key} from the spacing scale, .w-{n}p etc. from $percentages, .w-{breakpoint}, .min-w-{breakpoint} and .max-w-{breakpoint} from breakpoint widths (there are no h-, min-h- or max-h- breakpoint classes), keyword classes (.w-full, .h-screen, .w-fit), object-fit classes (.fit-cover, .fit-contain, .fit-fill, .fit-none, .fit-scale-down), object-position classes (.fit-position-top-left etc. from $fit-position-values) and background-size classes (.bg-cover, .bg-contain).
 ////
 //// Responsive variants use the @breakpoint suffix (.w-full@md).
 ////
@@ -383,6 +383,170 @@ $-size-cache: ();
     height: 100dvh;
 }
 
+/// Sets object-fit to cover: the content fills the box, keeps its aspect ratio and is cropped.
+/// @example scss
+///   .thumbnail {
+///     @include fit-cover; // object-fit: cover
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit object-fit on MDN
+@mixin fit-cover {
+    object-fit: cover;
+}
+
+/// Sets object-fit to contain: the whole content fits inside the box and keeps its aspect ratio.
+/// @example scss
+///   .logo {
+///     @include fit-contain; // object-fit: contain
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit object-fit on MDN
+@mixin fit-contain {
+    object-fit: contain;
+}
+
+/// Sets object-fit to fill: the content stretches to the box and may lose its aspect ratio.
+/// @example scss
+///   .stretch {
+///     @include fit-fill; // object-fit: fill
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit object-fit on MDN
+@mixin fit-fill {
+    object-fit: fill;
+}
+
+/// Sets object-fit to none: the content keeps its intrinsic size.
+/// @example scss
+///   .sprite {
+///     @include fit-none; // object-fit: none
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit object-fit on MDN
+@mixin fit-none {
+    object-fit: none;
+}
+
+/// Sets object-fit to scale-down: the smaller of none and contain.
+/// @example scss
+///   .icon {
+///     @include fit-scale-down; // object-fit: scale-down
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit object-fit on MDN
+@mixin fit-scale-down {
+    object-fit: scale-down;
+}
+
+/// Sets object-position from a $fit-position-values key (top-left gives top left, matching .fit-position-top-left) or an object-position value.
+/// @param {String|Length|List} $value - A $fit-position-values key (center, top, top-right, right, bottom-right, bottom, bottom-left, left, top-left) or an object-position value of one, two or four parts (position keywords, lengths, percentages, calc() or var()) in the CSS position grammar, such as right 1rem bottom 2rem; anything else raises an error
+/// @example scss
+///   .cover {
+///     @include apply(fit-cover, fit-position(top)); // object-fit: cover; object-position: top
+///   }
+/// @example scss
+///   .portrait {
+///     @include fit-position(50% 20%);
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/object-position object-position on MDN
+/// @see {mixin} fit-cover
+@mixin fit-position($value) {
+    @if meta.type-of($value) == "string" and map.has-key($fit-position-values, string.unquote($value)) {
+        $value: map.get($fit-position-values, string.unquote($value));
+    } @else {
+        $value: -fit-position-value($value);
+    }
+
+    object-position: $value;
+}
+
+/// Position keys: key to object-position value, as in .fit-position-top-left
+/// @type Map
+$fit-position-values: (
+    "center": center,
+    "top": top,
+    "top-right": top right,
+    "right": right,
+    "bottom-right": bottom right,
+    "bottom": bottom,
+    "bottom-left": bottom left,
+    "left": left,
+    "top-left": top left,
+) !default;
+
+$-fit-position-words: (left, center, right, top, bottom, inherit, initial, unset, revert, revert-layer);
+
+// An object-position value: one, two or four parts in the CSS position grammar, each a position keyword, a length or
+// percentage, calc() or var(); quoted text is read as unquoted; anything else raises an error
+@function -fit-position-value($value) {
+    $value: fn-math.css-arg($value);
+    @if meta.type-of($value) == "list" and list.separator($value) == "comma" {
+        @error "fit-position: #{meta.inspect($value)} is not an object-position value. Use a $fit-position-values key (#{map.keys($fit-position-values)}), position keywords, lengths or percentages.";
+    }
+    $parts: $value;
+    @if meta.type-of($value) == "string" and string.index($value, " ") {
+        // Split on spaces outside parentheses, so calc() and var() parts stay whole
+        $parts: ();
+        @each $part in fn-strings.split($value, " ") {
+            @if $part != "" {
+                $parts: list.append($parts, $part, space);
+            }
+        }
+    }
+    @if list.length($parts) > 4 {
+        @error "fit-position: #{meta.inspect($value)} has more than four parts.";
+    }
+    $out: ();
+    @each $part in $parts {
+        $part: fn-math.css-arg($part);
+        $ok: fn-css-vars.is-css-function($part) or (meta.type-of($part) == "number" and ($part == 0 or map.has-key(fn-css-vars.$length-percent-unit-set, math.unit($part))));
+        @if not $ok and meta.type-of($part) == "string" and list.index($-fit-position-words, string.unquote($part)) {
+            $ok: true;
+        }
+        @if not $ok {
+            @error "fit-position: #{meta.inspect($part)} is not an object-position part. Use a $fit-position-values key (#{map.keys($fit-position-values)}), position keywords (left, center, right, top, bottom), lengths, percentages, calc() or var().";
+        }
+        $out: list.append($out, $part, space);
+    }
+    $error: fn-css-vars.position-error($out, $four: true);
+    @if $error {
+        @error "fit-position: #{meta.inspect($value)} is not an object-position value: #{$error}. Use one part (top, 25%), two parts horizontal then vertical (left 10px, 25% 75%) or two keywords in either order (top left), or four parts (bottom 10px right 20px).";
+    }
+    @if list.length($out) == 1 {
+        @return list.nth($out, 1);
+    }
+    @return $out;
+}
+
+/// Sets background-size to cover: the background image fills the box and is cropped to keep its aspect ratio.
+/// @example scss
+///   .hero {
+///     @include bg-cover; // background-size: cover
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/background-size background-size on MDN
+@mixin bg-cover {
+    background-size: cover;
+}
+
+/// Sets background-size to contain: the whole background image fits inside the box.
+/// @example scss
+///   .brand-mark {
+///     @include bg-contain; // background-size: contain
+///   }
+/// @link https://developer.mozilla.org/en-US/docs/Web/CSS/background-size background-size on MDN
+@mixin bg-contain {
+    background-size: contain;
+}
+
+// Object-fit, object-position and background-size classes; $suffix is "" or an escaped @breakpoint
+@mixin -fit-classes($suffix) {
+    @each $name in (fit-cover, fit-contain, fit-fill, fit-none, fit-scale-down, bg-cover, bg-contain) {
+        #{config-flags.$parent-selector} .#{$name}#{$suffix} {
+            @include meta.apply(meta.get-mixin($name));
+        }
+    }
+    @each $key, $value in $fit-position-values {
+        #{config-flags.$parent-selector} .fit-position-#{$key}#{$suffix} {
+            @include fit-position($value);
+        }
+    }
+}
+
 // CSS output of this module; index.scss includes it, the mixins entry does not
 @mixin -emit {
     @if fn-flags.feature-enabled("sizing") {
@@ -449,6 +613,8 @@ $-size-cache: ();
         #{config-flags.$parent-selector} .max-h-full {
             @include max-h-full;
         }
+
+        @include -fit-classes("");
 
         // Percentage widths
         @each $i in config-spacing.$percentages {
@@ -550,6 +716,7 @@ $-size-cache: ();
                 #{config-flags.$parent-selector} .h-fit\@#{$breakpoint} {
                     @include h-fit;
                 }
+                @include -fit-classes("\\@#{$breakpoint}");
 
                 // Generate utilities from spacing map
                 @each $i in config-spacing.$percentages {

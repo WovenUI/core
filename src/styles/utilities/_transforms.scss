@@ -379,8 +379,8 @@ $scale-values: (
 
 $-origin-words: (left, center, right, top, bottom, inherit, initial, unset, revert, revert-layer);
 
-// A transform-origin value: one to three parts, each a position keyword, a length or percentage, calc() or var();
-// quoted text is read as unquoted; anything else raises an error
+// A transform-origin value: one or two position parts, then an optional z length, each a position keyword, a length
+// or percentage, calc() or var(); quoted text is read as unquoted; anything else raises an error
 @function -origin-value($value) {
     $value: fn-math.css-arg($value);
     @if meta.type-of($value) == "list" and list.separator($value) == "comma" {
@@ -410,6 +410,10 @@ $-origin-words: (left, center, right, top, bottom, inherit, initial, unset, reve
             @error "origin: #{meta.inspect($part)} is not a transform-origin part. Use an $origin-values key (#{map.keys($origin-values)}), position keywords (left, center, right, top, bottom), lengths, percentages, calc() or var().";
         }
         $out: list.append($out, $part, space);
+    }
+    $error: fn-css-vars.position-error($out, $z: true);
+    @if $error {
+        @error "origin: #{meta.inspect($value)} is not a transform-origin value: #{$error}. Use one part (top, 25%), two parts horizontal then vertical (left 10px, 25% 75%) or two keywords in either order (top left), then an optional z length (left top 10px).";
     }
     @if list.length($out) == 1 {
         @return list.nth($out, 1);

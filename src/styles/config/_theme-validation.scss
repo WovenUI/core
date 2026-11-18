@@ -500,6 +500,35 @@ $-error-tokens: ("text-error", "text-on-error");
     }
 }
 
+// Words of the background-size classes (.bg-cover, .bg-contain), which share the bg- prefix with color classes
+$-bg-class-words: ("cover", "contain");
+
+// No role, hue, basic color or custom theme key may generate a color class equal to a background-size class
+@mixin -validate-class-names {
+    $themes: (
+        "$light-theme": $light-theme,
+    );
+    @if config-flags.$enable-dark-mode {
+        $themes: map.set($themes, "$dark-theme", $dark-theme);
+    }
+    @each $word in $-bg-class-words {
+        @if list.index($role-names, $word) {
+            @error "Role '#{$word}' ($semantic-colors) would generate .bg-#{$word}, which is the background-size class .bg-#{$word}. Rename the role.";
+        }
+        @if list.index($hue-names, $word) {
+            @error "Palette hue '#{$word}' ($color-primitives) would generate .bg-#{$word}, which is the background-size class .bg-#{$word}. Rename the hue.";
+        }
+        @if map.has-key(config-color.$basic-colors, $word) {
+            @error "Basic color '#{$word}' ($basic-colors) would generate .bg-#{$word}, which is the background-size class .bg-#{$word}. Rename the color.";
+        }
+        @each $theme-name, $theme in $themes {
+            @if map.has-key($theme, "bg-#{$word}") {
+                @error "#{$theme-name}: custom token 'bg-#{$word}' would generate .bg-#{$word}, which is the background-size class .bg-#{$word}. Choose another name.";
+            }
+        }
+    }
+}
+
 // True for a built-in theme token name: a default key in either theme, or text-on-{role}
 @function is-builtin-token($token) {
     @return map.has-key($-light-defaults, $token) or map.has-key($-dark-defaults, $token) or -is-text-on($token);
@@ -628,6 +657,7 @@ $-error-tokens: ("text-error", "text-on-error");
     $candidates: map.merge(map.merge($light-theme, $dark-theme), $-dark-role-hue);
     $reserved: -reserved-names($candidates);
     @include -validate-names($reserved);
+    @include -validate-class-names;
     @include -validate-reserved-keys($reserved);
     @include -validate-error-tokens($light-theme, "$light-theme");
     @if $dark {

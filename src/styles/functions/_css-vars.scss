@@ -398,3 +398,66 @@ $length-percent-unit-set: map.set($length-unit-set, "%", true);
     }
     @return false;
 }
+
+$-position-wide-words: (inherit, initial, unset, revert, revert-layer);
+
+// The grammar role of one validated position part: wide, var, x (left, right), y (top, bottom), center or offset
+@function -position-kind($part) {
+    @if meta.type-of($part) == "string" {
+        $word: string.unquote($part);
+        @if list.index($-position-wide-words, $word) {
+            @return wide;
+        }
+        @if list.index((left, right), $word) {
+            @return x;
+        }
+        @if list.index((top, bottom), $word) {
+            @return y;
+        }
+        @if $word == center {
+            @return center;
+        }
+        @if string.index($word, "var(") == 1 {
+            @return var;
+        }
+    }
+    @return offset;
+}
+
+// Reason the position parts break the CSS grammar, or null. $z: third z length, $four: edge offset form.
+@function position-error($parts, $z: false, $four: false) {
+    $kinds: ();
+    @each $part in $parts {
+        $kinds: list.append($kinds, -position-kind($part));
+    }
+    $count: list.length($kinds);
+    @if $count > 1 and list.index($kinds, wide) {
+        @return "a CSS-wide keyword (#{$-position-wide-words}) must stand alone";
+    }
+    @if $count == 1 or list.index($kinds, var) {
+        @return null;
+    }
+    @if $count == 3 and not $z {
+        @return "three parts are not accepted";
+    }
+    @if $count == 4 and $four {
+        $a: list.nth($kinds, 1);
+        $b: list.nth($kinds, 3);
+        @if not(list.index((x, y), $a) and list.index((x, y), $b) and $a != $b and list.nth($kinds, 2) == offset and list.nth($kinds, 4) == offset) {
+            @return "four parts are an edge keyword (left, right, top, bottom) and an offset for each axis, never center";
+        }
+        @return null;
+    }
+    $a: list.nth($kinds, 1);
+    $b: list.nth($kinds, 2);
+    @if not(list.index((x, center, offset), $a) and list.index((y, center, offset), $b)) and not (list.index((y, center), $a) and list.index((x, center), $b)) {
+        @return "the first part is horizontal (left, center, right, a length or percentage) and the second vertical (top, center, bottom, a length or percentage), or both are keywords in either order";
+    }
+    @if $count == 3 {
+        $third: list.nth($parts, 3);
+        @if list.nth($kinds, 3) != offset or (meta.type-of($third) == "number" and math.unit($third) == "%") {
+            @return "the third part is the z offset, a length (not a percentage or keyword)";
+        }
+    }
+    @return null;
+}

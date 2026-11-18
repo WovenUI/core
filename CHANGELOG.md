@@ -4,6 +4,20 @@ All notable changes to `@wovenui/core` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-11-18
+
+### Added
+
+- Object fit mixins and classes: `fit-cover`, `fit-contain`, `fit-fill`, `fit-none` and `fit-scale-down` set `object-fit`. Classes `.fit-cover` and the others, with `@{breakpoint}` forms (`.fit-contain@md`).
+- `fit-position($value)` sets `object-position` from a `$fit-position-values` key (`top-left` gives `top left`) or one, two or four parts in the CSS `<position>` grammar, each a position keyword, a length or percentage, `calc()` or `var()`. Three parts, two keywords on one axis, `center` in the four-part form or a CSS-wide keyword with other parts raise an error naming the accepted forms. Classes `.fit-position-{key}` with `@{breakpoint}` forms.
+- Background size mixins and classes: `bg-cover` and `bg-contain` set `background-size`, with `@{breakpoint}` forms (`.bg-cover@lg`).
+- The new classes belong to the `sizing` feature flag.
+- A role, hue or basic color named `cover` or `contain`, or a custom theme key `bg-cover` or `bg-contain`, raises an error, since its color class would be the background-size class.
+
+### Fixed
+
+- `origin()` validates the `transform-origin` grammar, not only each part: `origin(left left left)`, `origin(top 10px)`, a percentage or keyword as the third (z) part, and a CSS-wide keyword with other parts raise an error naming the accepted forms. A value with a `var()` part is checked part by part only.
+
 ## [2.4.1] - 2026-11-15
 
 ### Fixed

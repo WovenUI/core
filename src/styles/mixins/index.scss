@@ -18,7 +18,7 @@
 
 @forward "../functions/breakpoints" hide breakpoint-max;
 @forward "../functions/colors" hide is-valid-shade, $color-cache;
-@forward "../functions/css-vars" hide css-var-key, class-key, is-bounded-value, is-css-function, is-length-unit, key-token, key-tokens, scale-key, scale-var, scale-value, unknown-key-message, value-key, $length-units, $length-unit-set, $length-percent-unit-set;
+@forward "../functions/css-vars" hide css-var-key, class-key, is-bounded-value, is-css-function, is-length-unit, key-token, key-tokens, position-error, scale-key, scale-var, scale-value, unknown-key-message, value-key, $length-units, $length-unit-set, $length-percent-unit-set;
 @forward "../functions/feature-flags" hide feature-flag-on, $output-mixins;
 @forward "../functions/math" hide css-arg, to-css-number, $digit-map, $unit-values;
 @forward "../functions/strings";

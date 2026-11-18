@@ -83,6 +83,7 @@ Full usage guide: https://wovenui.com/llms-full.txt. Documentation: https://wove
   }
   ```
   Not `hover:bg(gray, 100)` and not `lg:hover:bg(gray, 100)`.
+- Use `apply()` for several items or any modifier. Include a single mixin directly (`@include p(4);`, not `apply(p(4))`). Write plain CSS for a zero or where a mixin would only pass the value through: `opacity: 0`, `padding-inline: var(--site-gutter)`. Name WovenUI colors and tokens directly (`bg(forest)`, `token(forest)`); never copy a token into a project property and wrap that in a mixin. A fill with text on it is a role (`$semantic-colors`), not a hue. Mixins take names, not tokens: `text-color(brand)`, not `text-color(token(brand))` (that gives the fill color).
 - Class names use the breakpoint as an `@` suffix and the state as a prefix: `p-4@lg`, `hover:text-white`, `group-hover:...`. Not every class has every variant (color classes such as `bg-brand` have no responsive form); check the compiled output before relying on one. For a responsive color use the mixin: `apply(bg(red) lg)`.
 - Flex modifiers (`between`, `x-center`, `row`, `col`, `wrap`) go on the same element as `.flex`. Flex child classes (`fill-*`, `grow`, `self-*`, `order-*`) only work on direct children of a `.flex` parent.
 - Names are readable words: `between`, `x-center`, `x-start`, not abbreviations of CSS property values.

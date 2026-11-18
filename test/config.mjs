@@ -205,6 +205,26 @@ const ERROR_CASES = [
         "'link' generates the token 'text-link', which is a built-in theme token",
     ],
     [
+        'role named cover would generate the background-size class .bg-cover',
+        `$semantic-colors: (${ROLES}, "cover": #123456)`,
+        "Role 'cover' ($semantic-colors) would generate .bg-cover, which is the background-size class .bg-cover",
+    ],
+    [
+        'hue named contain would generate the background-size class .bg-contain',
+        `$color-primitives: (${HUES}, "contain": #8b5cf6)`,
+        "Palette hue 'contain' ($color-primitives) would generate .bg-contain",
+    ],
+    [
+        'basic color named cover would generate the background-size class .bg-cover',
+        '$basic-colors: ("black": #000, "white": #fff, "transparent": transparent, "cover": #111)',
+        "Basic color 'cover' ($basic-colors) would generate .bg-cover",
+    ],
+    [
+        'custom theme token bg-contain would generate the background-size class .bg-contain',
+        '$light-theme: ("bg-contain": #fff), $dark-theme: ("bg-contain": #000)',
+        "$light-theme: custom token 'bg-contain' would generate .bg-contain",
+    ],
+    [
         'removed gray still referenced by the default theme',
         `$color-primitives: ("red": #ef4444, "blue": #3b82f6)`,
         "refers to 'gray', which is not a role or palette name",
@@ -1075,6 +1095,31 @@ function run() {
                 fail('grid false: a .grid class was emitted');
             }
             expectIncludes(noGrid, '.flex {', 'grid false');
+        }
+    );
+
+    check(
+        'sizing flag owns the object-fit, object-position and background-size classes',
+        () => {
+            const all = compileWith('$generate-utility-classes: true');
+            for (const text of [
+                '.fit-cover {\n  object-fit: cover;',
+                '.fit-scale-down {\n  object-fit: scale-down;',
+                '.fit-position-top-left {\n  object-position: top left;',
+                '.bg-cover {\n  background-size: cover;',
+                '.bg-contain {\n  background-size: contain;',
+                '.fit-cover\\@md {\n    object-fit: cover;',
+                '.bg-cover\\@md {\n    background-size: cover;',
+                '.fit-position-center\\@md {\n    object-position: center;',
+            ]) {
+                expectIncludes(all, text, 'default');
+            }
+            const noSizing = compileWith(
+                '$generate-utility-classes: true, $feature-flags: ("sizing": false)'
+            );
+            for (const text of ['.fit-', '.bg-cover', '.bg-contain']) {
+                expectExcludes(noSizing, text, 'sizing false');
+            }
         }
     );
 

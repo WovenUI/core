@@ -139,6 +139,7 @@ const ARGS = {
     'skew-x': '10deg',
     'skew-y': '10deg',
     origin: 'center',
+    'fit-position': 'top',
     duration: '200',
     ease: 'in-out',
     delay: '100',
@@ -195,6 +196,57 @@ const RAW_VALUES = [
     ['origin("calc(10px + 5%) top")', 'transform-origin: calc(10px + 5%) top;'],
     ['origin("left calc(1px + 2%)")', 'transform-origin: left calc(1px + 2%);'],
     ['origin("left  top")', 'transform-origin: left top;'],
+    ['fit-position(50% 20%)', 'object-position: 50% 20%;'],
+    [
+        'fit-position(right 1rem bottom 2rem)',
+        'object-position: right 1rem bottom 2rem;',
+    ],
+    ['fit-position(var(--x) top)', 'object-position: var(--x) top;'],
+    [
+        'fit-position("calc(10px + 5%) top")',
+        'object-position: calc(10px + 5%) top;',
+    ],
+    ['fit-position(top)', 'object-position: top;'],
+    ['fit-position(bottom)', 'object-position: bottom;'],
+    ['fit-position(left)', 'object-position: left;'],
+    ['fit-position(right)', 'object-position: right;'],
+    ['fit-position(center)', 'object-position: center;'],
+    ['fit-position(25% 75%)', 'object-position: 25% 75%;'],
+    ['fit-position(0 0)', 'object-position: 0 0;'],
+    ['fit-position(1cm 2cm)', 'object-position: 1cm 2cm;'],
+    ['fit-position(10ch 8em)', 'object-position: 10ch 8em;'],
+    [
+        'fit-position(bottom 10px right 20px)',
+        'object-position: bottom 10px right 20px;',
+    ],
+    [
+        'fit-position(right 3em bottom 10px)',
+        'object-position: right 3em bottom 10px;',
+    ],
+    ['fit-position(top 0 right 10px)', 'object-position: top 0 right 10px;'],
+    ['fit-position(left top)', 'object-position: left top;'],
+    ['fit-position(top left)', 'object-position: top left;'],
+    ['fit-position(center 25%)', 'object-position: center 25%;'],
+    ['fit-position(bottom-right)', 'object-position: bottom right;'],
+    [
+        'fit-position(calc(1px + 2%) var(--y))',
+        'object-position: calc(1px + 2%) var(--y);',
+    ],
+    [
+        'fit-position(var(--x) 10px 20px)',
+        'object-position: var(--x) 10px 20px;',
+    ],
+    ['fit-position(inherit)', 'object-position: inherit;'],
+    ['origin(left top 10px)', 'transform-origin: left top 10px;'],
+    ['origin(top left 0)', 'transform-origin: top left 0;'],
+    ['origin(center 25%)', 'transform-origin: center 25%;'],
+    ['origin(10px 20px 3em)', 'transform-origin: 10px 20px 3em;'],
+    [
+        'origin(right calc(1px + 2%) var(--z))',
+        'transform-origin: right calc(1px + 2%) var(--z);',
+    ],
+    ['origin(var(--x) top 5%)', 'transform-origin: var(--x) top 5%;'],
+    ['origin(initial)', 'transform-origin: initial;'],
     ['bg("#ff5733")', 'background-color: #ff5733;'],
     ['bg(#336699, 600)', 'background-color: #285a8b'],
     ['bg(rgb(10 20 30 / 50%))', 'background-color: rgba(10, 20, 30, 0.5)'],
@@ -253,6 +305,83 @@ const RAW_VALUES = [
     ['col-span("2")', 'grid-column: span 2/span 2'],
     ['duration("250ms")', 'transition-duration: 250ms'],
     ['z-index("5")', 'z-index: 5'],
+];
+
+// [mixin call, error text]: position values that break the CSS position grammar fail the same way directly, through
+// apply(), nu.apply() and N.apply()
+const POSITION_ERRORS = [
+    [
+        'fit-position(top top)',
+        'fit-position: top top is not an object-position value: the first part is horizontal',
+    ],
+    [
+        'fit-position(left right)',
+        'fit-position: left right is not an object-position value: the first part is horizontal',
+    ],
+    [
+        'fit-position(top 10px)',
+        'fit-position: top 10px is not an object-position value: the first part is horizontal',
+    ],
+    [
+        'fit-position(10px left)',
+        'fit-position: 10px left is not an object-position value: the first part is horizontal',
+    ],
+    [
+        'fit-position(left left left left)',
+        'fit-position: left left left left is not an object-position value: four parts are an edge keyword',
+    ],
+    [
+        'fit-position(center 10px right 5px)',
+        'fit-position: center 10px right 5px is not an object-position value: four parts are an edge keyword',
+    ],
+    [
+        'fit-position(inherit 10px)',
+        'fit-position: inherit 10px is not an object-position value: a CSS-wide keyword (inherit, initial, unset, revert, revert-layer) must stand alone',
+    ],
+    [
+        'fit-position(inherit top)',
+        'fit-position: inherit top is not an object-position value: a CSS-wide keyword (inherit, initial, unset, revert, revert-layer) must stand alone',
+    ],
+    [
+        'fit-position(var(--x) unset)',
+        'fit-position: var(--x) unset is not an object-position value: a CSS-wide keyword (inherit, initial, unset, revert, revert-layer) must stand alone',
+    ],
+    [
+        'fit-position(center 10px 20px)',
+        'fit-position: center 10px 20px is not an object-position value: three parts are not accepted',
+    ],
+    [
+        'fit-position(center left 10px)',
+        'fit-position: center left 10px is not an object-position value: three parts are not accepted',
+    ],
+    [
+        'fit-position(left 10px top)',
+        'fit-position: left 10px top is not an object-position value: three parts are not accepted',
+    ],
+    [
+        'origin(left left left)',
+        'origin: left left left is not a transform-origin value: the first part is horizontal',
+    ],
+    [
+        'origin(top 10px)',
+        'origin: top 10px is not a transform-origin value: the first part is horizontal',
+    ],
+    [
+        'origin(left top 10%)',
+        'origin: left top 10% is not a transform-origin value: the third part is the z offset',
+    ],
+    [
+        'origin(left top center)',
+        'origin: left top center is not a transform-origin value: the third part is the z offset',
+    ],
+    [
+        'origin(inherit top)',
+        'origin: inherit top is not a transform-origin value: a CSS-wide keyword (inherit, initial, unset, revert, revert-layer) must stand alone',
+    ],
+    [
+        'origin(revert 0 0)',
+        'origin: revert 0 0 is not a transform-origin value: a CSS-wide keyword (inherit, initial, unset, revert, revert-layer) must stand alone',
+    ],
 ];
 
 // Removed and renamed grid mixins: each must fail as an unknown mixin,
@@ -709,6 +838,21 @@ const EXPECTED_ERRORS = [
         'origin: foo is not a transform-origin part',
     ],
     [
+        'fit-position(foo)',
+        '@include fit-position(foo);',
+        'fit-position: foo is not an object-position part',
+    ],
+    [
+        'fit-position() takes at most four parts',
+        '@include fit-position(left 1px top 2px 3px);',
+        'fit-position: left 1px top 2px 3px has more than four parts',
+    ],
+    [
+        'fit-position() rejects a unitless number',
+        '@include fit-position(4);',
+        'fit-position: 4 is not an object-position part',
+    ],
+    [
         'origin() validates each part of a quoted value with calc()',
         '@include origin("bogus calc(1px + 2%)");',
         'origin: bogus is not a transform-origin part',
@@ -773,6 +917,18 @@ const EXPECTED_OUTPUT = [
             '.group:hover .t {',
             '.t:focus-visible {',
             '@media (min-width: 768px) {\n  .group:hover .t {',
+        ],
+    ],
+    [
+        'object-fit, object-position and background-size mixins',
+        '@include apply(fit-cover, fit-position(top-left), bg-cover, fit-contain md, bg-contain lg); .n { @include fit-scale-down; }',
+        [
+            'object-fit: cover;',
+            'object-position: top left;',
+            'background-size: cover;',
+            '@media (min-width: 768px) {\n  .t {\n    object-fit: contain;',
+            'background-size: contain;',
+            'object-fit: scale-down;',
         ],
     ],
     [
@@ -1274,6 +1430,46 @@ function run() {
     }
     console.log(
         `${failures.length === rawBefore ? 'pass' : 'FAIL'}  ${RAW_VALUES.length} raw values give the same rule directly, through apply(), nu.apply() and N.apply()`
+    );
+
+    const positionBefore = failures.length;
+    for (const [callText, expected] of POSITION_ERRORS) {
+        for (const [label, use, body] of [
+            [
+                'direct',
+                '@use "../src/styles/index" as *;',
+                `@include ${callText};`,
+            ],
+            [
+                'apply',
+                '@use "../src/styles/index" as *;',
+                `@include apply(${callText});`,
+            ],
+            [
+                'nu.apply',
+                '@use "../src/styles/index" as nu;',
+                `@include nu.apply(${callText});`,
+            ],
+            [
+                'N.apply',
+                '@use "mixins-map" as N;',
+                `@include N.apply(${callText});`,
+            ],
+        ]) {
+            const message = compileError(`${use}\n.t {\n    ${body}\n}\n`);
+            if (message === null) {
+                failures.push(
+                    `${callText} (${label}): expected an error, it compiled`
+                );
+            } else if (!message.includes(expected)) {
+                failures.push(
+                    `${callText} (${label}): expected an error containing "${expected}", got: ${message.split('\n')[0]}`
+                );
+            }
+        }
+    }
+    console.log(
+        `${failures.length === positionBefore ? 'pass' : 'FAIL'}  ${POSITION_ERRORS.length} position values outside the CSS grammar fail directly, through apply(), nu.apply() and N.apply()`
     );
 
     // A state and a breakpoint may follow the utility in either order, on all three apply() paths
